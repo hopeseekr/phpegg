@@ -35,18 +35,18 @@ function notice_lastspoke($irc_connect,$sender_nick,$chan,$seen_nick)
 		$now=date("l F j S, Y, H:i ",$lastspoke);
 		if ($lastspoke!=0)
 			{
-		fputs($irc_connect, ":$my_nick PRIVMSG $chan :$seen_nick last spoke in $chan_name $now  \n\r");
+		fputs($irc_connect, ":$my_nick PRIVMSG $chan :$seen_nick last spoke in $chan_name $now  \n");
 			}
 		else
 			{
-			fputs($irc_connect, ":$my_nick PRIVMSG $chan :$seen_nick  hasnt spoken since i have been here. \n\r");
+			fputs($irc_connect, ":$my_nick PRIVMSG $chan :$seen_nick  hasnt spoken since i have been here. \n");
 			
 			}	
 		}
 	else
 		{
 		
-		fputs($irc_connect, ":$my_nick PRIVMSG $chan :$seen_nick isnt curntly in any of the channels i montor  \n\r");
+		fputs($irc_connect, ":$my_nick PRIVMSG $chan :$seen_nick isnt curntly in any of the channels i montor  \n");
 		
 		
 		}	
@@ -233,7 +233,7 @@ function notice_seen($irc_connect,$sender_nick,$chan,$seen_nick)
 			
 			}	
 		}
-	fputs($irc_connect, "NOTICE $sender_nick :$msg \n\r");
+	fputs($irc_connect, "NOTICE $sender_nick :$msg \n");
 			
 	
 			

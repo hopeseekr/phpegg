@@ -1,163 +1,83 @@
 
+if (substr($message,0,1)==".") {	
+    $sender_info=clean_nick($who);
+    $sender_nick=$sender_info[0];
+    $sender_ident=$sender_info[1];
+    $sender_host=$sender_info[2];
 
-if (substr($message,0,1)==".")
-	{
+    $message_array=explode(" ",$message);
 	
-	$sender_info=clean_nick($who);
-	$sender_nick=$sender_info[0];
-	$sender_ident=$sender_info[1];
-	$sender_host=$sender_info[2];
-
-	$message_array=explode(" ",$message);
-	
-	$message_array[0]=strtoupper($message_array[0]);
-	
-
-	switch ($message_array[0])
-		{
-		
-		case ".VOICE":
-			// /msg bot .voice <chan> <nick>
-			$is_op=op_check($message_array[1],$sender_nick);
-			if ($is_op)
-				{
-			$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null";
-			$result=@mysql_query($sql,$db);
-			if (mysql_num_rows($result)!=0)
-				{
-				
-				
-				fputs($irc_connect, ":$my_nick MODE $message_array[1] +v $message_array[2] \n\r");	
-				
-				
-				}
-			else
-				{
-				
-				$message_array[2]=str_replace("\r","",$message_array[2]);
-				$message_array[2]=str_replace("\n","",$message_array[2]);
-				fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] \n\r");
-				
-				}	
-			
-			
-				}
-			break;
-		case ".OP":
-			$is_op=op_check($message_array[1],$sender_nick);
-			if ($is_op)
-				{
-			$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null";
-			$result=@mysql_query($sql,$db);
-			if (mysql_num_rows($result)!=0)
-				{
-				
-				
-				fputs($irc_connect, ":$my_nick MODE $message_array[1] +o $message_array[2] \n\r");	
-				
-				
-				}
-			else
-				{
-				
-				$message_array[2]=str_replace("\r","",$message_array[2]);
-				$message_array[2]=str_replace("\n","",$message_array[2]);
-				fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] \n\r");
-				
-				}	
-			
-			
-				}
-		
-		
-		
-			break;	
-		case ".DEVOICE":
-			// /msg bot .voice <chan> <nick>
-			$is_op=op_check($message_array[1],$sender_nick);
-			if ($is_op)
-				{
-			$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null and mode='v'";
-			$result=@mysql_query($sql,$db);
-			if (mysql_num_rows($result)!=0)
-				{
-				
-				
-				fputs($irc_connect, ":$my_nick MODE $message_array[1] -v $message_array[2] \n\r");	
-				
-				
-				}
-			else
-				{
-				
-				$message_array[2]=str_replace("\r","",$message_array[2]);
-				$message_array[2]=str_replace("\n","",$message_array[2]);
-				fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] or is not curently voiced \n\r");
-				
-				}	
-			
-			
-				}
-			break;	
-		
-	      case ".DEOP":
-			// /msg bot .voice <chan> <nick>
-			$is_op=op_check($message_array[1],$sender_nick);
-			if ($is_op)
-				{
-			$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null and mode='o'";
-			$result=@mysql_query($sql,$db);
-			if (mysql_num_rows($result)!=0)
-				{
-				
-				
-				fputs($irc_connect, ":$my_nick MODE $message_array[1] -o $message_array[2] \n\r");	
-				
-				
-				}
-			else
-				{
-				
-				$message_array[2]=str_replace("\r","",$message_array[2]);
-				$message_array[2]=str_replace("\n","",$message_array[2]);
-				fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] or is not curently oped \n\r");
-				
-				}	
-			
-			
-				}
-			break;		
-		 case ".TOPIC":
-			// /msg bot .voice <chan> <topic>
-			$is_op=op_check($message_array[1],$sender_nick);
-			if ($is_op)
-				{
-				
-				for ($i=2;$i<count($message_array);$i++)
-					{
-					
-					$topic.=$message_array[$i]." ";
-					
-					}
-				
-				
-				fputs($irc_connect, ":$my_nick TOPIC $message_array[1] :$topic \n\r");	
-			
-			
-				}
-			break;		
-		
-		
-		
-		
-		
-		
-		
-		
+    $message_array[0]=strtoupper($message_array[0]);
+    
+    switch ($message_array[0]) {
+	case ".VOICE":
+	    // /msg bot .voice <chan> <nick>
+	    $is_op=op_check($message_array[1],$sender_nick);
+	    if ($is_op) {
+		$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null";
+		$result=@mysql_query($sql,$db);
+		if (mysql_num_rows($result)!=0) {
+		    fputs($irc_connect, "MODE $message_array[1] +v $message_array[2] \n");	
+		} else {		
+		    $message_array[2]=str_replace("","",$message_array[2]);
+		    $message_array[2]=str_replace("\n","",$message_array[2]);
+		    fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] \n");
+		}	
+	    }
+	break;
+	case ".OP":
+	    $is_op=op_check($message_array[1],$sender_nick);
+	    if ($is_op) {
+		$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null";
+		$result=@mysql_query($sql,$db);
+		if (mysql_num_rows($result)!=0) {
+		    fputs($irc_connect, "MODE $message_array[1] +o $message_array[2] \n");	
+		} else {
+		    $message_array[2]=str_replace("","",$message_array[2]);
+		    $message_array[2]=str_replace("\n","",$message_array[2]);
+		    fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] \n");
+		}	
+	    }
+	break;	
+	case ".DEVOICE":
+	    // /msg bot .voice <chan> <nick>
+	    $is_op=op_check($message_array[1],$sender_nick);
+	    if ($is_op) {
+		$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null and mode='v'";
+		$result=@mysql_query($sql,$db);
+		if (mysql_num_rows($result)!=0) {
+		    fputs($irc_connect, "MODE $message_array[1] -v $message_array[2]\n");
+		} else {		
+		    $message_array[2]=str_replace("","",$message_array[2]);
+		    $message_array[2]=str_replace("\n","",$message_array[2]);
+		    fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] or is not curently voiced\n");
+		}	
+	    }
+	break;	
+	case ".DEOP":
+	    // /msg bot .voice <chan> <nick>
+	    $is_op=op_check($message_array[1],$sender_nick);
+	    if ($is_op) {
+		$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null and mode='o'";
+		$result=@mysql_query($sql,$db);
+		if (mysql_num_rows($result)!=0) {
+		    fputs($irc_connect, "MODE $message_array[1] -o $message_array[2] \n");	
+		} else {
+		    $message_array[2]=str_replace("","",$message_array[2]);
+		    $message_array[2]=str_replace("\n","",$message_array[2]);
+		    fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] or is not curently oped\n");
+		}	
+	    }
+	break;		
+	case ".TOPIC":
+	    // /msg bot .voice <chan> <topic>
+	    $is_op=op_check($message_array[1],$sender_nick);
+	    if ($is_op) {
+		for ($i=2;$i<count($message_array);$i++) {
+		    $topic.=$message_array[$i]." ";
 		}
-
-
-
-
-
-	}
+		fputs($irc_connect, "TOPIC $message_array[1] :$topic\n");
+	    }
+	break;
+    }
+}

@@ -7,87 +7,54 @@ $sender_host=$sender_info[2];
 $message=trim($message);
 $msg_data=explode(" ",$message);
 
-
-
-			$pass=$msg_data[1];
-			$host_mask=$sender_ident."@".$sender_host;
-			$login_access=check_mysql_login($host_mask,$pass);
-			if ($login_access)
-				{
-				$msg_data[0]=strtoupper($msg_data[0]);
-				switch ($msg_data[0])
-					{
-					case "NICK":
-						//fputs($irc_connect, "NICK $msg_data[2] \n\r");
-						break;
-					case "MEMORY":
-						if (!strpos($OS,"windows"))
-							{
-							
-							$system=@system("ps -aux | grep php_egg.php",$system);
-							
-							
-							if ($system)
-								{
-								$system_data=explode(" ",$system);
-								
-								
-								for ($i=0;$i<count($system_data);$i++)
-									{
-									
-									if (trim($system_data[$i])!="")
-										{
-										$data[]=$system_data[$i];
-										}
-									
-									}
-								$user=$data[0];
-								$pid=$data[1];
-								$cpu=$data[2];
-								$memory=$data[3];
-								fputs($irc_connect, "PRIVMSG $sender_nick :I think im using ".$cpu."% CPU and ".$memory."% memory \n\r");
-								
-								
-								}
-							
-							}
-							break;
-					case "STATUS":	
-						fputs($irc_connect, "PRIVMSG $sender_nick :I am $my_nick , running PHP-Egg v1.2b www.kill-9.dk/php_egg/ \n\r");
+$pass=$msg_data[1];
+$host_mask=$sender_ident."@".$sender_host;
+$login_access=check_mysql_login($host_mask,$pass);
+if ($login_access) {
+    $msg_data[0]=strtoupper($msg_data[0]);
+    switch ($msg_data[0]) {
+	case "NICK":
+	    //fputs($irc_connect, "NICK $msg_data[2] \n");
+	break;
+	case "MEMORY":
+	    if (!strpos($OS,"windows")) {
+		$system=@system("ps -aux | grep php_egg.php",$system);							
+		if ($system) {
+		    $system_data=explode(" ",$system);		
+		    for ($i=0;$i<count($system_data);$i++) {
+			if (trim($system_data[$i])!="")	{
+			    $data[]=$system_data[$i];
+			}
+		    }
+		    $user=$data[0];
+		    $pid=$data[1];
+		    $cpu=$data[2];
+		    $memory=$data[3];
+		    fputs($irc_connect, "PRIVMSG $sender_nick :I think im using ".$cpu."% CPU and ".$memory."% memory \n");								
+		}
+	    }
+	break;
+	case "STATUS":	
+	    fputs($irc_connect, "PRIVMSG $sender_nick :I am $my_nick, running PHP-Egg v1.2b www.kill-9.dk/php_egg/ \n");
 						
-						$phpversion=phpversion();
-// gets mysql version
-$sql="select version()";
-$result=mysql_query($sql,$db);
-$myrow=@mysql_fetch_array($result);
-$mysql_version=$myrow[0];
-						fputs($irc_connect, "PRIVMSG $sender_nick :Running on  php $phpversion and mysql $mysql_version \n\r");
-						fputs($irc_connect, "PRIVMSG $sender_nick :Admin: $my_nick <email: $admin_email > \n\r");
+	    $phpversion=phpversion();
+	    // gets mysql version
+	    $sql="select version()";
+	    $result=mysql_query($sql,$db);
+	    $myrow=@mysql_fetch_array($result);
+	    $mysql_version=$myrow[0];
+	    fputs($irc_connect, "PRIVMSG $sender_nick :Running on  php $phpversion and mysql $mysql_version\n");
+	    fputs($irc_connect, "PRIVMSG $sender_nick :Admin: $my_nick <email: $admin_email >\n");
 						
-						$sql="select chan_name from channels where in_chan='Y'";
-						$result=@mysql_query($sql,$db);
-						while($myrow=@mysql_fetch_array($result))
-							{
-							
-							$channels[]=$myrow["chan_name"];
-							
-							}
-							
-						$chans=implode(", ",$channels);	
-							
-							
-						fputs($irc_connect, "PRIVMSG $sender_nick :Channels: $chans \n\r");	
-					
-						
-						
-						
-						
-						break;	
-							
-					
-					}
-				
-			
-				
-				
-				}
+	    $sql="select chan_name from channels where in_chan='Y'";
+	    $result=@mysql_query($sql,$db);
+	    while($myrow=@mysql_fetch_array($result)) {
+		$channels[]=$myrow["chan_name"];
+	    }
+	    $chans=implode(", ",$channels);	
+	    
+	    fputs($irc_connect, "PRIVMSG $sender_nick :Channels: $chans\n");	
+	
+	break;	
+    }
+}

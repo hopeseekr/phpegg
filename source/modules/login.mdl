@@ -7,89 +7,44 @@ $sender_host=$sender_info[2];
 $message=trim($message);
 $login_command=explode(" ",$message);
 
-
-
-
-
-			$pass=$login_command[1];
-			$host_mask=$sender_ident."@".$sender_host;
-			$login_access=check_mysql_login($host_mask,$pass);
-			if ($login_access)
-				{
-				$access=check_global_access($login_access);	
-				if ($access==1)
-					{	
-					if (trim($login_command[3])!="")
-						{
+$pass=$login_command[1];
+$host_mask=$sender_ident."@".$sender_host;
+$login_access=check_mysql_login($host_mask,$pass);
+if ($login_access) {
+    $access=check_global_access($login_access);	
+    if ($access==1) {	
+	if (trim($login_command[3])!="") {
+	    $sql="select chan_name from chan_users where nick='$sender_nick' and upper(chan_name)=upper('$login_command[3]') and reason is null";
+	} else {
+	    $sql="select chan_name from chan_users where nick='$sender_nick' and reason is null";
+	}	
+	$result=mysql_query($sql,$db);
+	
+	while($myrow=mysql_fetch_array($result)) {
+	    if ($debug==1) {	
+		echo "$sender_nick $host_mask $chan !OP! \n";
+	    }
+	    $chan=$myrow["chan_name"];
+	    $nick=$sender_nick;
+	    fputs($irc_connect, "MODE $chan +$mode $nick \n");	
+	}
+    } else {
+	if (trim($login_command[3])!="") {
+	    $sql="select chan_name from chan_users where nick='$sender_nick' and upper(chan_name)=upper('$login_command[3]') and reason is null";
+	} else {
+	    $sql="select chan_name from chan_users where nick='$sender_nick' and reason is null";
+	}	
+	$result=mysql_query($sql,$db);
+	while($myrow=mysql_fetch_array($result)) {	
+	    $chan=$myrow["chan_name"];
+	    $nick=$sender_nick;
 						
-						$sql="select chan_name from chan_users where nick='$sender_nick' and upper(chan_name)=upper('$login_command[3]') and reason is null";
-						}
-					else
-						{
-						$sql="select chan_name from chan_users where nick='$sender_nick' and reason is null";
-						
-						}	
-						
-					$result=mysql_query($sql,$db);
-					while($myrow=mysql_fetch_array($result))
-						{
-						if ($debug==1)
-						{	
-						echo "$sender_nick $host_mask $chan !OP! \n";
-						}
-						$chan=$myrow["chan_name"];
-						$nick=$sender_nick;
-						fputs($irc_connect, ":php_egg MODE $chan +$mode $nick \n\r");	
-						}
-				
-					}
-				else
-					{
-					
-					if (trim($login_command[3])!="")
-						{
-						
-						$sql="select chan_name from chan_users where nick='$sender_nick' and upper(chan_name)=upper('$login_command[3]') and reason is null";
-						}
-					else
-						{
-						$sql="select chan_name from chan_users where nick='$sender_nick' and reason is null";
-						
-						}	
-					
-					
-					$result=mysql_query($sql,$db);
-					while($myrow=mysql_fetch_array($result))
-						{	
-						
-						$chan=$myrow["chan_name"];
-						$nick=$sender_nick;
-						
-						$chan_access=check_chan_access($login_access,$chan);	
-						if ($chan_access==1)
-							{
-							
-							fputs($irc_connect, ":php_egg MODE $chan +$mode $nick \n\r");	
-							
-							
-							
-							}
-							
-						// keeps it from always being set duh!	
-						unset($chan_access);	
-						
-						}
-					
-					
-					
-					
-					
-					
-					
-					
-					}	
-					
-		
-		
-				}
-			
+	    $chan_access=check_chan_access($login_access,$chan);	
+	    if ($chan_access==1) {
+		fputs($irc_connect, "MODE $chan +$mode $nick");	
+	    }
+	    // keeps it from always being set duh!	
+	    unset($chan_access);	
+	}
+    }	
+}

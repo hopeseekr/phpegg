@@ -1,17 +1,14 @@
 
-
 global $db;
-    	$sender_info=clean_nick($who);
-		$sender_nick=$sender_info[0];
-		$sender_ident=$sender_info[1];
-		$sender_host=$sender_info[2];	
+$sender_info=clean_nick($who);
+$sender_nick=$sender_info[0];
+$sender_ident=$sender_info[1];
+$sender_host=$sender_info[2];	
 
 $sql="update chan_users set reason ='KICKED by $sender_nick reason $kick_reason' where nick='$kicked_nick' and reason is null and chan_name='$chan'";
 
 $result=@mysql_query($sql,$db);
 
-if (!$result)
-	{
-	echo mysql_error($db)."\n";
-	
-	}
+if (!$result) {
+    echo mysql_error($db)."\n";
+}

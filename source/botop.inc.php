@@ -10,6 +10,7 @@ while($myrow=@mysql_fetch_array($result))
 	{
 	$chan_name=$myrow[0];
 	
+// gryph: hmm, why that "; on the next line after $sql_users=  ?
 	$sql_users="select nick, ident, host_mask from chan_users cu , user where reason is null and cu.chan_name='$chan_name' and cu.mode!='o' and cu.nick=user.user and user.o='Y' and user.b='Y';
 ";
 
@@ -32,6 +33,7 @@ echo $sql_ident."\n";
 	
 			if ($debug==1)
 				{
+				// gryph: hmm will this work without a " in the start of the echo?
 				echo php_egg MODE $chan_name +o $nick ";	
 				}
 	

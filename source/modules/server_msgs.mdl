@@ -1,111 +1,72 @@
-	
-
-
 $what=$command_data[1];
 
-	switch ($what) {
-	    case "MODE":
+switch ($what) {
+    case "MODE":
+	change_user_mode($irc_connect,$who,$chan,$mode);
+    break;
+    case "PART":
+	on_part_msg($irc_connect,$who,$chan);
+	$chan=check_for_colon($command_data[3]);	
+	user_part_chan($irc_connect,$who,$chan);
+    break;
+    case "QUIT":
+	for($i=3;$i<count($command_data);$i++) {	    
+	    $reason.=$command_data[$i]." ";
+	}
+	$reason=str_replace("'","\'",check_for_colon($reason));	
+	quit_chan($irc_connect,$who,$reason);
+    break;
+    case "JOIN":
+	$sender_info=clean_nick($who);
+	$sender_nick=$sender_info[0];
+	// lets not msg the bot the onjoin shall we
+	if (strtoupper($sender_nick)!=strtoupper($irc_nick)) {
+	    on_join_msg($irc_connect,$who,$chan);
+	}
+	user_join_chan($irc_connect,$who,$chan);
+    break;
+    case "NICK":
+	// echo $GLOBALS["my_nick"]."\n";
+	nick_change($irc_connect,$who,$who_to);
+	// echo $my_nick."\n";
+	//echo $GLOBALS["my_nick"]."\n";
+    break;     
+    case 332:
+	for($i=5;$i<count($command_data);$i++) {	    
+	    $topic.=$command_data[$i]." ";
+	}
+	$topic=check_for_colon($topic);
 	    	
+	$who="";
 	    	
-	        change_user_mode($irc_connect,$who,$chan,$mode);
-	        
-	        
-	        break;
-	    case "PART":
-	    	
-	    	on_part_msg($irc_connect,$who,$chan);
-	    	$chan=check_for_colon($command_data[3]);	
-	    	user_part_chan($irc_connect,$who,$chan);
-	        break;
-	    case "QUIT":
-	    	
-		for($i=3;$i<count($command_data);$i++)
-			{	    
-	    		$reason.=$command_data[$i]." ";
-	       		}
-	       	$reason=str_replace("'","\'",check_for_colon($reason));	
-	        quit_chan($irc_connect,$who,$reason);
-	        break;
-	    case "JOIN":
-	  	$sender_info=clean_nick($who);
-		$sender_nick=$sender_info[0];
-		// lets not msg the bot the onjoin shall we
-		if (strtoupper($sender_nick)!=strtoupper($irc_nick))
-			{
-			
-	      	 	on_join_msg($irc_connect,$who,$chan);
-	   		}
-	        user_join_chan($irc_connect,$who,$chan);
-	        break;
-	    case "NICK":
-	        
-	       // echo $GLOBALS["my_nick"]."\n";
-	        nick_change($irc_connect,$who,$who_to);
-	       // echo $my_nick."\n";
-	        //echo $GLOBALS["my_nick"]."\n";
-	        break;     
-	    case 332:
-	    	 
-	         
-	         for($i=5;$i<count($command_data);$i++)
-			{	    
-	    		$topic.=$command_data[$i]." ";
-	       		}
-	    	$topic=check_for_colon($topic);
-	    	
-	    	$who="";
-	    	
-	        bot_join_topic($irc_connect,$who,$chan,$topic);
-	        break; 
-	    case 333:
-	    	
-	        bot_join_topic_setby($irc_connect, $chan,$topic_set_by,$topic_set);
-	        break;   
-	    case 353:
-	       
-	        
-		for($i=6;$i<count($command_data);$i++)
-			{	    
-	    		$names.=$command_data[$i]." ";
-	       		}
-	        $names=check_for_colon($names);
-	        bot_join_names($irc_connect,$chan,$names);
-	        
-	        
-							$sql="select nick from chan_users where reason is null and ident is null and host_mask is null  order by rand() limit 1";
-			$result=@mysql_query($sql,$db);
-			while($myrow=@mysql_fetch_array($result))
-				{
-				$nick=$myrow["nick"];
-				$chan_name=$myrow["chan_name"];
-				$now=date("YmdHis",time());
+	bot_join_topic($irc_connect,$who,$chan,$topic);
+    break; 
+    case 333:
+	bot_join_topic_setby($irc_connect, $chan,$topic_set_by,$topic_set);
+    break;   
+    case 353:	        
+	for($i=6;$i<count($command_data);$i++) {	    
+	    $names.=$command_data[$i]." ";
+	}
+	$names=check_for_colon($names);
+	bot_join_names($irc_connect,$chan,$names);
+	
+	$sql="select nick from chan_users where reason is null and ident is null and host_mask is null  order by rand() limit 1";
+	$result=@mysql_query($sql,$db);
+	while($myrow=@mysql_fetch_array($result)) {
+	    $nick=$myrow["nick"];
+	    $chan_name=$myrow["chan_name"];
+	    $now=date("YmdHis",time());
 				
-				$sql_check="select * from mode_data where action='WHOIS $nick'";
-				$result_check=@mysql_query($sql_check,$db);
-				if (mysql_num_rows($result_check)==0)
-					{
-				
-					
-					$sql_insert="insert into mode_data (chan_name,action,date_inserted,added_by) values ('$chan_name','WHOIS $nick','$now','system')";
-					$result_insert=@mysql_query($sql_insert,$db);
-					if ($result_insert)
-						{
-						//echo "added $nick getting whois \n";
-						
-						}
-					
-					
-					}
-				
-				
-				}
-	        break;                 
-	        }	
-	
-	
-	
-	
-
-	
-	
-	
+	    $sql_check="select * from mode_data where action='WHOIS $nick'";
+	    $result_check=@mysql_query($sql_check,$db);
+	    if (mysql_num_rows($result_check)==0) {
+		$sql_insert="insert into mode_data (chan_name,action,date_inserted,added_by) values ('$chan_name','WHOIS $nick','$now','system')";
+		$result_insert=@mysql_query($sql_insert,$db);
+		if ($result_insert) {
+		    //echo "added $nick getting whois \n";
+		}
+	    }
+	}
+    break;                 
+}	

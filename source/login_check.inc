@@ -38,42 +38,32 @@ function check_chan_access($nick,$chan)
 	
 	}
 
-function check_mysql_login($test,$pass)
-	{
-	global $db;
+function check_mysql_login($test,$pass) {
+    global $db;
 	
+    // first we test if the mysql_password matches  with the hostmask 
+    $sql="select user.user from user_host uh, user where '$test' like replace(replace(mask,'*','%'),'!','') and uh.user=user.user and user.mysql_password=password('$pass')";
 	
-	
-	// first we test if the mysql_password matches  with the hostmask 
-	$sql="select user.user from user_host uh, user where '$test' like replace(replace(mask,'*','%'),'!','') and uh.user=user.user and user.mysql_password=password('$pass')";
-	
+    $result=mysql_query($sql,$db);
+    if ($myrow=mysql_fetch_array($result)) {
+	$user=$myrow["user"];
+		
+	return $user;
+    }
+    if (mysql_num_rows($result)==0) {
+		
+	// if the mysqlpassword doesnt match then we check if its null if it is then we will
+	// assume that they havent loged into the php bot before so we check there tcl bot
+	// encrypted password.
+	$sql="select user.user from user_host uh, user where '$test' like replace(replace(mask,'*','%'),'!','') and uh.user=user.user and user.mysql_password is null";
+		
 	$result=mysql_query($sql,$db);
-	if ($myrow=mysql_fetch_array($result))
-		{
-		$user=$myrow["user"];
-		
-		return $user;
-		
-		}
-	if (mysql_num_rows($result)==0)
-		{
-		
-		// if the mysqlpassword doesnt match then we check if its null if it is then we will
-		// assume that they havent loged into the php bot before so we check there tcl bot
-		// encrypted password.
-		$sql="select user.user from user_host uh, user where '$test' like replace(replace(mask,'*','%'),'!','') and uh.user=user.user and user.mysql_password is null";
-		
-		$result=mysql_query($sql,$db);
-		if (mysql_num_rows($result)==0)
-			{
-			$login_access=check_login($test,$pass);
-			return $login_access;
-			}
-		
-		}
-	
-	
-	}
+	if (mysql_num_rows($result)==0) {
+	    $login_access=check_login($test,$pass);
+	    return $login_access;
+	}	
+    }
+}
 
 
 	
