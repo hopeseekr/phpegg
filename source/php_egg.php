@@ -83,11 +83,10 @@ if ($database == "MySQL") {
 	    exit;
 	}
 }
-
-$sql="select * from user";
+print "$sql\nHey there!\n\n";
+$sql="select * from user2";
 
 $result=$db_ctrl->query($sql,$db);
-print "Hey there!\n\n";
 if ($db_ctrl->num_rows($result)!=0) {
     if ($debug==1) {
 	echo "Unsetting magic word users deteched \n";
@@ -164,7 +163,7 @@ $mod_ctrl->load_all();
 
 
 global $db_ctrl,$dcc_connections,$uptime;
-exit;
+
 $dcc_connections="";
 $uptime=time();
 
