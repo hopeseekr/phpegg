@@ -6,7 +6,11 @@ print("\nStarting PHP-Egg version 1.2b\n");
 print("by: kill-9@skod.dk\n");
 print("web: www.blah.com\n");
 
-include("config.php");
+if (file_exists("config.auto.php")) {
+    include("config.auto.php");
+} else {
+    include("config.php");
+}
 if ($magic_word=="") {
     print("\nError: you need to write your magic_word in config.php\n");
     exit;
