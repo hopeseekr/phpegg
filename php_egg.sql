@@ -1,29 +1,21 @@
-# MySQL dump 7.1
+# MySQL dump 8.12
 #
-# Host: localhost    Database: bot
+# Host: localhost    Database: egg_final
 #--------------------------------------------------------
-# Server version	3.22.32
-
-
-CREATE TABLE server_error (
-  server_error_id int(255) NOT NULL auto_increment,
- time int(12) NOT NULL default '0',
-  error varchar(255) NOT NULL default '',
-  PRIMARY KEY (server_error_id)
-) ;
-
+# Server version	3.23.33
 
 #
 # Table structure for table 'bans'
 #
+
 CREATE TABLE bans (
-  ban_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  chan_name varchar(50) DEFAULT '' NOT NULL,
-  ban_mask varchar(100) DEFAULT '' NOT NULL,
-  set_by varchar(20) DEFAULT '' NOT NULL,
-  ban_date int(20) DEFAULT '0' NOT NULL,
+  ban_id int(255) NOT NULL auto_increment,
+  chan_name varchar(50) NOT NULL default '',
+  ban_mask varchar(100) NOT NULL default '',
+  set_by varchar(20) NOT NULL default '',
+  ban_date int(20) NOT NULL default '0',
   PRIMARY KEY (ban_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'bans'
@@ -33,17 +25,18 @@ CREATE TABLE bans (
 #
 # Table structure for table 'chan_bans'
 #
+
 CREATE TABLE chan_bans (
-  cb_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  chan varchar(100) DEFAULT '' NOT NULL,
-  flag varchar(10) DEFAULT '' NOT NULL,
-  host_mask varchar(255) DEFAULT '' NOT NULL,
-  created varchar(15) DEFAULT '' NOT NULL,
-  last_used varchar(15),
-  set_by varchar(20) DEFAULT '' NOT NULL,
-  reason varchar(100) DEFAULT '' NOT NULL,
+  cb_id int(255) NOT NULL auto_increment,
+  chan varchar(100) NOT NULL default '',
+  flag varchar(10) NOT NULL default '',
+  host_mask varchar(255) NOT NULL default '',
+  created varchar(15) NOT NULL default '',
+  last_used varchar(15) default NULL,
+  set_by varchar(20) NOT NULL default '',
+  reason varchar(100) NOT NULL default '',
   PRIMARY KEY (cb_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'chan_bans'
@@ -53,18 +46,19 @@ CREATE TABLE chan_bans (
 #
 # Table structure for table 'chan_users'
 #
+
 CREATE TABLE chan_users (
-  cu_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  chan_name varchar(20) DEFAULT '' NOT NULL,
-  nick varchar(10) DEFAULT '' NOT NULL,
-  date timestamp(14),
-  mode set('o','v','u'),
-  reason varchar(100),
-  ident varchar(30),
-  host_mask varchar(60),
-  last_spoke timestamp(14),
+  cu_id int(255) NOT NULL auto_increment,
+  chan_name varchar(20) NOT NULL default '',
+  nick varchar(10) NOT NULL default '',
+  date timestamp(14) NOT NULL,
+  mode set('o','v','u') default NULL,
+  reason varchar(100) default NULL,
+  ident varchar(30) default NULL,
+  host_mask varchar(60) default NULL,
+  last_spoke timestamp(14) NOT NULL,
   PRIMARY KEY (cu_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'chan_users'
@@ -74,20 +68,21 @@ CREATE TABLE chan_users (
 #
 # Table structure for table 'channels'
 #
+
 CREATE TABLE channels (
-  channels_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  chan_name varchar(50) DEFAULT '' NOT NULL,
-  topic varchar(100) DEFAULT '' NOT NULL,
-  topic_set_by varchar(20) DEFAULT '' NOT NULL,
-  topic_set_date int(20) DEFAULT '0' NOT NULL,
-  active set('Y','N') DEFAULT 'Y' NOT NULL,
-  last_in int(20),
-  in_chan set('Y','N') DEFAULT 'N' NOT NULL,
-  auto_voice set('Y','N') DEFAULT 'Y' NOT NULL,
-  on_join set('Y','N') DEFAULT 'N' NOT NULL,
-  on_part set('Y','N') DEFAULT 'N' NOT NULL,
+  channels_id int(255) NOT NULL auto_increment,
+  chan_name varchar(50) NOT NULL default '',
+  topic varchar(100) NOT NULL default '',
+  topic_set_by varchar(20) NOT NULL default '',
+  topic_set_date int(20) NOT NULL default '0',
+  active set('Y','N') NOT NULL default 'Y',
+  last_in int(20) default NULL,
+  in_chan set('Y','N') NOT NULL default 'N',
+  auto_voice set('Y','N') NOT NULL default 'Y',
+  on_join set('Y','N') NOT NULL default 'N',
+  on_part set('Y','N') NOT NULL default 'N',
   PRIMARY KEY (channels_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'channels'
@@ -97,12 +92,16 @@ CREATE TABLE channels (
 #
 # Table structure for table 'dcc_connections'
 #
+
 CREATE TABLE dcc_connections (
-  id int(11) DEFAULT '0' NOT NULL auto_increment,
+  id int(11) NOT NULL auto_increment,
   nick text NOT NULL,
-  time int(11) DEFAULT '0' NOT NULL,
+  time int(11) NOT NULL default '0',
+  login varchar(50) default NULL,
+  password set('Y','N') NOT NULL default 'N',
+  hostmask varchar(255) default NULL,
   PRIMARY KEY (id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'dcc_connections'
@@ -112,12 +111,13 @@ CREATE TABLE dcc_connections (
 #
 # Table structure for table 'join_msg'
 #
+
 CREATE TABLE join_msg (
-  join_msg_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  chan_name varchar(50) DEFAULT '' NOT NULL,
-  msg varchar(255) DEFAULT '' NOT NULL,
+  join_msg_id int(255) NOT NULL auto_increment,
+  chan_name varchar(50) NOT NULL default '',
+  msg varchar(255) NOT NULL default '',
   PRIMARY KEY (join_msg_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'join_msg'
@@ -127,14 +127,15 @@ CREATE TABLE join_msg (
 #
 # Table structure for table 'manual'
 #
+
 CREATE TABLE manual (
-  m_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  search varchar(255) DEFAULT '' NOT NULL,
+  m_id int(255) NOT NULL auto_increment,
+  search varchar(255) NOT NULL default '',
   help text NOT NULL,
-  example varchar(255),
-  url varchar(255),
+  example varchar(255) default NULL,
+  url varchar(255) default NULL,
   PRIMARY KEY (m_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'manual'
@@ -481,14 +482,15 @@ INSERT INTO manual VALUES (337,'replace','A utility program that is used by msql
 #
 # Table structure for table 'mode_data'
 #
+
 CREATE TABLE mode_data (
-  mode_data_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  chan_name varchar(100) DEFAULT '' NOT NULL,
-  action varchar(100) DEFAULT '' NOT NULL,
-  date_inserted timestamp(14),
-  added_by varchar(100),
+  mode_data_id int(255) NOT NULL auto_increment,
+  chan_name varchar(100) NOT NULL default '',
+  action varchar(100) NOT NULL default '',
+  date_inserted timestamp(14) NOT NULL,
+  added_by varchar(100) default NULL,
   PRIMARY KEY (mode_data_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'mode_data'
@@ -498,11 +500,12 @@ CREATE TABLE mode_data (
 #
 # Table structure for table 'module_binds'
 #
+
 CREATE TABLE module_binds (
-  module_binds_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  bind varchar(255) DEFAULT '' NOT NULL,
+  module_binds_id int(255) NOT NULL auto_increment,
+  bind varchar(255) NOT NULL default '',
   PRIMARY KEY (module_binds_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'module_binds'
@@ -525,18 +528,20 @@ INSERT INTO module_binds VALUES (14,'!_COMMAND');
 INSERT INTO module_binds VALUES (15,'?_COMMAND');
 INSERT INTO module_binds VALUES (16,'SHOW');
 INSERT INTO module_binds VALUES (17,'ONKICK');
+INSERT INTO module_binds VALUES (18,'DCC');
 
 #
 # Table structure for table 'modules'
 #
+
 CREATE TABLE modules (
-  modules_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  module_binds_id int(255) DEFAULT '0' NOT NULL,
-  module_name varchar(255) DEFAULT '' NOT NULL,
-  module_desc varchar(255) DEFAULT '' NOT NULL,
-  module_file_name varchar(255) DEFAULT '' NOT NULL,
+  modules_id int(255) NOT NULL auto_increment,
+  module_binds_id int(255) NOT NULL default '0',
+  module_name varchar(255) NOT NULL default '',
+  module_desc varchar(255) NOT NULL default '',
+  module_file_name varchar(255) NOT NULL default '',
   PRIMARY KEY (modules_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'modules'
@@ -554,7 +559,7 @@ INSERT INTO modules VALUES (12,12,'server_msgs','mode part quit and some others'
 INSERT INTO modules VALUES (13,13,'server_msgs','mode part quit and some others','modules/server_msgs.mdl');
 INSERT INTO modules VALUES (14,15,'help module','?php ?mysql and ?perl','modules/help.mdl');
 INSERT INTO modules VALUES (15,9,'auto voice','auto voices people with v and f global or chan level in chans they join if the chan is set to auto voice','modules/auto_voice.mdl');
-INSERT INTO modules VALUES (16,5,'dot functions','all the functions that start with a .','modules/dot_functions.mdl');
+INSERT INTO modules VALUES (16,18,'dot functions','all the functions that start with a .','modules/dot_functions.mdl');
 INSERT INTO modules VALUES (17,14,'chanel_commands','all the channel commands that start with a !','modules/channel_commands.mdl');
 INSERT INTO modules VALUES (18,9,'tclbot_onjoinop','ops bots set with bo global only matches nick against user and hostmask to be sure.','modules/tclbotautoop.mdl');
 INSERT INTO modules VALUES (19,16,'help show commands','converts all the show php show mysql and show perl to to user sending show command','modules/helpshow.mdl');
@@ -565,12 +570,13 @@ INSERT INTO modules VALUES (22,5,'messages to the bot','goes with all the msgs i
 #
 # Table structure for table 'part_msg'
 #
+
 CREATE TABLE part_msg (
-  part_msg_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  chan_name varchar(50) DEFAULT '' NOT NULL,
-  msg varchar(255) DEFAULT '' NOT NULL,
+  part_msg_id int(255) NOT NULL auto_increment,
+  chan_name varchar(50) NOT NULL default '',
+  msg varchar(255) NOT NULL default '',
   PRIMARY KEY (part_msg_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'part_msg'
@@ -580,13 +586,14 @@ CREATE TABLE part_msg (
 #
 # Table structure for table 'perl_manual'
 #
+
 CREATE TABLE perl_manual (
-  ID int(11) DEFAULT '0' NOT NULL auto_increment,
-  command varchar(255) DEFAULT '' NOT NULL,
-  dscr varchar(255) DEFAULT '' NOT NULL,
-  ex varchar(255),
+  ID int(11) NOT NULL auto_increment,
+  command varchar(255) NOT NULL default '',
+  dscr varchar(255) NOT NULL default '',
+  ex varchar(255) default NULL,
   PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'perl_manual'
@@ -1474,13 +1481,14 @@ INSERT INTO perl_manual VALUES (878,'zope','Zope is the leading Open Source web 
 #
 # Table structure for table 'php_manual'
 #
+
 CREATE TABLE php_manual (
-  m_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  command varchar(255) DEFAULT '' NOT NULL,
-  dscr varchar(255) DEFAULT '' NOT NULL,
-  ex varchar(255) DEFAULT '' NOT NULL,
+  m_id int(255) NOT NULL auto_increment,
+  command varchar(255) NOT NULL default '',
+  dscr varchar(255) NOT NULL default '',
+  ex varchar(255) NOT NULL default '',
   PRIMARY KEY (m_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'php_manual'
@@ -3309,13 +3317,40 @@ INSERT INTO php_manual VALUES (1820,'class classname extends PEAR { ... }',' PEA
 INSERT INTO php_manual VALUES (1821,'Methods',' PEAR error mechanism base class','   PEAR_Error constructor. Parameters:');
 
 #
+# Table structure for table 'server_error'
+#
+
+CREATE TABLE server_error (
+  server_error_id int(255) NOT NULL auto_increment,
+  time int(12) NOT NULL default '0',
+  error varchar(255) NOT NULL default '',
+  PRIMARY KEY (server_error_id)
+) TYPE=MyISAM;
+
+#
+# Dumping data for table 'server_error'
+#
+
+INSERT INTO server_error VALUES (1,987288277,'ERROR :Closing Link: php_bot by Flanders.Be.Eu.Undernet.org (Ping timeout)\r\n');
+INSERT INTO server_error VALUES (2,987288281,'ERROR :Closing Link: php_bot by Amsterdam.NL.EU.undernet.org (Too many connections from your host)\r\n');
+INSERT INTO server_error VALUES (3,987288290,'ERROR :Closing Link: php_bot by Diemen.NL.EU.Undernet.org (Too many connections from your host)\r\n');
+INSERT INTO server_error VALUES (4,987288296,'ERROR :Closing Link: php_bot by Diemen.NL.EU.Undernet.org (Too many connections from your host)\r\n');
+INSERT INTO server_error VALUES (5,987288305,'ERROR :Closing Link: php_bot by Haarlem.NL.EU.UnderNet.Org (Too many connections from your host)\r\n');
+INSERT INTO server_error VALUES (6,987288497,'ERROR :Closing Link: php_bot by Oslo.no.eu.undernet.org (Ping timeout)\r\n');
+INSERT INTO server_error VALUES (7,987288499,'ERROR :Closing Link: php_bot2 by Diemen.NL.EU.Undernet.org (Too many connections from your host)\r\n');
+INSERT INTO server_error VALUES (8,987288504,'ERROR :Closing Link: php_bot by Haarlem.NL.EU.UnderNet.Org (Too many connections from your host)\r\n');
+INSERT INTO server_error VALUES (9,987288518,'ERROR :Closing Link: php_bot by Haarlem.NL.EU.UnderNet.Org (Too many connections from your host)\r\n');
+INSERT INTO server_error VALUES (10,987288587,'ERROR :Closing Link: php_bot by graz2.at.Eu.UnderNet.org (Too many connections from your host)\r\n');
+
+#
 # Table structure for table 'server_groups'
 #
+
 CREATE TABLE server_groups (
-  server_groups_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  server_group varchar(255) DEFAULT '' NOT NULL,
+  server_groups_id int(255) NOT NULL auto_increment,
+  server_group varchar(255) NOT NULL default '',
   PRIMARY KEY (server_groups_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'server_groups'
@@ -3541,13 +3576,14 @@ INSERT INTO server_groups VALUES (216,'');
 #
 # Table structure for table 'servers'
 #
+
 CREATE TABLE servers (
-  servers_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  server_group_id int(255) DEFAULT '0' NOT NULL,
-  server_name varchar(255) DEFAULT '' NOT NULL,
-  port int(10) DEFAULT '0' NOT NULL,
+  servers_id int(255) NOT NULL auto_increment,
+  server_group_id int(255) NOT NULL default '0',
+  server_name varchar(255) NOT NULL default '',
+  port int(10) NOT NULL default '0',
   PRIMARY KEY (servers_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'servers'
@@ -5749,99 +5785,113 @@ INSERT INTO servers VALUES (2192,215,'irc.zurna.net',6667);
 #
 # Table structure for table 'user'
 #
+
 CREATE TABLE user (
-  user varchar(20) DEFAULT '' NOT NULL,
-  pass varchar(50),
-  v set('Y','N') DEFAULT 'N' NOT NULL,
-  o set('Y','N') DEFAULT 'N' NOT NULL,
-  m set('Y','N') DEFAULT 'N' NOT NULL,
-  n set('Y','N') DEFAULT 'N' NOT NULL,
-  f set('Y','N') DEFAULT 'N' NOT NULL,
-  p set('Y','N') DEFAULT 'N' NOT NULL,
-  b set('Y','N') DEFAULT 'N' NOT NULL,
-  h set('Y','N') DEFAULT 'N' NOT NULL,
-  j set('Y','N') DEFAULT 'N' NOT NULL,
-  t set('Y','N') DEFAULT 'N' NOT NULL,
-  x set('Y','N') DEFAULT 'N' NOT NULL,
-  created varchar(15) DEFAULT '' NOT NULL,
-  last_on varchar(15),
-  last_chan varchar(200),
-  password varchar(100),
-  mysql_password varchar(50)
-);
+  user varchar(20) NOT NULL default '',
+  pass varchar(50) default NULL,
+  v set('Y','N') NOT NULL default 'N',
+  o set('Y','N') NOT NULL default 'N',
+  m set('Y','N') NOT NULL default 'N',
+  n set('Y','N') NOT NULL default 'N',
+  f set('Y','N') NOT NULL default 'N',
+  p set('Y','N') NOT NULL default 'N',
+  b set('Y','N') NOT NULL default 'N',
+  h set('Y','N') NOT NULL default 'N',
+  j set('Y','N') NOT NULL default 'N',
+  t set('Y','N') NOT NULL default 'N',
+  x set('Y','N') NOT NULL default 'N',
+  created varchar(15) NOT NULL default '',
+  last_on varchar(15) default NULL,
+  last_chan varchar(200) default NULL,
+  password varchar(100) default NULL,
+  mysql_password varchar(50) default NULL
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'user'
 #
 
-INSERT INTO user VALUES ('_GrYpHoN_',NULL,'Y','Y','Y','Y','Y','N','N','N','N','N','N','987184316','987184316',NULL,NULL,NULL);
+INSERT INTO user VALUES ('kill-9_',NULL,'Y','Y','Y','Y','Y','Y','N','N','N','N','N','986974683','986974683',NULL,'+LE6zz1sGgqc1','482723b825edcd43');
+INSERT INTO user VALUES ('nic',NULL,'Y','N','N','N','N','N','N','N','N','N','N','987090945',NULL,NULL,'+SjuqK.wkWzt0','2c13cf93516fe0d8');
 
 #
 # Table structure for table 'user_bot'
 #
+
 CREATE TABLE user_bot (
-  b_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  user varchar(20) DEFAULT '' NOT NULL,
-  botaddr varchar(100) DEFAULT '' NOT NULL,
-  telnet varchar(10) DEFAULT '' NOT NULL,
-  port2 varchar(10) DEFAULT '' NOT NULL,
-  h set('Y','N') DEFAULT 'N' NOT NULL,
+  b_id int(255) NOT NULL auto_increment,
+  user varchar(20) NOT NULL default '',
+  botaddr varchar(100) NOT NULL default '',
+  telnet varchar(10) NOT NULL default '',
+  port2 varchar(10) NOT NULL default '',
+  h set('Y','N') NOT NULL default 'N',
   PRIMARY KEY (b_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'user_bot'
 #
 
+INSERT INTO user_bot VALUES (1,'neiano','','','','Y');
+INSERT INTO user_bot VALUES (2,'mysql','212.242.74.5','9969','9969','Y');
 
 #
 # Table structure for table 'user_chan'
 #
+
 CREATE TABLE user_chan (
-  uc_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  chan varchar(100) DEFAULT '' NOT NULL,
-  v set('Y','N') DEFAULT 'N' NOT NULL,
-  o set('Y','N') DEFAULT 'N' NOT NULL,
-  f set('Y','N') DEFAULT 'N' NOT NULL,
-  p set('Y','N') DEFAULT 'N' NOT NULL,
-  user varchar(20) DEFAULT '' NOT NULL,
-  m set('Y','N') DEFAULT 'N' NOT NULL,
+  uc_id int(255) NOT NULL auto_increment,
+  chan varchar(100) NOT NULL default '',
+  v set('Y','N') NOT NULL default 'N',
+  o set('Y','N') NOT NULL default 'N',
+  f set('Y','N') NOT NULL default 'N',
+  p set('Y','N') NOT NULL default 'N',
+  user varchar(20) NOT NULL default '',
+  m set('Y','N') NOT NULL default 'N',
   PRIMARY KEY (uc_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'user_chan'
 #
 
+INSERT INTO user_chan VALUES (1,'#php_egg','Y','Y','Y','N','nic','N');
 
 #
 # Table structure for table 'user_host'
 #
+
 CREATE TABLE user_host (
-  host_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  user varchar(20) DEFAULT '' NOT NULL,
-  mask varchar(255) DEFAULT '' NOT NULL,
+  host_id int(255) NOT NULL auto_increment,
+  user varchar(20) NOT NULL default '',
+  mask varchar(255) NOT NULL default '',
   PRIMARY KEY (host_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'user_host'
 #
 
-INSERT INTO user_host VALUES (1,'_GrYpHoN_','*!*@*');
+INSERT INTO user_host VALUES (1,'kill-9_','*!*oracle7@*.mercurmedia.com');
+INSERT INTO user_host VALUES (2,'kill-9_','*!*oracle7@zirtech.dk');
+INSERT INTO user_host VALUES (3,'nic','*!*nic@undiluted.org');
+INSERT INTO user_host VALUES (4,'kill-9_','*!*oracle7@*.zirtech.dk');
+INSERT INTO user_host VALUES (5,'kill-9_','*!*oracle7@localhost');
 
 #
 # Table structure for table 'web_login'
 #
+
 CREATE TABLE web_login (
-  web_login_id int(255) DEFAULT '0' NOT NULL auto_increment,
-  user varchar(50) DEFAULT '' NOT NULL,
-  login_time int(20) DEFAULT '0' NOT NULL,
+  web_login_id int(255) NOT NULL auto_increment,
+  user varchar(50) NOT NULL default '',
+  login_time int(20) NOT NULL default '0',
   PRIMARY KEY (web_login_id)
-);
+) TYPE=MyISAM;
 
 #
 # Dumping data for table 'web_login'
 #
 
+INSERT INTO web_login VALUES (17,'kill-9_',987367829);
 

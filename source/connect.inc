@@ -179,15 +179,36 @@ function irc_idle($irc_connect)
 	 	// running dcc modules now
 		if ($input_buffer!="") 
 			{  
-		    echo $input_buffer."\n";
-		    $message=$input_buffer;
-		    if ($myrow["login"] && $myrow["pass"]=="Y")
+		    echo "'".$input_buffer."'\n";
+		    $message=trim($input_buffer);
+		    if ($myrow["login"] && ($myrow["password"]=="Y"))
 		   		{
-		        for($i=0;$i<count($dcc_mdl);$i++) 
-		        	{
-		   			echo "evaling dcc module \n";
-	    				eval($dcc_mdl[$i]);
+		   		if (substr($message,0,1)==".")
+		   			{
+		      	  for($i=0;$i<count($dcc_mdl);$i++) 
+		       		 	{
+		   				echo "evaling dcc module \n";
+	    					eval($dcc_mdl[$i]);
+	   					}
 	   				}
+	   			else
+	   				{
+	   				// if it doesnt start with a . its not a command and goes out on the botnet.
+	   				
+	   				$said=trim($message);
+	   				$id=$myrow["id"];
+	   				$login=$myrow["login"];
+	   				$front="[".$login."@".$my_nick."]";
+	   				echo "$front $said \n";
+	   				$sql="select * from dcc_connections";
+	   				$result_partyline=@mysql_query($sql,$db);
+	   				while($partyline=@mysql_fetch_array($result_partyline))
+	   					{
+	   					$partyline_id=$partyline["id"];
+	   					fputs ($dcc_connections[$partyline_id],"$front $said\n" );
+	   					}
+	   				
+	   				}	
 	   		
 	   			}
 	    		else if (!$myrow["login"])
@@ -215,9 +236,9 @@ function irc_idle($irc_connect)
                  				fputs($dcc_connections[$myrow[id]],"$buffer[$a] \n");
                  				}
 	   				
-	   				fputs($dcc_connections[$myrow[id]],"Hey $login !  My name is $my_nick and I am running PHP-Egg version 1.3b \n");
+	   				fputs($dcc_connections[$myrow[id]],"Hey $login !  My name is $my_nick and I am running PHP-Egg  by Linda Pedersen (www.kill-9.dk/php_egg/) version 1.3b\n");
 					$time=date("H:m",time());
-					fputs($dcc_connections[$myrow[id]],"Local time is now 20:04\n");
+					fputs($dcc_connections[$myrow[id]],"Local time is now $time\n");
 					
 					fputs($dcc_connections[$myrow[id]],"try .help to get help\n");
    					fputs($dcc_connections[$myrow[id]],"	 .help all to get the full command list\n");
