@@ -138,52 +138,111 @@ function irc_connect() {
     irc_connect();
 }
 
-function irc_idle($irc_connect) {
-    global $my_irc_server, $my_nick,$db ,$irc_nick,$dcc_connections,$debug;
+function irc_idle($irc_connect) 
+	{
+	global $my_irc_server, $my_nick,$db ,$irc_nick,$dcc_connections,$debug,$dcc_mdl;
 
-    set_socket_blocking($irc_connect,false);
-    $read_something=1;
-    while ($irc_connect) {
-	if ($read_something==0) {
-	    // nothing to do right now, sleep
-	    sleep(2);
-	}
+ 	set_socket_blocking($irc_connect,false);
+  	$read_something=1;
+    while ($irc_connect) 
+    	{
+	if ($read_something==0) 
+		{
+	 	// nothing to do right now, sleep
+	 	sleep(2);
+		}
 	$read_something=0;	
 
 	// handles dcc connections
 	$sql="select * from dcc_connections";
 	$result=mysql_query($sql,$db);
-	while ($myrow=mysql_fetch_array($result)) {
+	
+	while ($myrow=mysql_fetch_array($result)) 
+		{
 	    $sock_info=socket_get_status($dcc_connections[$myrow[id]]);
 	
-	    if ($sock_info[eof]) {
+	    if ($sock_info[eof]) 
+	    	{
 		// close and delete the dcc
-		if ($debug==1) {
+		if ($debug==1) 
+			{
 		    print("dcc with $myrow[nick] closed...\n");
-		}
+			}
 		$sql="delete from dcc_connections where id=\"".$myrow[id]."\"";
 		mysql_query($sql,$db);
-	    } else {
+	    	} 
+	    else 
+	    	{
 		set_socket_blocking($dcc_connections[$myrow[id]],false);
 	        unset($input_buffer);
 	        $input_buffer = fgets($dcc_connections[$myrow[id]], 1024);
-	        if ($input_buffer!="") {
-		    print("$myrow[nick] via dcc: $input_buffer");
-		    if (trim($input_buffer)=="help") {
-			fputs($dcc_connections[$myrow[id]],"help:\nquit to close the dcc\ninfo for some info\n");
-		    }
-		    if (trim($input_buffer)=="info") {
-			fputs($dcc_connections[$myrow[id]],"pid: ".getmypid()." uid: ".getmyuid()."\n");
-		    }
-		    if (trim($input_buffer)=="quit") {
-			fputs($dcc_connections[$myrow[id]],"cya..\n");
-			fclose($dcc_connections[$myrow[id]]);
-			$sql="delete from dcc_connections where id=\"".$myrow[id]."\"";
-			mysql_query($sql,$db);
-		    }
-		    $read_something=1;
-		}
-	    }	    
+	 	// running dcc modules now
+		if ($input_buffer!="") 
+			{  
+		    echo $input_buffer."\n";
+		    $message=$input_buffer;
+		    if ($myrow["login"] && $myrow["pass"]=="Y")
+		   		{
+		        for($i=0;$i<count($dcc_mdl);$i++) 
+		        	{
+		   			echo "evaling dcc module \n";
+	    				eval($dcc_mdl[$i]);
+	   				}
+	   		
+	   			}
+	    		else if (!$myrow["login"])
+	 			{
+	   			$login=trim($input_buffer);
+	   			$sql="update dcc_connections set login='$login' , password='N' where id=".$myrow['id']." ";
+	   			
+	   			$result_up=@mysql_query($sql,$db);
+	   			
+	   			fputs ($dcc_connections[$myrow[id]],"Please enter your password. \n" );
+	   			}			
+	   		else if ($myrow["login"] && ($myrow["password"]=="N"))
+	   			{
+	   			$pass=trim($input_buffer);
+	   			$access=check_mysql_login($myrow["hostmask"],$pass) ;
+	   			
+	   			if ($access)
+	   				{
+	   				$sql="update dcc_connections set login='$login' , password='Y' where id=".$myrow['id']." ";
+	   				$result_up=@mysql_query($sql,$db);
+	   				$ascii = fread(fopen("modules/ascii.mdl", "r"), filesize("modules/ascii.mdl")); 
+               				$buffer=explode("\n",$ascii);
+               				for ($a=0;$a<count($buffer);$a++)
+                				{
+                 				fputs($dcc_connections[$myrow[id]],"$buffer[$a] \n");
+                 				}
+	   				
+	   				fputs($dcc_connections[$myrow[id]],"Hey $login !  My name is $my_nick and I am running PHP-Egg version 1.3b \n");
+					$time=date("H:m",time());
+					fputs($dcc_connections[$myrow[id]],"Local time is now 20:04\n");
+					
+					fputs($dcc_connections[$myrow[id]],"try .help to get help\n");
+   					fputs($dcc_connections[$myrow[id]],"	 .help all to get the full command list\n");
+    					fputs($dcc_connections[$myrow[id]],".help *somestring* to get the matching help texts\n");
+
+					fputs($dcc_connections[$myrow[id]],"Have fun.\n");
+
+					fputs($dcc_connections[$myrow[id]],"Commands start with '.' (like '.quit' or '.help')\n");
+					fputs($dcc_connections[$myrow[id]],"Everything else goes out to the party line.\n");
+	   				
+	   				
+	   				
+	   				}
+	   		else
+	   				{
+	   				fputs($dcc_connections[$myrow[id]],"Bad login or password closing connection \n");
+	   				fclose($dcc_connections[$myrow[id]]);
+	   				
+	   				$sql="delete from dcc_connections where id=".$myrow['id']." ";
+	   				$result_del=@mysql_query($sql,$db);
+	   				}
+	   			}		
+	   		  $read_something=1;	
+	   	}
+	     }	    
 	}
 			
 	// handles the irc connection
@@ -362,7 +421,7 @@ function check_msg($irc_connect,$input_buffer) {
 		    $sender_ident=$sender_info[1];
 		    $sender_host=$sender_info[2];
 	    	    $now=time();
-	    	    $sql="insert into user (user,n,m,o,v,f,created,last_on) values ('$sender_nick','Y','Y','Y','Y','Y','$now','$now')";
+	    	    $sql="insert into user (user,n,m,o,v,f,p,created,last_on) values ('$sender_nick','Y','Y','Y','Y','Y','p','$now','$now')";
 	    	    $result_user=@mysql_query($sql,$db);
 	    	    if ($result_user) {
 	    		$mask=make_ban($sender_ident,$sender_host);

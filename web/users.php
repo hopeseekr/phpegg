@@ -63,6 +63,7 @@ $m    ="global_m";
 $n  ="global_n";
 $f    ="global_f";
 $p  ="global_p";
+echo $$p;
 $b   ="global_b";
 $h  ="global_h";
 $j="global_j";
@@ -134,7 +135,7 @@ if ($$b)
 		$pass_change_sql="update user set password='$change_pass', mysql_pass='$change_pass' where user='$user'";
 		$result=@mysql_query($pass_change_sql,$db);
 		echo "$pass_change_sql <br>";
-	
+		}
 	}
 else
 	{
@@ -159,7 +160,7 @@ if ($$p)
 		
 		
 		
-		}
+		
 	
 	}
 else

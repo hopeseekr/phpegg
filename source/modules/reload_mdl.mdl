@@ -1,3 +1,14 @@
+$sql="select module_file_name from module_binds mb, modules m where bind='DCC' and mb.module_binds_id=m.module_binds_id";
+$result=@mysql_query($sql,$db);
+unset($dcc_mdl);
+while($myrow=@mysql_fetch_array($result)) {
+    $dcc_mdl[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
+}
+$GLOBALS["dcc_mdl"]=$dcc_mdl;	
+if ($debug==1) {	
+    echo "num of dcc modules loaded ".count($GLOBALS["dcc_mdl"])."\n";
+}
+
 
 $sql="select module_file_name from module_binds mb, modules m where bind='ONKICK' and mb.module_binds_id=m.module_binds_id";
 $result=@mysql_query($sql,$db);

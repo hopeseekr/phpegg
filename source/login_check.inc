@@ -313,6 +313,48 @@ function voice_check($chan,$who)
 	
 	
 	
-	}	
+	}
+function dcc_check($host)
+	{
+	
+	global $db;
+	
+	$sql="select user.user from user , user_host uh where user.user=uh.user and user.p='Y' and '$host' like replace(replace(mask,'*','%'),'!','')";
+	
+	$result=@mysql_query($sql,$db);
+	if (mysql_num_rows($result)!=0)
+		{
+		// global party line access.
+		$myrow=@mysql_fetch_array($result);
+		$user=$myrow["user"];
+		return $user;
+		}
+	else
+		{
+		$sql="select user.user from chan_user cu , user_host uh where cu.user=uh.user and cu.p='Y' and '$host' like replace(replace(mask,'*','%'),'!','')";
+		$result=@mysql_query($sql,$db);
+	if (mysql_num_rows($result)!=0)
+		{
+		
+		$myrow=@mysql_fetch_array($result);
+		$user=$myrow["user"];
+		return $user;
+		
+		}
+	else
+		{
+		
+		return 0;
+		}
+		}
+	
+	
+	
+	
+	
+	
+	
+	
+	}		
 
 ?>

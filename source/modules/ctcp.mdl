@@ -13,6 +13,9 @@ if (substr(trim($message),1,4)=="PING") {
     fputs($irc_connect,"NOTICE $sender_nick :$message");
 } else if (substr(trim($message),1,13)=="DCC CHAT chat") {
     // dcc module
+    $host=$sender_ident."@".$sender_host;
+    $check=dcc_check($host);
+    if ($check) {
     $message=str_replace(chr(1),"",$message);
     $foo=explode(" ",$message);
     if ($foo[4]>0 && $foo[4]<2^16) {
@@ -21,7 +24,7 @@ if (substr(trim($message),1,4)=="PING") {
 	if (eregi("^([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})$",$remote_ip)) {
 	    // ip and port ok
 	    $time=time();
-	    $sql="insert into dcc_connections(nick,time) values (\"$sender_nick\",\"$time\")";
+	    $sql="insert into dcc_connections(nick,time,hostmask) values (\"$sender_nick\",\"$time\",'$host')";
 	    mysql_query($sql,$db);	    
 	    $sql="select id from dcc_connections where nick=\"$sender_nick\" and time=\"$time\"";
 	    $result=mysql_query($sql,$db);	    
@@ -43,12 +46,16 @@ if (substr(trim($message),1,4)=="PING") {
 	         if ($debug==1) {
 	             print("dcc connection with $sender_nick estabilshed\n");
                  }
-		 fputs ($dcc_connections[$dcc_id], "Hi, write help for help\n");
+                 
+                fputs ($dcc_connections[$dcc_id], "$my_nick (PHP-Egg v1.3b  www.kill-9.dk/php_egg/ \n" );
+                fputs ($dcc_connections[$dcc_id], "Please enter your nickname. \n" );
+                	 
              }
 	}
     }
+   }
 } else if (substr(trim($message),1,7)=="VERSION") {
-    $ctcp_version_quote=irc_ctcp_quote("VERSION php egg beta 1.2");
+    $ctcp_version_quote=irc_ctcp_quote("VERSION php egg beta 1.3b");
     fputs($irc_connect,"NOTICE $sender_nick :$ctcp_version_quote \n");
 } else if (substr(trim($message),1,4)=="TIME") {
     $now = date("l m/d/Y H:i:s");

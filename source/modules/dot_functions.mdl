@@ -1,15 +1,21 @@
-
+echo "got a dot function $message \n";
 if (substr($message,0,1)==".") {	
-    $sender_info=clean_nick($who);
-    $sender_nick=$sender_info[0];
-    $sender_ident=$sender_info[1];
-    $sender_host=$sender_info[2];
-
+ 	$message=trim($message); 
     $message_array=explode(" ",$message);
-	
+		
     $message_array[0]=strtoupper($message_array[0]);
-    
+ 
     switch ($message_array[0]) {
+    	case ".QUIT":
+    		fputs($dcc_connections[$myrow[id]],"cya..\n");
+		fclose($dcc_connections[$myrow[id]]);
+		$sql="delete from dcc_connections where id=\"".$myrow[id]."\"";
+		mysql_query($sql,$db);
+    	
+    		break;
+    	case ".INFO":
+    		fputs($dcc_connections[$myrow[id]],"pid: ".getmypid()." uid: ".getmyuid()."\n");
+    		break;	
 	case ".VOICE":
 	    // /msg bot .voice <chan> <nick>
 	    $is_op=op_check($message_array[1],$sender_nick);
@@ -21,11 +27,12 @@ if (substr($message,0,1)==".") {
 		} else {		
 		    $message_array[2]=str_replace("","",$message_array[2]);
 		    $message_array[2]=str_replace("\n","",$message_array[2]);
-		    fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] \n");
+		    fputs($dcc_connections[$myrow[id]], "$message_array[2] is not in $message_array[1] \n");
 		}	
 	    }
 	break;
 	case ".OP":
+	
 	    $is_op=op_check($message_array[1],$sender_nick);
 	    if ($is_op) {
 		$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null";
@@ -35,7 +42,7 @@ if (substr($message,0,1)==".") {
 		} else {
 		    $message_array[2]=str_replace("","",$message_array[2]);
 		    $message_array[2]=str_replace("\n","",$message_array[2]);
-		    fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] \n");
+		    fputs($dcc_connections[$myrow[id]], "$message_array[2] is not in $message_array[1] \n");
 		}	
 	    }
 	break;	
@@ -50,7 +57,7 @@ if (substr($message,0,1)==".") {
 		} else {		
 		    $message_array[2]=str_replace("","",$message_array[2]);
 		    $message_array[2]=str_replace("\n","",$message_array[2]);
-		    fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] or is not curently voiced\n");
+		    fputs($dcc_connections[$myrow[id]], "$message_array[2] is not in $message_array[1] or is not curently voiced\n");
 		}	
 	    }
 	break;	
@@ -65,7 +72,7 @@ if (substr($message,0,1)==".") {
 		} else {
 		    $message_array[2]=str_replace("","",$message_array[2]);
 		    $message_array[2]=str_replace("\n","",$message_array[2]);
-		    fputs($irc_connect, "PRIVMSG $sender_nick :$message_array[2] is not in $message_array[1] or is not curently oped\n");
+		    fputs($dcc_connections[$myrow[id]], "$message_array[2] is not in $message_array[1] or is not curently oped\n");
 		}	
 	    }
 	break;		

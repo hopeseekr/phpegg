@@ -100,7 +100,7 @@ echo " bind <br>
 
 
 
-	echo "<tr><td><input type=hidden name=login_id values=$login_id><input type=submit name=new value=create>
+	echo "<tr><td><input type=hidden name=login_id value=$login_id><input type=submit name=new value=create>
 	<input type=reset name=reset value=reset></td></tr>";
 	
 	

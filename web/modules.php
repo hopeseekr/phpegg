@@ -31,7 +31,6 @@ if ($update=="update")
 
 	
 			
-			
 	$sql="update modules set module_binds_id =  $module_binds_id,module_name = '$module_name',module_desc = '$module_desc',module_file_name = '$module_file_name'  where modules_id = $modules_id ";
 		
 	
@@ -170,7 +169,7 @@ $select_module_binds_id="select * from module_binds";
 
 					}
 
-				echo "<option value=module_binds_id $checked > $temp</option>   ";
+				echo "<option value=$new_module_binds_id $checked > $temp</option>   ";
 
 				}
 			echo "</select>";
