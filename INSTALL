@@ -1,0 +1,183 @@
+Install
+
+
+Untar the file.
+
+Once you have untared the file change directories to php_eggbeta
+
+you will find an php_egg.sql in the root of this directory you will need to upload it to mysql.
+
+example
+
+mysql -u <yourusername> -p <yourdatabasename> < php_egg.sql
+
+
+you will be prompted for a password. If it comes back with no errors you know it worked there is no conferm msg that the database was uploaded
+
+
+Now for the files.
+
+in there you will see you have two directores.
+source -  This is the coded for PHP-Egg its self.
+web - This is all the webpages used to adminadstrate PHP-Egg.
+
+
+go into the source dir. open php_egg.php
+
+magic_word - is what you will msg the bot the first time this is how the bot knows that you are its owner.
+
+
+You will need to give some information on the database.  
+hostname-  most of the time this is localhost
+database_login - your login to the database
+database_pass - your password to the database
+database_name - your database name
+
+
+egg nick.
+
+irc_nick - the nick you want the bot to use when it is on irc.
+irce_alt_nick - an alternate nick for the bot to use in the event that irc_nick is taken
+
+ident 
+
+ident for the bot is the first part of the hostmask.  
+irc_host
+
+this is the host that you will be connecting to irc from you may use your ip.
+
+irc_real_name
+
+this is the name of the bot or just something fun to put for your whois
+
+quit_msg
+
+this is the message the bot will use when it quits from irc
+
+irc server group.
+
+PHP-Egg comes with over 216 difrent server groups with over 387 servers in those groups with 2192 over the difrent ports.
+	a complete list of the curnt servers can be found in the main dir for php_egg server_groups.txt
+	
+	$server_group="Undernet";
+	
+	or
+	
+	$server_group="Efnet";
+	
+	
+the source dir of PHP-Egg may live where ever you wish.  But the Web dir must live in your webdirectory.  go into the web dir and open database.inc.php  you will need to give your database information again.
+
+
+once this is done you are ready to start php_egg
+
+
+go back to the source dir. type
+
+php php_egg.php &
+
+
+if you get a msg that it cant find php. try doing
+
+whereis php
+
+most of the time it is in /usr/local/bin/php
+
+if this is not the case then use your path
+
+
+<path to php> php_egg.php &
+
+if you cant find php any where.  The problem may be that you have php curntly running as a cgi module compiled into apache. you will need to compile a new shell version of php before you can run php_egg
+
+NO PHPEGG CAN NOT RUN THOUGH THE WEBSERVER.
+
+
+once you have php egg started if you put a & at the end you may use cntrl + c and the shell will come back to you. php egg should run quiet we have removed all of the echo debuging messages as we could find in beta test.
+
+now that she is running she will go out and join irc. put her on notice or something so you know when she comes online.
+
+/notice <botname>
+
+
+once she comes on line msg her your magic word
+
+
+/msg <botname> <magicword>
+
+
+the default magic word if you did not change it is HELLO!  note even if you did change it the magic word is case sensitive so HeLlO is difrent from hello.
+
+If she ketchs it she will msg you back
+
+<php_egg> Hello master, What may i do to assist you? 
+<php_egg> Please msg me PASSWORD <a pass> to set your password. 
+
+do as she asks and set a password untill you set the password you cant get into the admin webpages to do anything kewl with her.
+
+<kill-9_> PASSWORD <mypass>
+<php_egg> New password set. 
+
+now go to the web dir (FROM YOUR WEB DIR). 
+
+index.php should load by its self and give you a nice login screen.
+
+your user name is the same as your nick was on irc when you msg'ed the bot and the password is the one you just sent to her.
+
+
+login go into PHP-Egg channels and add a new channel.
+
+the bot should join the channel shortly if she doesnt msg her something and she will pick up the new chan.
+
+
+check www.kill-9.dk often for updates on the documentation for PHP-Egg we will be making documentation for the admin web pages over the next few days.
+
+my only waring is watch out what modules you remove some are required by the system if you dont want the help functions you may remove the help module. this will stop the help from being avalable in your channes.
+
+dont for example remove the die module then you wont be able to stop the bot with out hard killing it.
+
+
+good luck with your php_egg 
+
+bug reports can be made at .
+
+http://sourceforge.net/projects/phpegg/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+
+
+
+
+
+
+
+
+
+

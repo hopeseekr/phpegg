@@ -1,0 +1,37 @@
+
+$msg_exp=explode(" ",$message);
+$msg_exp[1]=strtoupper($msg_exp[1]);
+	switch ($msg_exp[1])
+		{
+		case "SHOW":
+	    					
+		
+	    	$what=strtoupper($msg_exp[3]);
+	    	$who=$command_data[0];
+	    	$sender_info=clean_nick($who);
+		$sender_nick=$sender_info[0];
+		$sender_ident=$sender_info[1];
+		$sender_host=$sender_info[2];	
+						
+		$command_data[0]=$msg_exp[2]."!".$sender_ident."@".$sender_host;
+						
+	    	switch ($what)
+	    			{
+	    			case "PHP":
+	    							
+	    			$message="?php $msg_exp[4] $msg_exp[5]";
+	    			break;	
+	    			case "MYSQL":
+	    							
+	    			$message="?mysql $msg_exp[4] $msg_exp[5]";
+	    			break;
+	    			case "PERL":
+	    							
+	    			$message="?perl $msg_exp[4] $msg_exp[5]";
+	    			break;
+	    					    						
+	    			}
+
+	    	break;
+	 
+	    	}

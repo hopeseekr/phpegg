@@ -1,0 +1,58 @@
+
+global $quit_message;
+$message_data=explode(" ",$message);
+if (count($message_data)==2)
+	{
+$who=$command_data[0];
+$sender_info=clean_nick($who);
+$sender_nick=$sender_info[0];
+$sender_ident=$sender_info[1];
+$sender_host=$sender_info[2];
+	
+if (strtoupper($message_data[0])=="!DIE")
+                          {
+                          
+                    $pass=trim($message_data[1]);
+                          
+                          
+                      
+                    $host_mask=$sender_ident."@".$sender_host;
+                    
+			$login_access=check_mysql_login($host_mask,$pass);
+			
+			if ($login_access)
+				{
+				$access=check_global_access($login_access);	
+				if ($access==1)
+					{	
+				
+					  $sql="update chan_users set reason='bot quit' where reason is null";
+                        		 $result=@mysql_query($sql,$db);
+                        		  fputs($irc_connect, ":$irc_nick QUIT :$quit_message\n\r");
+                          
+                          
+                         		 $sql="update channels set in_chan='N'";
+                         		 $result=@mysql_query($sql,$db);
+                         		 fclose($irc_connect);	
+                         		 mysql_close($db);
+                         		 exit();
+				
+					}
+
+					
+					
+					
+					
+					
+					
+					
+					
+					}	
+                         
+                       
+                          
+                          
+                          
+                          }
+                          
+        }                  

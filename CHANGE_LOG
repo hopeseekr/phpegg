@@ -1,0 +1,24 @@
+change log:
+
+version 1.2 pril 14 th, 2001
+
+add /msg <bot> help
+and all the help functions and difrent functions in it.
+
+HELP       VOICE  PASSWORD 
+OP         STATUS 
+!DIE        MEMORY  !RELOAD 
+
+added functions for all these messages.
+
+fixed a bug with the random server.  If there was only one server the rand function would fail. 
+
+
+
+version 1.1:   April 13 th, 2001
+
+fixes a bug that was introduced in the magic word upgrade.  You couldnt get ops from the bot.
+
+version 1.0:   April 13 th, 2001
+
+first public release.

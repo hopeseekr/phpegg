@@ -1,0 +1,325 @@
+
+$who=$command_data[0];
+	    	$sender_info=clean_nick($who);
+		$sender_nick=$sender_info[0];
+		$sender_ident=$sender_info[1];
+		$sender_host=$sender_info[2];
+$message=trim($message);
+$help_command=explode(" ",$message);
+$msg_sent=$message;
+
+
+$help_command[0]=strtoupper($help_command[0]);
+switch ($help_command[0]) {
+			case "?MYSQL";
+				$msg_sent=str_replace("?mysql","",$msg_sent);
+				$msg_sent=trim($msg_sent);
+				$sql="select search ,help,example, url from manual where upper(search) =  upper('$msg_sent') limit 1";
+				$result=@mysql_query($sql,$db);
+				if (mysql_num_rows($result)==0)
+					{
+					$sql="select search ,help,example,url from manual where upper(search) like upper('%$msg_sent%') limit 1";
+					
+					
+					$result=@mysql_query($sql,$db);
+					if (mysql_num_rows($result)==0)
+						{
+						$help="sorry i cant help you with that.";
+						fputs($irc_connect, "PRIVMSG $sender_nick :$help \n\r");
+						if ($debug==1)
+				{
+						echo "MYSQL HELP: unable to help $sender_nick \n";
+					}
+						}
+					else
+						{
+						
+						
+						$myrow=mysql_fetch_array($result);
+						$search=$myrow["search"];
+						$example=$myrow["example"];
+						$url=$myrow["url"];
+						fputs($irc_connect, "PRIVMSG $sender_nick :$search \n\r");
+						$help=$myrow["help"];
+						fputs($irc_connect, "PRIVMSG $sender_nick :$help \n\r");
+						
+						if ($example)
+							{
+							
+							fputs($irc_connect, "PRIVMSG $sender_nick :$example \n\r");
+							
+							}
+						fputs($irc_connect, "PRIVMSG $sender_nick :$url\n\r");	
+						if ($debug==1)
+				{
+						echo "MYSQL HELP: sent to $sender_nick \n";
+						}
+						}	
+					
+					}
+				else
+						{
+						
+						$myrow=mysql_fetch_array($result);
+						$search=$myrow["search"];
+						$example=$myrow["example"];
+						$url=$myrow["url"];
+						fputs($irc_connect, "PRIVMSG $sender_nick :$search \n\r");
+						$help=$myrow["help"];
+						fputs($irc_connect, "PRIVMSG $sender_nick :$help \n\r");
+						
+						if ($example)
+							{
+							
+							fputs($irc_connect, "PRIVMSG $sender_nick :$example \n\r");
+							
+							}
+						fputs($irc_connect, "PRIVMSG $sender_nick :$url\n\r");	
+						if ($debug==1)
+				{
+						echo "MYSQL HELP: sent to $sender_nick \n";
+						}
+						}	
+				//$help="Help is curently not active ";
+				
+			
+				
+				
+				break;
+			case "?PHP":
+				$msg_sent=str_replace("?php","",$msg_sent);
+				$msg_sent=trim($msg_sent);
+				if ($msg_sent=="")
+					{
+					fputs($irc_connect, "PRIVMSG $sender_nick :proper usage of the help command is ?php <command> \n\r");
+					
+					
+					}
+				else
+					{
+				$sql="select command,dscr,ex from php_manual where upper(command) = upper('$msg_sent')";
+				$result=@mysql_query($sql,$db);
+				if (mysql_num_rows($result)==0)
+					{
+						$sql="select command,dscr,ex from php_manual where upper(command) like upper('$msg_sent%')";
+					
+					
+					$result=@mysql_query($sql,$db);
+					if (mysql_num_rows($result)==0)
+						{
+						$help="sorry i cant help you with that.";
+						fputs($irc_connect, "PRIVMSG $sender_nick :$help \n\r");
+						if ($debug==1)
+				{
+						echo "PHP HELP: unable to help $sender_nick \n";
+						}
+						}
+					else
+						{
+						
+						$myrow=mysql_fetch_array($result);
+						$command=$myrow["command"];
+						$loc="http://www.php.net/manual/en/function.".str_replace("_","-",$command).".php";
+						
+						
+						fputs($irc_connect, "PRIVMSG $sender_nick :$command \n\r");
+						$dscr=trim($myrow["dscr"]);
+						fputs($irc_connect, "PRIVMSG $sender_nick :$dscr \n\r");
+						$ex=trim($myrow["ex"]);
+						fputs($irc_connect, "PRIVMSG $sender_nick :$ex \n\r");
+						fputs($irc_connect, "PRIVMSG $sender_nick :manual location - $loc \n\r");
+								if ($debug==1)
+				{
+							echo "PHP Help: sent to $sender_nick \n";
+							}
+						if (mysql_num_rows($result)>1)
+							{
+							$num=mysql_num_rows($result);
+							
+							unset($command);
+							$count=0;
+							while($myrow=mysql_fetch_array($result))
+								{
+								
+								$command.=", ".$myrow["command"];
+								$count++;
+								if ($count==7)
+									{
+									break;
+									}
+								}
+							fputs($irc_connect, "PRIVMSG $sender_nick :found $num entries first 7 are $command \n\r");
+						
+						
+							}
+						
+						
+						
+						}	
+					
+					}
+				else
+						{
+						$myrow=mysql_fetch_array($result);
+						$command=$myrow["command"];
+						fputs($irc_connect, "PRIVMSG $sender_nick :$command \n\r");
+						$dscr=trim($myrow["dscr"]);
+						fputs($irc_connect, "PRIVMSG $sender_nick :$dscr \n\r");
+						$ex=trim($myrow["ex"]);
+						fputs($irc_connect, "PRIVMSG $sender_nick :$ex \n\r");
+						$loc="http://www.php.net/manual/en/function.".str_replace("_","-",$command).".php";
+						
+							fputs($irc_connect, "PRIVMSG $sender_nick :manual location - $loc \n\r");
+						if ($debug==1)
+				{
+						echo "PHP HELP: sent to $sender_nick \n";
+						}
+						if (mysql_num_rows($result)>1)
+							{
+							$num=mysql_num_rows($result);
+							
+							unset($command);
+							$count=0;
+							while($myrow=mysql_fetch_array($result))
+								{
+								
+								$command.=", ".$myrow["command"];
+								$count++;
+								if ($count==7)
+									{
+									break;
+									}
+								}
+							fputs($irc_connect, "PRIVMSG $sender_nick :found $num entries first 7 are $command \n\r");
+						
+							
+							}
+						
+						
+						
+						}	
+			
+				
+			}
+				
+				
+				break;	
+			case "?PERL":
+				$msg_sent=str_replace("?perl","",$msg_sent);
+				$msg_sent=trim($msg_sent);
+				if ($msg_sent=="")
+					{
+					fputs($irc_connect, "PRIVMSG $sender_nick :proper usage of the help command is ?perl <command> \n\r");
+					
+					
+					}
+				else
+					{
+				$sql="select command,dscr,ex from perl_manual where upper(command) = upper('$msg_sent')";
+				$result=@mysql_query($sql,$db);
+				if (mysql_num_rows($result)==0)
+					{
+						$sql="select command,dscr,ex from perl_manual where upper(command) like upper('$msg_sent%')";
+					
+					
+					$result=@mysql_query($sql,$db);
+					if (mysql_num_rows($result)==0)
+						{
+						$help="sorry i cant help you with that.";
+						fputs($irc_connect, "PRIVMSG $sender_nick :$help \n\r");
+						if ($debug==1)
+				{
+						echo "PERL HELP: unable to help $sender_nick \n";
+						}
+						}
+					else
+						{
+						
+						$myrow=mysql_fetch_array($result);
+						$command=$myrow["command"];
+						
+						
+						
+						fputs($irc_connect, "PRIVMSG $sender_nick :$command \n\r");
+						$dscr=$myrow["dscr"];
+						fputs($irc_connect, "PRIVMSG $sender_nick :$dscr \n\r");
+						
+						
+						
+						
+						if (mysql_num_rows($result)>1)
+							{
+							$num=mysql_num_rows($result);
+							
+							unset($command);
+							$count=0;
+							while($myrow=mysql_fetch_array($result))
+								{
+								
+								$command.=", ".$myrow["command"];
+								$count++;
+								if ($count==7)
+									{
+									break;
+									}
+								}
+							fputs($irc_connect, "PRIVMSG $sender_nick :found $num entries first 7 are $command \n\r");
+							if ($debug==1)
+				{
+						echo "PERL HELP: help sent to $sender_nick \n";
+						}
+							
+							}
+						
+						
+						
+						}	
+					
+					}
+				else
+						{
+						$myrow=mysql_fetch_array($result);
+						$command=$myrow["command"];
+						fputs($irc_connect, "PRIVMSG $sender_nick :$command \n\r");
+						$dscr=$myrow["dscr"];
+						fputs($irc_connect, "PRIVMSG $sender_nick :$dscr \n\r");
+						
+					
+					
+						
+						if (mysql_num_rows($result)>1)
+							{
+							$num=mysql_num_rows($result);
+							
+							unset($command);
+							$count=0;
+							while($myrow=mysql_fetch_array($result))
+								{
+								
+								$command.=", ".$myrow["command"];
+								$count++;
+								if ($count==7)
+									{
+									break;
+									}
+								}
+							fputs($irc_connect, "PRIVMSG $sender_nick :found $num entries first 7 are $command \n\r");
+							if ($debug==1)
+				{
+						echo "PERL HELP: help sent to $sender_nick \n";
+						}
+							
+							}
+						
+						
+						
+						}	
+				
+				
+			}
+				
+				
+				break;		
+				
+				
+	}					

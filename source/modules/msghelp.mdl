@@ -1,0 +1,97 @@
+$msg_data=explode(" ",$message);
+$msg_data[0]=trim(strtoupper($msg_data[0]));
+$msg_data[1]=strtoupper($msg_data[1]);
+
+switch ($msg_data[0])
+	{
+	case "HELP":
+		$sender_info=clean_nick($who);
+		$sender_nick=$sender_info[0];
+		
+		if ((trim($msg_data[1])=="") || (trim($msg_data[1])=="HELP"))
+			{
+			fputs($irc_connect, "PRIVMSG $sender_nick :MSG commands for $my_nick: \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :HELP       VOICE   PASSWORD \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :OP               STATUS \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :!DIE        MEMORY  !RELOAD \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :For help on a command, /MSG $my_nick HELP <command>  \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :If you are a master.  Many many more commands are \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :available please check the manual under dot functions \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :Admin: $my_nick <email: $admin_email > \n\r");
+	
+			}
+		else if (trim($msg_data[1])=="NICK")
+			{
+
+			fputs($irc_connect, "PRIVMSG $sender_nick :/MSG $my_nick NICK <password> <new nick> \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :This will tell me to change my nick \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :Usefull if i joined with my alt nick insted of my primary nick \n\r");
+			
+
+			}	
+		else if (trim($msg_data[1])=="VOICE")
+			{
+
+			fputs($irc_connect, "PRIVMSG $sender_nick :/MSG $my_nick VOICE <password> <channel> \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :This will tell me to voice you on the channel if I have \n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :ops and you don't have a voice, and I monitor that channels\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick : voices.\n\r");
+
+			}
+		else if (trim($msg_data[1])=="PASSWORD")
+			{
+			fputs($irc_connect, "PRIVMSG $sender_nick :/MSG $my_nick  PASSWORD <password>\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :This sets a password, which lets you use other commands,\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :like IDENT.\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :Ops and masters: You need a password to use ANY op or\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :master command.\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :You can change your password from my webadmin page\n\r");
+
+			}
+		else if (trim($msg_data[1])=="OP")
+			{
+			fputs($irc_connect, "PRIVMSG $sender_nick :/MSG $my_nick  OP <password> [channel]\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :This will tell me to op you on any channel where I have\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :ops and you don't.  If you give a channel name, I'll just\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :op you on that channel.\n\r");
+			}
+		else if (trim($msg_data[1])=="GO")
+			{
+			fputs($irc_connect, "PRIVMSG $sender_nick :/MSG $my_nick GO <channel>\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :This makes me leave a channel if I'm not a channel op.\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :(It's useful for regaining ops.)\n\r");
+			}
+		else if (trim($msg_data[1])=="!DIE")
+			{
+			fputs($irc_connect, "PRIVMSG $sender_nick :/MSG $my_nick DIE <password> [message]\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :This makes me die (go away) -- not something you will\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick : probably be doing very often.\n\r");
+			}
+		else if (trim($msg_data[1])=="!RELOAD")
+			{
+			fputs($irc_connect, "PRIVMSG $sender_nick :/MSG $my_nick RELOAD <password>\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :This makes me makes me reload all my modules.\n\r");
+			}
+		else if (trim($msg_data[1])=="JUMP")
+			{
+			fputs($irc_connect, "PRIVMSG $sender_nick :/MSG $my_nick JUMP <password> [server [port [server password]]]\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :This will make me jump to a new server.  You can\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :optionally tell me a server to jump to, in the form of\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :'new.server.com' or 'new.server.com 6667'.\n\r");
+			
+			}
+		else if (trim($msg_data[1])=="STATUS")
+			{
+			fputs($irc_connect, "PRIVMSG $sender_nick :/MSG $my_nick STATUS <password>\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :This gives you a little three line display of my current\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :status.\n\r");
+			}
+		else if (trim($msg_data[1])=="MEMORY")
+			{
+			fputs($irc_connect, "PRIVMSG $sender_nick :/MSG $my_nick MEMORY <password>\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :This makes me tell you info about how much memory I'm\n\r");
+			fputs($irc_connect, "PRIVMSG $sender_nick :using. Doesnt work if I'm running on windows.\n\r");
+			
+			
+			}
+	}

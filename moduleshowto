@@ -1,0 +1,126 @@
+PHP-Egg modules.
+
+
+How to create modules for PHP-Egg
+
+PHP-Egg loads all modules into memory when the bot first starts. 
+
+Each indivdual module may be bound to one or more module bind.  There are cuntly 17 difrent module binds in PHP-Egg we will be adding more as it grows.
+
+MODE - occurs when a mode is changed example: --- Talia gives voice to php_Egg
+	mode changes happen on users of a channel or on the channel its self.
+	
+	for more information on mode changes please check the rfc on 			irc.http://www.user-com.undernet.org/documents/rfc1459.txt
+
+TOPIC   - occurs when the topic of a channel is changed.
+PRIVMSG -- This hapends when someone speaks in the channel or msgs the bot
+CHANMSG - this also happends when someone speaks in the channel 
+BOTMSG  - this happends when someone msgs the bot
+NOTICE  - this happends when someone notices the bot
+PART    - when some one parts form the channel.
+QUIT    - when someone quits irc.
+JOIN    - when someone joins the channel.
+NICK    - when someone changes there nick
+BOT_JOIN_TOPIC_SETBY  - when the bot first joins the channel it gets a msg from the server who set the topic
+BOT_JOIN_TOPIC  - when the bot first joins the channel it gets a msg form the server what the topic is
+BOT_JOIN_NAMES  - when the bot first joins the channel it gets a msg from the server who is curntly in the 					channel
+!_COMMAND  - this is when someone uses one of the !commands in the channel
+	example !voice <nick> !ban <nick>
+?_COMMAND  -  this is when someone uses one of the help commands ?php <function>
+SHOW      - this is for use with the help example
+		<bot name>  SHOW <nick|#channel> php <function>
+		we will be adding more to this later.
+			 
+ONKICK - this happends when someone is kicked from the channel.
+
+
+When you create a new module you will need to know what bind to attache your module to. The more binds you add your module to the more times it gets run dont create a module that should be bound to everthing that is a waste of power and can cause the bot to lag. only bind it where it needs to be bound.
+
+How to make a module.
+
+There is only one major rewl with regard to creating new modules for PHP-Egg You may NOT have any functions in your module file.  it must be pure php code with no <?php or ?> php tags for starting and ending the php.  All modules are run using eval so putting start and end php tags in will cause you to get errors.
+
+If you need any functions you can create your own functions place you new function in common.inc and it will be included when the bot starts.
+
+things to help you.
+
+Depending apon the type of module bind you decided to use you will get difrent data. in most cases you will get the folowing varables.
+
+$who  this is the person that sent the message in the folowing format nick!ident@hostmask
+I have created a function for making it easer to use these. 
+
+example.
+
+$who=$command_data[0];
+$sender_info=clean_nick($who);  // clean_nick is the function to clean out the nick.
+$sender_nick=$sender_info[0];
+$sender_ident=$sender_info[1];
+$sender_host=$sender_info[2];
+
+
+If it is in a channel you will also get $chan
+
+what ever the person sent comes in as $message rember to trim this becouse in most cases it will contain some traling (\n\r) data from the server.
+
+
+Notes about nicks and mysql.  There is a problem with inserting and compairing nicks. You need to becareful about people with speical charaters in there nick such as \`'  these can fail in the insert into mysql and chan fail checks to mysql rember to addslashes if you have a problem.
+
+
+once your module is done and has been added to a module bind in the web admin section all you need to do is reload the modules in PHP-Egg
+
+/msg <bot> !reload <yourpass>
+
+
+
+We will be putting up a site where you can post your modules soon.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
