@@ -299,7 +299,7 @@ if (trim($debug)=="yes" || trim($debug)=="1") {
     $debug=1;
 }
 fclose($fp);
-print("Setup done... writing config.php\n");
+print("Setup done... writing config.auto.php\n");
 
 $fp=fopen("config.auto.php","w");
 if ($fp=="") {
