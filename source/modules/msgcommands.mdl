@@ -8,7 +8,7 @@ $msg_data=explode(" ",$message);
 
 $pass=$msg_data[1];
 $host_mask=$sender_ident."@".$sender_host;
-$login_access=check_mysql_login($host_mask,$pass);
+$login_access=check_db_login($host_mask,$pass);
 if ($login_access) {
 	$msg_data[0]=strtoupper($msg_data[0]);
 	switch ($msg_data[0]) {
@@ -75,15 +75,15 @@ if ($login_access) {
 			$phpversion=phpversion();
 			// gets mysql version
 			$sql="select version()";
-			$result=mysql_query($sql,$db);
-			$myrow=@mysql_fetch_array($result);
+			$result=$db_ctrl->query($sql,$db);
+			$myrow=@$db_ctrl->fetch_array($result);
 			$mysql_version=$myrow[0];
 			fputs($irc_connect, "PRIVMSG $sender_nick :Running on  php $phpversion and mysql $mysql_version \n\r");
 			fputs($irc_connect, "PRIVMSG $sender_nick :Admin: $my_nick <email: $admin_email > \n\r");
 			
 			$sql="select chan_name from channels where in_chan='Y'";
-			$result=@mysql_query($sql,$db);
-			while($myrow=@mysql_fetch_array($result)) {
+			$result=@$db_ctrl->query($sql,$db);
+			while($myrow=@$db_ctrl->fetch_array($result)) {
 				$channels[]=$myrow["chan_name"];
 			}
 							

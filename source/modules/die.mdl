@@ -11,19 +11,19 @@ if (count($message_data)==2) {
 	$pass=trim($message_data[1]);
 	$host_mask=$sender_ident."@".$sender_host;
                     
-	$login_access=check_mysql_login($host_mask,$pass);
+	$login_access=check_db_login($host_mask,$pass);
 			
 	if ($login_access) {
 	    $access=check_global_access($login_access);	
 	    if ($access==1) {
 		$sql="update chan_users set reason='bot quit' where reason is null";
-                $result=@mysql_query($sql,$db);
+                $result=@$db_ctrl->query($sql,$db);
                 fputs($irc_connect, "QUIT :$quit_message\n");
                 
                 $sql="update channels set in_chan='N'";
-        	$result=@mysql_query($sql,$db);
+        	$result=@$db_ctrl->query($sql,$db);
                 fclose($irc_connect);	
-                mysql_close($db);
+                $db_ctrl->close($db);
                 exit();
 	    }
 	}

@@ -9,7 +9,7 @@ $login_command=explode(" ",$message);
 
 $pass=$login_command[1];
 $host_mask=$sender_ident."@".$sender_host;
-$login_access=check_mysql_login($host_mask,$pass);
+$login_access=check_db_login($host_mask,$pass);
 if ($login_access) {
     $access=check_global_access($login_access);	
     if ($access==1) {	
@@ -18,9 +18,9 @@ if ($login_access) {
 	} else {
 	    $sql="select chan_name from chan_users where nick='$sender_nick' and reason is null";
 	}	
-	$result=mysql_query($sql,$db);
+	$result=$db_ctrl->query($sql,$db);
 	
-	while($myrow=mysql_fetch_array($result)) {
+	while($myrow=$db_ctrl->fetch_array($result)) {
 	    if ($debug==1) {	
 		echo "$sender_nick $host_mask $chan !OP! \n";
 	    }
@@ -34,8 +34,8 @@ if ($login_access) {
 	} else {
 	    $sql="select chan_name from chan_users where nick='$sender_nick' and reason is null";
 	}	
-	$result=mysql_query($sql,$db);
-	while($myrow=mysql_fetch_array($result)) {	
+	$result=$db_ctrl->query($sql,$db);
+	while($myrow=$db_ctrl->fetch_array($result)) {	
 	    $chan=$myrow["chan_name"];
 	    $nick=$sender_nick;
 						

@@ -52,17 +52,17 @@ switch ($what) {
 	bot_join_names($irc_connect,$chan,$names);
 	
 	$sql="select nick from chan_users where reason is null and ident is null and host_mask is null  order by rand() limit 1";
-	$result=@mysql_query($sql,$db);
-	while($myrow=@mysql_fetch_array($result)) {
+	$result=@$db_ctrl->query($sql,$db);
+	while($myrow=@$db_ctrl->fetch_array($result)) {
 	    $nick=$myrow["nick"];
 	    $chan_name=$myrow["chan_name"];
 	    $now=date("YmdHis",time());
 				
 	    $sql_check="select * from mode_data where action='WHOIS $nick'";
-	    $result_check=@mysql_query($sql_check,$db);
-	    if (mysql_num_rows($result_check)==0) {
+	    $result_check=@$db_ctrl->query($sql_check,$db);
+	    if ($db_ctrl->num_rows($result_check)==0) {
 		$sql_insert="insert into mode_data (chan_name,action,date_inserted,added_by) values ('$chan_name','WHOIS $nick','$now','system')";
-		$result_insert=@mysql_query($sql_insert,$db);
+		$result_insert=@$db_ctrl->query($sql_insert,$db);
 		if ($result_insert) {
 		    //echo "added $nick getting whois \n";
 		}

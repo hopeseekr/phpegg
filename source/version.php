@@ -1,5 +1,5 @@
 <?
 
-define("VERSION","1.2b");
+define("VERSION","2.0");
 
 ?>

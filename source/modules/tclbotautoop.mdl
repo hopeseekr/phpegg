@@ -8,8 +8,8 @@ $sender_host=$sender_info[2];
 $host_mask=$sender_ident."@".$sender_host;
 
 $sql="select user.user from user_host uh, user  where user.user='$sender_nick' and '$host_mask' like replace(replace(mask,'*!',''),'*','%')  and uh.user=user.user  and user.o='Y' and user.b='Y' limit 1";
-$result=@mysql_query($sql,$db);
+$result=@$db_ctrl->query($sql,$db);
 $chan=trim($chan);
-if (mysql_num_rows($result)!=0) {
+if ($db_ctrl->num_rows($result)!=0) {
     fputs($irc_connect, "MODE $chan +o $sender_nick\n");	
 }	

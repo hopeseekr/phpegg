@@ -8,7 +8,7 @@
 // PHP-EGG beta 1 by kill-9 
 
 function get_connect() {
-	global $my_irc_server, $my_nick, $irc_servers, $irc_server_ports, $irc_host, $irc_real_name, $irc_nick, $irc_alt_nick, $debug,$irc_identd;
+	global $db_ctrl,$my_irc_server, $my_nick, $irc_servers, $irc_server_ports, $irc_host, $irc_real_name, $irc_nick, $irc_alt_nick, $debug,$irc_identd;
 
 	$trys=0;
 	while (!$irc_connect) {	
@@ -54,7 +54,7 @@ function get_connect() {
 }
 
 function irc_connect() {
-	global $my_irc_server, $my_nick, $irc_servers,$irc_server_ports , $irc_host , $irc_real_name , $irc_nick , $irc_alt_nick,$db,$debug;
+	global $db_ctrl,$my_irc_server, $my_nick, $irc_servers,$irc_server_ports , $irc_host , $irc_real_name , $irc_nick , $irc_alt_nick,$db,$debug;
 	
 	$irc_connect=get_connect();
 	if ($debug==1) {
@@ -93,7 +93,7 @@ function irc_connect() {
 				$time=time();
 				$error=addslashes($input_buffer);
 				$sql="insert into server_error (time,error) values ($time,'$error')";
-				$result=@mysql_query($sql,$db);
+				$result=@$db_ctrl->query($sql,$db);
 				set_time_limit(6000);
 				fclose($irc_connect);
 				$irc_connect=get_connect();
@@ -139,7 +139,7 @@ function irc_connect() {
 }
 
 function irc_idle($irc_connect) {
-	global $my_irc_server, $my_nick,$db ,$irc_nick,$dcc_connections,$debug,$dcc_mdl;
+	global $db_ctrl,$my_irc_server, $my_nick,$db ,$irc_nick,$dcc_connections,$debug,$dcc_mdl;
 
  	set_socket_blocking($irc_connect,false);
   	$read_something=1;
@@ -152,9 +152,9 @@ function irc_idle($irc_connect) {
 
 		// handles dcc connections
 		$sql="select * from dcc_connections";
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 	
-		while ($myrow=mysql_fetch_array($result)) {
+		while ($myrow=$db_ctrl->fetch_array($result)) {
 			$sock_info=socket_get_status($dcc_connections[$myrow[id]]);
 	
 			if ($sock_info[eof]) {
@@ -163,7 +163,7 @@ function irc_idle($irc_connect) {
 					print("dcc with $myrow[nick] closed...\n");
 				}
 				$sql="delete from dcc_connections where id=\"".$myrow[id]."\"";
-				mysql_query($sql,$db);
+				$db_ctrl->query($sql,$db);
 			} 
 			else 
 			{
@@ -195,8 +195,8 @@ function irc_idle($irc_connect) {
 							$front="[".$login."@".$my_nick."]";
 							echo "$front $said \n";
 							$sql="select * from dcc_connections";
-							$result_partyline=@mysql_query($sql,$db);
-							while($partyline=@mysql_fetch_array($result_partyline))
+							$result_partyline=@$db_ctrl->query($sql,$db);
+							while($partyline=@$db_ctrl->fetch_array($result_partyline))
 							{
 								$partyline_id=$partyline["id"];
 								fputs ($dcc_connections[$partyline_id],"$front $said\n" );
@@ -209,19 +209,19 @@ function irc_idle($irc_connect) {
 						$login=trim($input_buffer);
 						$sql="update dcc_connections set login='$login' , password='N' where id=".$myrow['id']." ";
 			
-						$result_up=@mysql_query($sql,$db);
+						$result_up=@$db_ctrl->query($sql,$db);
 			
 						fputs ($dcc_connections[$myrow[id]],"Please enter your password. \n" );
 					}			
 					else if ($myrow["login"] && ($myrow["password"]=="N"))
 					{
 						$pass=trim($input_buffer);
-						$access=check_mysql_login($myrow["hostmask"],$pass) ;
+						$access=check_db_login($myrow["hostmask"],$pass) ;
 			
 						if ($access)
 						{
 							$sql="update dcc_connections set login='$login' , password='Y' where id=".$myrow['id']." ";
-							$result_up=@mysql_query($sql,$db);
+							$result_up=@$db_ctrl->query($sql,$db);
 							$ascii = fread(fopen("modules/ascii.mdl", "r"), filesize("modules/ascii.mdl")); 
 							$buffer=explode("\n",$ascii);
 							for ($a=0;$a<count($buffer);$a++)
@@ -248,7 +248,7 @@ function irc_idle($irc_connect) {
 							fclose($dcc_connections[$myrow[id]]);
 				
 							$sql="delete from dcc_connections where id=".$myrow['id']." ";
-							$result_del=@mysql_query($sql,$db);
+							$result_del=@$db_ctrl->query($sql,$db);
 						}
 					}		
 					$read_something=1;	
@@ -265,7 +265,7 @@ function irc_idle($irc_connect) {
 			$time=time();
 			$error=addslashes($input_buffer);
 			$sql="insert into server_error (time,error) values ($time,'$error')";
-			$result=@mysql_query($sql,$db);
+			$result=@$db_ctrl->query($sql,$db);
 		}
 		if ($input_buffer!="") {
 			print("ircd read: $input_buffer");
@@ -280,13 +280,13 @@ function irc_idle($irc_connect) {
 				// cleaning the tables on a reconnect.
 
 				$sql="update channels set in_chan='N'";
-				$result=@mysql_query($sql,$db);
+				$result=@$db_ctrl->query($sql,$db);
 
 				$sql="update chan_users set reason='bot reconnect' where reason is null";
-				$result=@mysql_query($sql,$db);
+				$result=@$db_ctrl->query($sql,$db);
 
 				$sql="delete from bans";
-				$result=@mysql_query($sql,$db);
+				$result=@$db_ctrl->query($sql,$db);
 			
 				irc_connect(); // should force a reconnect
 			}
@@ -318,9 +318,9 @@ function irc_idle($irc_connect) {
 }
 		
 function check_msg($irc_connect,$input_buffer) {
-	global $magic_word,$admin_email,$db, $ex_commands,$botmsgs,$reload_modules,$mode_mdl,$irc_nick,$my_nick,$debug,$help_mdl;
+	global $db_ctrl,$magic_word,$admin_email,$db, $ex_commands,$botmsgs,$reload_modules,$mode_mdl,$irc_nick,$my_nick,$debug,$help_mdl;
 
-	global $nick_mdl, $topic_mdl, $part_mdl, $quit_mdl, $bot_join_topic,$bot_join_topic_set_by, $bot_join_names,$join_mdl,$help_mdl,$login_module,$show_mdl,$kick_mdl;
+	global $db_ctrl,$nick_mdl, $topic_mdl, $part_mdl, $quit_mdl, $bot_join_topic,$bot_join_topic_set_by, $bot_join_names,$join_mdl,$help_mdl,$login_module,$show_mdl,$kick_mdl;
 
 	if ($debug==1) {
 		echo "$input_buffer";
@@ -410,7 +410,7 @@ function check_msg($irc_connect,$input_buffer) {
 			   Retrieve our good friend, $mod_ctrl here.  $mod_ctrl will then take care
 			   of the messy business of executing the correct module.
 			*/
-			global $mod_ctrl;
+			global $db_ctrl,$mod_ctrl;
 			$token = substr($message,0,1);
 			$message = trim($message);
 				
@@ -433,11 +433,11 @@ function check_msg($irc_connect,$input_buffer) {
 				
 				$now=time();
 				$sql="insert into user (user,n,m,o,v,f,p,created,last_on) values ('$sender_nick','Y','Y','Y','Y','Y','p','$now','$now')";
-				$result_user=@mysql_query($sql,$db);
+				$result_user=@$db_ctrl->query($sql,$db);
 				if ($result_user) {
 					$mask=make_ban($sender_ident,$sender_host);
 					$sql="insert into user_host (user,mask) values ('$sender_nick','$mask')";
-					$result_mask=@mysql_query($sql,$db);
+					$result_mask=@$db_ctrl->query($sql,$db);
 					if ($result_mask) {
 						fputs($irc_connect, "PRIVMSG $sender_nick :Hello master, What may i do to assist you?\n");
 						fputs($irc_connect, "PRIVMSG $sender_nick :Please msg me PASSWORD <a pass> to set your password. \n");
@@ -459,13 +459,13 @@ function check_msg($irc_connect,$input_buffer) {
 				$host_mask=$sender_ident."@".$sender_host;
 			
 				$sql="select user.user from user_host uh, user where '$host_mask' like replace(replace(mask,'*','%'),'!','') and uh.user=user.user and user.user='$sender_nick'";
-				$result=@mysql_query($sql,$db); 			
-				if (mysql_num_rows($result)==1) {
+				$result=@$db_ctrl->query($sql,$db); 			
+				if ($db_ctrl->num_rows($result)==1) {
 					if (trim($hold[1])) {	
 						$pass=bf_encrypt_pass($hold[1]);
 						$sql="update user set password='$pass' , mysql_password=password('$hold[1]') where user='$sender_nick'";
 						
-						$result=@mysql_query($sql,$db); 	
+						$result=@$db_ctrl->query($sql,$db); 	
 						
 						if ($result) {
 							fputs($irc_connect, "PRIVMSG $sender_nick :New password set.\n");
@@ -485,7 +485,7 @@ function check_msg($irc_connect,$input_buffer) {
 					$pass=trim($msg_data[1]);
 					$host_mask=$sender_ident."@".$sender_host;
 				   
-					$login_access=check_mysql_login($host_mask,$pass);
+					$login_access=check_db_login($host_mask,$pass);
 					if ($login_access) {
 						$access=check_global_access($login_access);	
 						if ($access==1) {	
@@ -556,24 +556,24 @@ function check_msg($irc_connect,$input_buffer) {
 		$ident_is=$command_data[4];
 		$hostmask_is=$command_data[5];   
 		$sql="update chan_users set ident='$ident_is' , host_mask='$hostmask_is' where reason is null and nick='$nick_is'";
-		$result=@mysql_query($sql,$db);
+		$result=@$db_ctrl->query($sql,$db);
 			
 		$sql="select nick from chan_users where reason is null and ident is null and host_mask is null  order by rand() limit 1";
-		$result=@mysql_query($sql,$db);
+		$result=@$db_ctrl->query($sql,$db);
 			
-		if (mysql_num_rows($result)==0) {
+		if ($db_ctrl->num_rows($result)==0) {
 		//$GLOBALS["motd_end"]=1;
 		}
-		while($myrow=@mysql_fetch_array($result)) {
+		while($myrow=@$db_ctrl->fetch_array($result)) {
 		$nick=addslashes($myrow["nick"]);
 		$chan_name=$myrow["chan_name"];
 		$now=date("YmdHis",time());
 				
 		$sql_check="select * from mode_data where action='WHOIS $nick'";
-		$result_check=@mysql_query($sql_check,$db);
-		if (mysql_num_rows($result_check)==0) {
+		$result_check=@$db_ctrl->query($sql_check,$db);
+		if ($db_ctrl->num_rows($result_check)==0) {
 			$sql_insert="insert into mode_data (chan_name,action,date_inserted,added_by) values ('$chan_name','WHOIS $nick','$now','system')";
-			$result_insert=@mysql_query($sql_insert,$db);
+			$result_insert=@$db_ctrl->query($sql_insert,$db);
 			if ($result_insert) {
 			echo "getting $nick \n";
 			// found one
@@ -589,7 +589,7 @@ function check_msg($irc_connect,$input_buffer) {
 			eval($bot_join_topic[$i]);
 		}
 		$sql="delete from bans where chan_name='$command_data[3]'";
-		$result=@mysql_query($sql,$db);
+		$result=@$db_ctrl->query($sql,$db);
 		
 		fputs($irc_connect,"MODE $chan +b \n");			
 	break;
@@ -608,7 +608,7 @@ function check_msg($irc_connect,$input_buffer) {
 		//print "ban list  \n";
 			
 		$sql="insert into bans (chan_name, ban_mask,set_by ,ban_date) values ('$command_data[3]','$command_data[4]','$command_data[5]',$command_data[6])";
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		break;  
 	case 352:
 		// ok this would be the who on everone in the chan curntly
@@ -631,7 +631,7 @@ function check_msg($irc_connect,$input_buffer) {
 		
 		$sql="insert into chan_users (chan_name,nick,mode,ident,host_mask) values ('$chan' ,'$nick' ,'$mode' ,'$ident' ,'$host_mask')";
 			
-		$result=@mysql_query($sql,$db); 
+		$result=@$db_ctrl->query($sql,$db); 
 		if ($debug==1) {
 		echo "adding $nick $chan \n";
 		 }

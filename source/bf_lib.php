@@ -35,7 +35,7 @@ function myand($a,$b)
 
 function bf_init($key)
 {
-	global $initbf_P,$initbf_S,$bf_P,$bf_S,$bf_N;
+	global $db_ctrl,$initbf_P,$initbf_S,$bf_P,$bf_S,$bf_N;
 	
 	$bf_P=$initbf_P;$bf_S=$initbf_S;
 	$len=strlen($key);
@@ -93,7 +93,7 @@ function bf_init($key)
 
 function bf_encrypt_pass($clear)
 {
-	global $base64;
+	global $db_ctrl,$base64;
 	bf_init($clear);
 
 	$left=new aword();
@@ -128,7 +128,7 @@ function bf_encrypt_pass($clear)
 /* add $bf_P */
 function bf_round(&$w1,&$w2,$n)
 {
-	global $bf_P;
+	global $db_ctrl,$bf_P;
 //	print $w1->getUWORD32()."^".$w2->bf_F()."^".$bf_P[$n]."\n";
 	
 	$w1->setUWORD32(myxor(myxor($w1->getUWORD32(),$w2->bf_F()),$bf_P[$n]));
@@ -136,7 +136,7 @@ function bf_round(&$w1,&$w2,$n)
 
 function bf_encipher(&$wl,&$wr)
 {
-	global $bf_P;
+	global $db_ctrl,$bf_P;
 	$wl->setUWORD32(myxor($wl->getUWORD32(),$bf_P[0]));
 	// bf_round e futut
 	bf_round($wr,$wl,1);
@@ -222,7 +222,7 @@ class aword
 	//astea trei sa-mi returneze signed
 	function S($i)
 	{
-		global $bf_S;
+		global $db_ctrl,$bf_S;
 		$r=$bf_S[$i][$this->bytes[$i]];
 		if ($r>pow(2,31)) $r-=pow(2,32);
 		return($r);

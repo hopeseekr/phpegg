@@ -27,18 +27,18 @@ switch ($msg_data[0]) {
 		$hold=str_replace("*","%",$hold);
 		$sql="select nick from chan_users where reason is null and chan_name='$chan' and concat(ident,'@',host_mask) like '$hold'";
 					
-		$result=@mysql_query($sql,$db);
-		while($myrow=@mysql_fetch_array($result)) {
+		$result=@$db_ctrl->query($sql,$db);
+		while($myrow=@$db_ctrl->fetch_array($result)) {
 		    $nick=$myrow["nick"];
 		    fputs($irc_connect, "KICK $chan $nick\n");	
 		}
 	    } else { 
 		$sql="select ident,host_mask from chan_users where reason is null and nick='$ban' and chan_name='$chan'";
-		$result=@mysql_query($sql,$db);
-		if (mysql_num_rows($result)==0) {
+		$result=@$db_ctrl->query($sql,$db);
+		if ($db_ctrl->num_rows($result)==0) {
 		    fputs($irc_connect, "PRIVMSG $chan :$ban is not here\n");	
 		} else {
-		    $myrow=@mysql_fetch_array($result);
+		    $myrow=@$db_ctrl->fetch_array($result);
 		    $ident=$myrow["ident"];
 		    $ident=str_replace("~","",$ident);
 		    $host_mask=$myrow["host_mask"];
@@ -53,8 +53,8 @@ switch ($msg_data[0]) {
 		    $hold=str_replace("*","%",$hold);
 		    $sql="select nick from chan_users where reason is null and chan_name='$chan' and concat(ident,'@',host_mask) like '$hold'";
 					
-		    $result=@mysql_query($sql,$db);
-		    while($myrow=@mysql_fetch_array($result)) {
+		    $result=@$db_ctrl->query($sql,$db);
+		    while($myrow=@$db_ctrl->fetch_array($result)) {
 			$nick=$myrow["nick"];
 			fputs($irc_connect, "KICK $chan $nick\n");	
 		    }

@@ -3,11 +3,11 @@
 function lastspoke_log($sender_ident,$sender_nick,$sender_host,$chan)
 	{
 	
-	global $db;
+	global $db_ctrl,$db;
 	  	$now=date("YmdHis",time());
 	    	//$sender_nick=addslashes($sender_nick);
 	    	$sql="update chan_users set last_spoke='$now' , ident='$sender_ident' , host_mask='$sender_host' where nick='$sender_nick' and upper(chan_name)=upper('$chan') and reason is null";
-	    	$result=@mysql_query($sql,$db);
+	    	$result=@$db_ctrl->query($sql,$db);
 	
 	
 	
@@ -22,14 +22,14 @@ function lastspoke_log($sender_ident,$sender_nick,$sender_host,$chan)
 
 function notice_lastspoke($irc_connect,$sender_nick,$chan,$seen_nick)
 	{
-	global $db;
+	global $db_ctrl,$db;
 	$sql="select unix_timestamp(last_spoke) as last_spoke , chan_name from chan_users where nick='$seen_nick' and reason is null order by last_spoke desc limit 1";
 	echo $sql."\n";
-	$result=@mysql_query($sql,$db);
-	if (mysql_num_rows($result)!=0)
+	$result=@$db_ctrl->query($sql,$db);
+	if ($db_ctrl->num_rows($result)!=0)
 		{
 	
-		$myrow=mysql_fetch_array($result);
+		$myrow=$db_ctrl->fetch_array($result);
 		$lastspoke=$myrow["last_spoke"];
 		$chan_name=$myrow["chan_name"];
 		$now=date("l F j S, Y, H:i ",$lastspoke);
@@ -57,16 +57,16 @@ function notice_lastspoke($irc_connect,$sender_nick,$chan,$seen_nick)
 
 function update_seen_data($irc_connect,$chan_user,$chan,$mode)
 	{
-	global $db;
+	global $db_ctrl,$db;
 	
 	
 		// insert user
 		
 		$sql_insert="insert into chan_users (chan_name,nick,mode) values ('$chan','$chan_user','$mode')";
-		$result_insert=mysql_query($sql_insert,$db);
+		$result_insert=$db_ctrl->query($sql_insert,$db);
 		if (!$result_insert)
 			{
-			print "update seen data error inserting $sql_insert \n";					print mysql_error($db);
+			print "update seen data error inserting $sql_insert \n";					print $db_ctrl->error($db);
 			
 			}
 	
@@ -77,7 +77,7 @@ function update_seen_data($irc_connect,$chan_user,$chan,$mode)
 function notice_seen($irc_connect,$sender_nick,$chan,$seen_nick)
 	{
 	
-	global $db;
+	global $db_ctrl,$db;
 	
 	$seen_nick=addslashes($seen_nick);
 	if (strtoupper($sender_nick)==strtoupper($seen_nick))
@@ -91,9 +91,9 @@ function notice_seen($irc_connect,$sender_nick,$chan,$seen_nick)
 		$sql= "select reason,chan_name,ident,host_mask,  sec_to_time(unix_timestamp(now()) - unix_timestamp(date)) as date from chan_users where upper(nick)=upper('$seen_nick') order by date desc";
 		
 		
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		$i=0;
-		while ($myrow=mysql_fetch_array($result))
+		while ($myrow=$db_ctrl->fetch_array($result))
 			{
 			$date[$i]=$myrow["date"];
 			$reason[$i]=$myrow["reason"];
@@ -103,7 +103,7 @@ function notice_seen($irc_connect,$sender_nick,$chan,$seen_nick)
 			$i++;
 			}
 		
-		if (mysql_num_rows($result)>1)
+		if ($db_ctrl->num_rows($result)>1)
 			{
 			for ($i=0;$i<count($chan_name);$i++)
 				{
@@ -171,13 +171,13 @@ function notice_seen($irc_connect,$sender_nick,$chan,$seen_nick)
 					
 					}	
 				
-				$msg="I found ".mysql_num_rows($result)." matches to your query. Here is the most recent: $seen_nick  ($ident[0]@$host_mask[0]) was last seen quitting from $chan_name[0] $date_display stating ($reason[0])";
+				$msg="I found ".$db_ctrl->num_rows($result)." matches to your query. Here is the most recent: $seen_nick  ($ident[0]@$host_mask[0]) was last seen quitting from $chan_name[0] $date_display stating ($reason[0])";
 				
 				}		
 				
 					
 			}
-		else if (mysql_num_rows($result)==0)
+		else if ($db_ctrl->num_rows($result)==0)
 			{
 			
 			$msg ="I dont know $seen_nick ";
@@ -241,7 +241,7 @@ function notice_seen($irc_connect,$sender_nick,$chan,$seen_nick)
 	
 function update_seen_data_quit($irc_connect,$who,$quit_message)
 	{
-	global $db;
+	global $db_ctrl,$db;
 	if (trim($quit_message)=="")
 		{
 		
@@ -257,7 +257,7 @@ function update_seen_data_quit($irc_connect,$who,$quit_message)
 	$sql="update chan_users set reason='$quit_message' , ident='$sender_ident' , host_mask='$sender_host' where  nick='$sender_nick' ";
 	
 	
-	$result=mysql_query($sql,$db);
+	$result=$db_ctrl->query($sql,$db);
 	if (!$result)
 		{
 		
@@ -269,7 +269,7 @@ function update_seen_data_quit($irc_connect,$who,$quit_message)
 	}
 function update_seen_data_part($irc_connect,$who,$chan)
 	{
-	global $db;
+	global $db_ctrl,$db;
 	$sender_info=clean_nick($who);
 	$sender_nick=$sender_info[0];
 	$sender_ident=$sender_info[1];
@@ -280,7 +280,7 @@ function update_seen_data_part($irc_connect,$who,$chan)
 	
 	$sql="update chan_users set reason='Left $chan' , ident='$sender_ident' , host_mask='$sender_host' where  nick='$sender_nick' and chan_name='$chan'";
 	
-	$result=mysql_query($sql,$db);
+	$result=$db_ctrl->query($sql,$db);
 	if (!$result)
 		{
 		
@@ -292,7 +292,7 @@ function update_seen_data_part($irc_connect,$who,$chan)
 	}
 function update_seen_data_join($irc_connect,$who,$chan,$mode="u")
 	{
-	global $db;
+	global $db_ctrl,$db;
 	$sender_info=clean_nick($who);
 	$sender_nick=$sender_info[0];
 	$sender_ident=$sender_info[1];
@@ -301,7 +301,7 @@ function update_seen_data_join($irc_connect,$who,$chan,$mode="u")
 	
 	
 	$sql_insert="insert into chan_users (nick,chan_name, ident,host_mask,mode) values ('$sender_nick','$chan','$sender_ident','$sender_host','$mode')";
-		$result_insert=mysql_query($sql_insert,$db);
+		$result_insert=$db_ctrl->query($sql_insert,$db);
 		
 	//echo "user joined chan check this ".$sql_insert."\n";	
 	

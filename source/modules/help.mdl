@@ -14,14 +14,14 @@ switch ($help_command[0]) {
 				$msg_sent=str_replace("?mysql","",$msg_sent);
 				$msg_sent=trim($msg_sent);
 				$sql="select search ,help,example, url from manual where upper(search) =  upper('$msg_sent') limit 1";
-				$result=@mysql_query($sql,$db);
-				if (mysql_num_rows($result)==0)
+				$result=@$db_ctrl->query($sql,$db);
+				if ($db_ctrl->num_rows($result)==0)
 					{
 					$sql="select search ,help,example,url from manual where upper(search) like upper('%$msg_sent%') limit 1";
 					
 					
-					$result=@mysql_query($sql,$db);
-					if (mysql_num_rows($result)==0)
+					$result=@$db_ctrl->query($sql,$db);
+					if ($db_ctrl->num_rows($result)==0)
 						{
 						$help="sorry i cant help you with that.";
 						fputs($irc_connect, "PRIVMSG $sender_nick :$help \n");
@@ -34,7 +34,7 @@ switch ($help_command[0]) {
 						{
 						
 						
-						$myrow=mysql_fetch_array($result);
+						$myrow=$db_ctrl->fetch_array($result);
 						$search=$myrow["search"];
 						$example=$myrow["example"];
 						$url=$myrow["url"];
@@ -59,7 +59,7 @@ switch ($help_command[0]) {
 				else
 						{
 						
-						$myrow=mysql_fetch_array($result);
+						$myrow=$db_ctrl->fetch_array($result);
 						$search=$myrow["search"];
 						$example=$myrow["example"];
 						$url=$myrow["url"];
@@ -97,14 +97,14 @@ switch ($help_command[0]) {
 				else
 					{
 				$sql="select command,dscr,ex from php_manual where upper(command) = upper('$msg_sent')";
-				$result=@mysql_query($sql,$db);
-				if (mysql_num_rows($result)==0)
+				$result=@$db_ctrl->query($sql,$db);
+				if ($db_ctrl->num_rows($result)==0)
 					{
 						$sql="select command,dscr,ex from php_manual where upper(command) like upper('$msg_sent%')";
 					
 					
-					$result=@mysql_query($sql,$db);
-					if (mysql_num_rows($result)==0)
+					$result=@$db_ctrl->query($sql,$db);
+					if ($db_ctrl->num_rows($result)==0)
 						{
 						$help="sorry i cant help you with that.";
 						fputs($irc_connect, "PRIVMSG $sender_nick :$help \n");
@@ -116,7 +116,7 @@ switch ($help_command[0]) {
 					else
 						{
 						
-						$myrow=mysql_fetch_array($result);
+						$myrow=$db_ctrl->fetch_array($result);
 						$command=$myrow["command"];
 						$loc="http://www.php.net/manual/en/function.".str_replace("_","-",$command).".php";
 						
@@ -131,13 +131,13 @@ switch ($help_command[0]) {
 				{
 							echo "PHP Help: sent to $sender_nick \n";
 							}
-						if (mysql_num_rows($result)>1)
+						if ($db_ctrl->num_rows($result)>1)
 							{
-							$num=mysql_num_rows($result);
+							$num=$db_ctrl->num_rows($result);
 							
 							unset($command);
 							$count=0;
-							while($myrow=mysql_fetch_array($result))
+							while($myrow=$db_ctrl->fetch_array($result))
 								{
 								
 								$command.=", ".$myrow["command"];
@@ -159,7 +159,7 @@ switch ($help_command[0]) {
 					}
 				else
 						{
-						$myrow=mysql_fetch_array($result);
+						$myrow=$db_ctrl->fetch_array($result);
 						$command=$myrow["command"];
 						fputs($irc_connect, "PRIVMSG $sender_nick :$command \n");
 						$dscr=trim($myrow["dscr"]);
@@ -173,13 +173,13 @@ switch ($help_command[0]) {
 				{
 						echo "PHP HELP: sent to $sender_nick \n";
 						}
-						if (mysql_num_rows($result)>1)
+						if ($db_ctrl->num_rows($result)>1)
 							{
-							$num=mysql_num_rows($result);
+							$num=$db_ctrl->num_rows($result);
 							
 							unset($command);
 							$count=0;
-							while($myrow=mysql_fetch_array($result))
+							while($myrow=$db_ctrl->fetch_array($result))
 								{
 								
 								$command.=", ".$myrow["command"];
@@ -215,14 +215,14 @@ switch ($help_command[0]) {
 				else
 					{
 				$sql="select command,dscr,ex from perl_manual where upper(command) = upper('$msg_sent')";
-				$result=@mysql_query($sql,$db);
-				if (mysql_num_rows($result)==0)
+				$result=@$db_ctrl->query($sql,$db);
+				if ($db_ctrl->num_rows($result)==0)
 					{
 						$sql="select command,dscr,ex from perl_manual where upper(command) like upper('$msg_sent%')";
 					
 					
-					$result=@mysql_query($sql,$db);
-					if (mysql_num_rows($result)==0)
+					$result=@$db_ctrl->query($sql,$db);
+					if ($db_ctrl->num_rows($result)==0)
 						{
 						$help="sorry i cant help you with that.";
 						fputs($irc_connect, "PRIVMSG $sender_nick :$help \n");
@@ -234,7 +234,7 @@ switch ($help_command[0]) {
 					else
 						{
 						
-						$myrow=mysql_fetch_array($result);
+						$myrow=$db_ctrl->fetch_array($result);
 						$command=$myrow["command"];
 						
 						
@@ -246,13 +246,13 @@ switch ($help_command[0]) {
 						
 						
 						
-						if (mysql_num_rows($result)>1)
+						if ($db_ctrl->num_rows($result)>1)
 							{
-							$num=mysql_num_rows($result);
+							$num=$db_ctrl->num_rows($result);
 							
 							unset($command);
 							$count=0;
-							while($myrow=mysql_fetch_array($result))
+							while($myrow=$db_ctrl->fetch_array($result))
 								{
 								
 								$command.=", ".$myrow["command"];
@@ -277,7 +277,7 @@ switch ($help_command[0]) {
 					}
 				else
 						{
-						$myrow=mysql_fetch_array($result);
+						$myrow=$db_ctrl->fetch_array($result);
 						$command=$myrow["command"];
 						fputs($irc_connect, "PRIVMSG $sender_nick :$command \n");
 						$dscr=$myrow["dscr"];
@@ -286,13 +286,13 @@ switch ($help_command[0]) {
 					
 					
 						
-						if (mysql_num_rows($result)>1)
+						if ($db_ctrl->num_rows($result)>1)
 							{
-							$num=mysql_num_rows($result);
+							$num=$db_ctrl->num_rows($result);
 							
 							unset($command);
 							$count=0;
-							while($myrow=mysql_fetch_array($result))
+							while($myrow=$db_ctrl->fetch_array($result))
 								{
 								
 								$command.=", ".$myrow["command"];

@@ -7,8 +7,8 @@ $sender_host=$sender_info[2];
 
 $sql="update chan_users set reason ='KICKED by $sender_nick reason $kick_reason' where nick='$kicked_nick' and reason is null and chan_name='$chan'";
 
-$result=@mysql_query($sql,$db);
+$result=@$db_ctrl->query($sql,$db);
 
 if (!$result) {
-    echo mysql_error($db)."\n";
+    echo $db_ctrl->error($db)."\n";
 }

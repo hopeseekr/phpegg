@@ -25,10 +25,10 @@ if (substr(trim($message),1,4)=="PING") {
 	    // ip and port ok
 	    $time=time();
 	    $sql="insert into dcc_connections(nick,time,hostmask) values (\"$sender_nick\",\"$time\",'$host')";
-	    mysql_query($sql,$db);	    
+	    $db_ctrl->query($sql,$db);	    
 	    $sql="select id from dcc_connections where nick=\"$sender_nick\" and time=\"$time\"";
-	    $result=mysql_query($sql,$db);	    
-	    $myrow=mysql_fetch_array($result);
+	    $result=$db_ctrl->query($sql,$db);	    
+	    $myrow=$db_ctrl->fetch_array($result);
 	    if ($debug==1) {
 		print("dcc_id: ".$myrow[id]."\n");
 	    }
@@ -40,7 +40,7 @@ if (substr(trim($message),1,4)=="PING") {
 		    echo "DCC error: $errstr ($errno)<br>\n";
 		}
 		$sql="delete from dcc_connections where id=\"$dcc_id\"";
-		mysql_query($sql,$db);
+		$db_ctrl->query($sql,$db);
 		// maby msg the user, that the connection failed..
              } else {
 	         if ($debug==1) {

@@ -2,7 +2,7 @@
 
 
 function on_part_msg($irc_connect,$who,$chan) {
-    global $db;
+    global $db_ctrl,$db;
 
     $sender_info=clean_nick($who);
     $sender_nick=$sender_info[0];
@@ -14,11 +14,11 @@ function on_part_msg($irc_connect,$who,$chan) {
     // prevents chan v and o users from receieving the on part msg 
     $sql="select user.user from user_host uh, user ,user_chan uc where '$host_mask' like replace(replace(mask,'*!',''),'*','%') and uh.user=user.user and uc.user=user.user and ((user.o='Y' or user.f='Y' or user.v='Y') or (uc.chan='$chan' and (uc.o='Y' or uc.v='Y' or uc.f='Y'))) limit 1";
 
-    $result=@mysql_query($sql,$db);
-    if (mysql_num_rows($result)==0) {
+    $result=@$db_ctrl->query($sql,$db);
+    if ($db_ctrl->num_rows($result)==0) {
 	$sql="select msg from channels c, part_msg jm where upper(c.chan_name)=upper('$chan') and on_join='Y' and c.chan_name=jm.chan_name order by part_msg_id asc";
-	$result=@mysql_query($sql,$db);
-	while($myrow=@mysql_fetch_array($result)) {
+	$result=@$db_ctrl->query($sql,$db);
+	while($myrow=@$db_ctrl->fetch_array($result)) {
 	    $msg=$myrow["msg"];
 	    $sender_info=clean_nick($who);
 	    $sender_nick=$sender_info[0];
@@ -34,7 +34,7 @@ function on_part_msg($irc_connect,$who,$chan) {
 }
 
 function on_join_msg($irc_connect,$who,$chan) {
-    global $db;
+    global $db_ctrl,$db;
 
     $sender_info=clean_nick($who);
     $sender_nick=$sender_info[0];
@@ -45,11 +45,11 @@ function on_join_msg($irc_connect,$who,$chan) {
     // prevents chan v and o users from receieving the on join msg 
     $sql="select user.user from user_host uh, user ,user_chan uc where '$host_mask' like replace(replace(mask,'*!',''),'*','%') and uh.user=user.user and uc.user=user.user and ((user.o='Y' or user.f='Y' or user.v='Y') or (uc.chan='$chan' and (uc.o='Y' or uc.v='Y' or uc.f='Y'))) limit 1";
  
-    $result=@mysql_query($sql,$db);
-    if (mysql_num_rows($result)==0) {	
+    $result=@$db_ctrl->query($sql,$db);
+    if ($db_ctrl->num_rows($result)==0) {	
 	$sql="select msg from channels c, join_msg jm where upper(c.chan_name)=upper('$chan') and on_join='Y' and c.chan_name=jm.chan_name order by join_msg_id asc";
-	$result=@mysql_query($sql,$db);
-	while($myrow=@mysql_fetch_array($result)) {
+	$result=@$db_ctrl->query($sql,$db);
+	while($myrow=@$db_ctrl->fetch_array($result)) {
 	    $msg=$myrow["msg"];
 	    $sender_info=clean_nick($who);
 	    $sender_nick=$sender_info[0];
@@ -108,7 +108,7 @@ function nick_change($irc_connect,$who,$who_to) {
     // if its not been seen before then add it to the chan_user table
     // update the user stating the time and reason changing nick to new_nick
 
-    global $db,$my_nick;
+    global $db_ctrl,$db,$my_nick;
 	
     $sender_info=clean_nick($who);
     $sender_nick=$sender_info[0];
@@ -123,8 +123,8 @@ function nick_change($irc_connect,$who,$who_to) {
 	
     $sql="select * from chan_users  where upper(nick)=upper('$sender_nick') and reason is null";
 	
-    $result=mysql_query($sql,$db);
-    while($myrow=mysql_fetch_array($result)) {
+    $result=$db_ctrl->query($sql,$db);
+    while($myrow=$db_ctrl->fetch_array($result)) {
 	$cu_id=$myrow["cu_id"];
 	$mode=$myrow["mode"];
 	$chan_name=$myrow["chan_name"];
@@ -133,9 +133,9 @@ function nick_change($irc_connect,$who,$who_to) {
     }
     $sql_update="update chan_users set ident='$sender_ident',host_mask='$sender_host', reason='changed nick to $who_to' where reason is null and upper(nick)=upper('$sender_nick')";
 
-    $result_update=mysql_query($sql_update,$db);	
+    $result_update=$db_ctrl->query($sql_update,$db);	
     if (!$sql_update) {
-	//echo "Error in server_msg change_nick sql_update ".mysql_error($result_update)."\n";
+	//echo "Error in server_msg change_nick sql_update ".$db_ctrl->error($result_update)."\n";
     }
     //print "$sender_nick ($sender_ident@$sender_host) is now $who_to \n";
 }
@@ -143,15 +143,15 @@ function nick_change($irc_connect,$who,$who_to) {
 function bot_join_topic($irc_connect,$who,$chan,$topic) {
     // if chan not in the chan table then add it
     // if it is then update the topic
-    global $db;
+    global $db_ctrl,$db;
 	
     $topic=addslashes(trim($topic));
     $sql="update channels set topic='$topic' where upper(chan_name)=upper('$chan')";
 	
-    $result=mysql_query($sql,$db);
+    $result=$db_ctrl->query($sql,$db);
 	
     $sql="update chan_users set reason='Bot left' where upper(chan_name)=upper('$chan') and reason is null;";
-    $result=mysql_query($sql,$db);
+    $result=$db_ctrl->query($sql,$db);
 	
     //print "Bot joined $chan topic is $topic \n";
 }	
@@ -159,17 +159,17 @@ function bot_join_topic($irc_connect,$who,$chan,$topic) {
 function bot_join_topic_setby($irc_connect, $chan,$topic_set_by,$topic_set) {
     // update the topic set by info and when in the chan table.
 	
-    global $db;
+    global $db_ctrl,$db;
     $topic_set_by=addslashes($topic_set_by);
     $sql="update channels set topic_set_by='$topic_set_by', topic_set_date='$topic_set' where upper(chan_name)=upper('$chan')";
-    $result=mysql_query($sql,$db);
+    $result=$db_ctrl->query($sql,$db);
 	
     //print "Bot joined $chan topic set by $topic_set_by $topic_set\n";
 	
 }
 
 function bot_join_names($irc_connect,$chan,$names) {
-    global $irc_nick;
+    global $db_ctrl,$irc_nick;
     // check all the names in the table to see who is here and who isnt and new people
     // update left on the others that arnt there.
     $names=trim($names);
@@ -204,7 +204,7 @@ function bot_join_names($irc_connect,$chan,$names) {
 }	
 	
 function change_user_mode($irc_connect,$who,$chan,$mode) {
-    global $db;	
+    global $db_ctrl,$db;	
 	
     //print "$who Mode Now $mode \n";
 	
@@ -214,17 +214,17 @@ function change_user_mode($irc_connect,$who,$chan,$mode) {
     if ($plus_minus=="+") {
 	if (($mode=="v") || ($mode=="o")) {
 	    $sql="update chan_users set mode='$mode' where upper(nick)=upper('$who') and upper(chan_name)=upper('$chan')";
-	    $result=mysql_query($sql,$db);
+	    $result=$db_ctrl->query($sql,$db);
 	}
     } else {
 	if ($mode=="o") {
 	    $sql="update chan_users set mode='u'  where upper(nick)=upper('$who') and upper(chan_name)=upper('$chan')";
 			
-	    $result=mysql_query($sql,$db);
+	    $result=$db_ctrl->query($sql,$db);
 	} else if ($mode=="v") {
 	    $sql="update chan_users set mode='u'  where upper(nick)=upper('$who') and upper(chan_name)=upper('$chan')";
 			
-	    $result=mysql_query($sql,$db);
+	    $result=$db_ctrl->query($sql,$db);
 	}
     }
     // update the chan_user table for that user name. to show the new level

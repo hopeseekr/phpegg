@@ -10,7 +10,7 @@ if (substr($message,0,1)==".") {
     		fputs($dcc_connections[$myrow[id]],"cya..\n");
 		fclose($dcc_connections[$myrow[id]]);
 		$sql="delete from dcc_connections where id=\"".$myrow[id]."\"";
-		mysql_query($sql,$db);
+		$db_ctrl->query($sql,$db);
     	
     		break;
     	case ".INFO":
@@ -21,8 +21,8 @@ if (substr($message,0,1)==".") {
 	    $is_op=op_check($message_array[1],$sender_nick);
 	    if ($is_op) {
 		$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null";
-		$result=@mysql_query($sql,$db);
-		if (mysql_num_rows($result)!=0) {
+		$result=@$db_ctrl->query($sql,$db);
+		if ($db_ctrl->errorl_num_rows($result)!=0) {
 		    fputs($irc_connect, "MODE $message_array[1] +v $message_array[2] \n");	
 		} else {		
 		    $message_array[2]=str_replace("","",$message_array[2]);
@@ -36,8 +36,8 @@ if (substr($message,0,1)==".") {
 	    $is_op=op_check($message_array[1],$sender_nick);
 	    if ($is_op) {
 		$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null";
-		$result=@mysql_query($sql,$db);
-		if (mysql_num_rows($result)!=0) {
+		$result=@$db_ctrl->query($sql,$db);
+		if ($db_ctrl->errorl_num_rows($result)!=0) {
 		    fputs($irc_connect, "MODE $message_array[1] +o $message_array[2] \n");	
 		} else {
 		    $message_array[2]=str_replace("","",$message_array[2]);
@@ -51,8 +51,8 @@ if (substr($message,0,1)==".") {
 	    $is_op=op_check($message_array[1],$sender_nick);
 	    if ($is_op) {
 		$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null and mode='v'";
-		$result=@mysql_query($sql,$db);
-		if (mysql_num_rows($result)!=0) {
+		$result=@$db_ctrl->query($sql,$db);
+		if ($db_ctrl->errorl_num_rows($result)!=0) {
 		    fputs($irc_connect, "MODE $message_array[1] -v $message_array[2]\n");
 		} else {		
 		    $message_array[2]=str_replace("","",$message_array[2]);
@@ -66,8 +66,8 @@ if (substr($message,0,1)==".") {
 	    $is_op=op_check($message_array[1],$sender_nick);
 	    if ($is_op) {
 		$sql="select * from chan_users where nick='$message_array[2]' and chan_name='$message_array[1]' and reason is null and mode='o'";
-		$result=@mysql_query($sql,$db);
-		if (mysql_num_rows($result)!=0) {
+		$result=@$db_ctrl->query($sql,$db);
+		if ($db_ctrl->errorl_num_rows($result)!=0) {
 		    fputs($irc_connect, "MODE $message_array[1] -o $message_array[2] \n");	
 		} else {
 		    $message_array[2]=str_replace("","",$message_array[2]);
