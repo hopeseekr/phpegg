@@ -1,8 +1,19 @@
 <?php
 
+// edit host, login, pass here
+$db=@mysql_connect("localhost","root","");
 
+if ($db=="") {
+    print("Error: database connection failed<br>\n");
+    exit;
+}
 
-$db=mysql_connect("localhost","root","");
-mysql_select_db("clean",$db);
+// edit your database name here
+mysql_select_db("egg_final",$db);
+
+if (($foo=mysql_error())!="") {
+    print("$foo<br>\n");
+    exit;
+}
 
 ?>
