@@ -116,129 +116,33 @@ if ($debug==1) {
 
 // loading modules
 
-$sql="select module_file_name from module_binds mb, modules m where bind='ONKICK' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $kick_mdl[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {	
-    echo "num of kick modules loaded ".count($kick_mdl)."\n";
-}
 
-$sql="select module_file_name from module_binds mb, modules m where bind='SHOW' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $show_mdl[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of show modules loaded ".count($show_mdl)."\n";
-}
+/* Module control
+   
+   Basic structure of loading individual modules dev'd by Kill-9
+   Modular class system dev'd by Un-Thesis 
 
-$sql="select module_file_name from module_binds mb, modules m where bind='!_COMMAND' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $ex_commands[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
+   Single module:
+       $mod_ctrl->load_specific("modname");
+   All modules:
+	   $mod_ctrl->load_all(); 
+*/
 
-if ($debug==1) {	
-    echo "num of ! modules loaded ".count($ex_commands)."\n";
-}
-$sql="select module_file_name from module_binds mb, modules m where bind='BOTMSG' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $botmsgs[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of botmsg modules loaded ".count($botmsgs)."\n";
-}
+/* unloading modules -- Dev'd by Un-Thesis
+	   $mod_ctrl->unload_specific("modname");
+       $mod_ctrl->unload_all();
+*/
 
-$sql="select module_file_name from module_binds mb, modules m where bind='MODE' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $mode_mdl[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of mode modules loaded ".count($mode_mdl)."\n";
-}
+/* reloading modules -- Dev'd by Un-Thesis
+       $mod_ctrl->reload_specific("modname");
+	   $mod_ctrl->reload_all();
+*/
+include("mod_ctrl.php");
 
-$sql="select module_file_name from module_binds mb, modules m where bind='NICK' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $nick_mdl[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of nick modules loaded ".count($nick_mdl)."\n";
-}
-$sql="select module_file_name from module_binds mb, modules m where bind='TOPIC' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $topic_mdl[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of topic modules loaded ".count($topic_mdl)."\n";
-}
-$sql="select module_file_name from module_binds mb, modules m where bind='PART' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $part_mdl[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of part modules loaded ".count($part_mdl)."\n";
-}
+$mod_ctrl = new module_control;
+$mod_ctrl->set_debug();
+$mod_ctrl->load_all();
 
-$sql="select module_file_name from module_binds mb, modules m where bind='JOIN' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $join_mdl[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of join modules loaded ".count($join_mdl)."\n";
-}
-
-$sql="select module_file_name from module_binds mb, modules m where bind='QUIT' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $quit_mdl[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of quit modules loaded ".count($quit_mdl)."\n";
-}
-$sql="select module_file_name from module_binds mb, modules m where bind='BOT_JOIN_TOPIC' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $bot_join_topic[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of bot_join_topic modules loaded ".count($bot_join_topic)."\n";
-}
-$sql="select module_file_name from module_binds mb, modules m where bind='BOT_JOIN_TOPIC_SETBY' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $bot_join_topic_set_by[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of bot_join_topic_set_by modules loaded ".count($bot_join_topic_set_by)."\n";
-}
-$sql="select module_file_name from module_binds mb, modules m where bind='BOT_JOIN_NAMES' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $bot_join_names[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of bot_join_names modules loaded ".count($bot_join_names)."\n";
-}
-$reload_modules = fread(fopen("modules/reload_mdl.mdl", "r"), filesize("modules/reload_mdl.mdl"));
-
-$login_module = fread(fopen("modules/login.mdl", "r"), filesize("modules/login.mdl"));
-
-$sql="select module_file_name from module_binds mb, modules m where bind='?_COMMAND' and mb.module_binds_id=m.module_binds_id";
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result)) {
-    $help_mdl[] = fread(fopen($myrow["module_file_name"], "r"), filesize($myrow["module_file_name"]));
-}
-if ($debug==1) {
-    echo "num of help modules loaded ".count($help_mdl)."\n";
-}
 
 global $dcc_connections,$uptime;
 $dcc_connections="";
