@@ -19,7 +19,7 @@ if ($login_access) {
 	case "UPTIME":
 	    global $uptime;
 	    $secs=(time()-$uptime);
-	    $mins="";
+	    $mins=0;
 	    while ($secs>59) {
 		$mins++;
 		$secs=$secs-60;
@@ -27,7 +27,17 @@ if ($login_access) {
 	    if ($secs<10) {
 		$secs="0$secs";
 	    }
-	    if ($mins!="") {
+	    $hours=0;
+	    while ($mins>59) {
+		$hours++;
+		$mins=$mins-60;
+	    }
+	    if ($mins<10) {
+		$mins="0$mins";
+	    }
+	    if ($hours!=0) {
+		$foo="$hours:$mins:$secs hours";
+	    } elseif ($mins!=0) {
 		$foo="$mins:$secs mins";
 	    } else {
 		$foo="$secs secs";
