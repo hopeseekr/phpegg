@@ -59,7 +59,7 @@ $result=mysql_query($sql,$db);
 $myrow=mysql_fetch_array($result);
 if (!eregi("^3.23.",$myrow[0])) {
     print("\nSorry, you need mysql version 3.23 to run php-egg\n");
-//    exit;
+    exit;
 }
 
 $sql="select * from user";
