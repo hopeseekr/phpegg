@@ -41,39 +41,42 @@ function check_for_colon($str) {
     return $str;
 }
 
-// make mysql connection
-$db=@mysql_pconnect($database_host,$database_login,$database_pass);
+// make database connection
+$db = $db_ctrl->pconnect($database_host,$database_login,$database_pass,$database_name);
+
 if ($db=="") {
-    print("\nError: mysql connection failed\n");
+    print("\nError: $database connection failed\n");
     exit;
 }
-mysql_select_db($database_name,$db);
-if (($foo=mysql_error())!="") {
+
+if (($foo=$db_ctrl->error())!="") {
     print("\nError: $foo\n");
     exit;
 }
-print("MySQL connection established...\n");
+print("$database connection established...\n");
 
 // check php and mysql versions
 if (!eregi("^4.",phpversion())) {
     print("\nSorry, you need php4 to run php-egg\n");
     exit;
 }
+
 $sql="select version()";
-$result=mysql_query($sql,$db);
-$myrow=mysql_fetch_array($result);
+$result=$db_ctrl->query($sql,$db);
+$myrow=$db_ctrl->fetch_array($result);
 if (!eregi("^3.23.",$myrow[0])) {
     print("\nSorry, you need mysql version 3.23 to run php-egg\n");
     exit;
 }
 
 $sql="select * from user";
-$result=@mysql_query($sql,$db);
+$result=@$db_ctrl->query($sql,$db);
 
-if (mysql_num_rows($result)!=0) {
+if ($db_ctrl->num_rows($result)!=0) {
     if ($debug==1) {
 	echo "Unsetting magic word users deteched \n";
-    }
+   
+	}
     unset($magic_word);
 } else {
     if ($debug==1) {
@@ -85,26 +88,26 @@ $chan_total=0;
 
 // delete old dcc_connections
 $sql="delete from dcc_connections";
-@mysql_query($sql,$db);
+@$db_ctrl->query($sql,$db);
 
 // fixes problem if bot crashes before database is updated
 
 $sql="update channels set in_chan='N'";
-$result=@mysql_query($sql,$db);
+$result=@$db_ctrl->query($sql,$db);
 
 
 $sql="update chan_users set reason='bot died' where reason is null";
-$result=@mysql_query($sql,$db);
+$result=@$db_ctrl->query($sql,$db);
 
 $sql="delete from bans";
-$result=@mysql_query($sql,$db);
+$result=@$db_ctrl->query($sql,$db);
 
 
 // reading servers
 if ($server_group!="local") {
     $sql_servers="select server_name, port from server_groups sg, servers s where upper(server_group)=('$server_group') and sg.server_groups_id=s.server_group_id";
-    $result_servers=@mysql_query($sql_servers,$db);
-    while ($myrow=@mysql_fetch_array($result_servers)) {
+    $result_servers=@$db_ctrl->query($sql_servers,$db);
+    while ($myrow=@$db_ctrl->fetch_array($result_servers)) {
 	$irc_servers[]=$myrow["server_name"];
 	$irc_server_ports[]=$myrow["port"];
     }
@@ -144,7 +147,7 @@ $mod_ctrl->set_debug();
 $mod_ctrl->load_all();
 
 
-global $dcc_connections,$uptime;
+global $db_ctrl,$dcc_connections,$uptime;
 $dcc_connections="";
 $uptime=time();
 
