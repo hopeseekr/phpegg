@@ -308,29 +308,29 @@ if ($fp=="") {
 }
 fputs($fp,"<?\n");
 // bot
-fputs($fp,"\$magic_word=\"$magic_word\"\n");
-fputs($fp,"\$admin_email=\"$admin_email\"\n");
+fputs($fp,"\$magic_word=\"$magic_word\";\n");
+fputs($fp,"\$admin_email=\"$admin_email\";\n");
 // database
-fputs($fp,"\$database_host=\"$database_host\"\n");
-fputs($fp,"\$database_login=\"$database_login\"\n");
-fputs($fp,"\$database_pass=\"$database_pass\"\n");
-fputs($fp,"\$database_name=\"$database_name\"\n");
+fputs($fp,"\$database_host=\"$database_host\";\n");
+fputs($fp,"\$database_login=\"$database_login\";\n");
+fputs($fp,"\$database_pass=\"$database_pass\";\n");
+fputs($fp,"\$database_name=\"$database_name\";\n");
 // irc
-fputs($fp,"\$irc_nick=\"$irc_nick\"\n");
-fputs($fp,"\$irc_alt_nick=\"$irc_alt_nick\"\n");
-fputs($fp,"\$irc_identd=\"$irc_identd\"\n");
-fputs($fp,"\$irc_real_name=\"$irc_real_name\"\n");
-fputs($fp,"\$quit_message=\"$quit_message\"\n");
+fputs($fp,"\$irc_nick=\"$irc_nick\";\n");
+fputs($fp,"\$irc_alt_nick=\"$irc_alt_nick\";\n");
+fputs($fp,"\$irc_identd=\"$irc_identd\";\n");
+fputs($fp,"\$irc_real_name=\"$irc_real_name\";\n");
+fputs($fp,"\$quit_message=\"$quit_message\";\n");
 // servers
 if ($server_group=="local") {
-    fputs($fp,"\$server_group=\"$server_group\"\n");
-    fputs($fp,"\$irc_servers[0]=\"".$irc_servers[0]."\"\n");
-    fputs($fp,"\$irc_server_ports[0]=\"".$irc_server_ports[0]."\"\n");
+    fputs($fp,"\$server_group=\"$server_group\";\n");
+    fputs($fp,"\$irc_servers[0]=\"".$irc_servers[0]."\";\n");
+    fputs($fp,"\$irc_server_ports[0]=\"".$irc_server_ports[0]."\";\n");
 } else {
-    fputs($fp,"\$server_group=\"$server_group\"\n");
+    fputs($fp,"\$server_group=\"$server_group\";\n");
 }
 // debug
-fputs($fp,"\$debug=\"$debug\"\n");
+fputs($fp,"\$debug=\"$debug\";\n");
 fputs($fp,"?>\n");
 fclose($fp);
 
