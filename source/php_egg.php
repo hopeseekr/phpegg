@@ -240,8 +240,9 @@ if ($debug==1) {
     echo "num of help modules loaded ".count($help_mdl)."\n";
 }
 
-global $dcc_connections;
+global $dcc_connections,$uptime;
 $dcc_connections="";
+$uptime=time();
 
 include("connect.inc");
 
