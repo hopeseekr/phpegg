@@ -207,7 +207,7 @@ function irc_idle($irc_connect) {
 					else if (!$myrow["login"])
 	 				{
 						$login=trim($input_buffer);
-						$sql="update dcc_connections set login='$login' , password='N' where id=".$myrow['id']." ";
+						$sql="update dcc_connections set login='$login' , password='0' where id=".$myrow['id']." ";
 			
 						$result_up=@$db_ctrl->query($sql,$db);
 			
@@ -220,7 +220,7 @@ function irc_idle($irc_connect) {
 			
 						if ($access)
 						{
-							$sql="update dcc_connections set login='$login' , password='Y' where id=".$myrow['id']." ";
+							$sql="update dcc_connections set login='$login' , password='1' where id=".$myrow['id']." ";
 							$result_up=@$db_ctrl->query($sql,$db);
 							$ascii = fread(fopen("modules/ascii.mdl", "r"), filesize("modules/ascii.mdl")); 
 							$buffer=explode("\n",$ascii);
@@ -279,7 +279,7 @@ function irc_idle($irc_connect) {
 				}
 				// cleaning the tables on a reconnect.
 
-				$sql="update channels set in_chan='N'";
+				$sql="update channels set in_chan='0'";
 				$result=@$db_ctrl->query($sql,$db);
 
 				$sql="update chan_users set reason='bot reconnect' where reason is null";
@@ -383,7 +383,6 @@ function check_msg($irc_connect,$input_buffer) {
 			$chan=trim($command_data[2]);
 			// deals with the last spoke info 	function lives in seen.inc
 			lastspoke_log($sender_ident,$sender_nick,$sender_host,$chan);
-	\		
 			// done dealing with last spoke.
 
 			// who sent it what chan they sent it to what they sent
@@ -432,7 +431,7 @@ function check_msg($irc_connect,$input_buffer) {
 				$sender_host=$sender_info[2];
 				
 				$now=time();
-				$sql="insert into user (user,n,m,o,v,f,p,created,last_on) values ('$sender_nick','Y','Y','Y','Y','Y','p','$now','$now')";
+				$sql="insert into user (user,n,m,o,v,f,p,created,last_on) values ('$sender_nick','1','1','1','1','1','1','$now','$now')";
 				$result_user=@$db_ctrl->query($sql,$db);
 				if ($result_user) {
 					$mask=make_ban($sender_ident,$sender_host);

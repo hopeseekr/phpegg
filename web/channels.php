@@ -2,7 +2,6 @@
 <body bgcolor=ffffff>
 <?php
 include("menu.inc.php");
-include("database.inc.php");
 
 if (($new=="create") && ($manager==1))
 	{
@@ -14,10 +13,10 @@ if (($new=="create") && ($manager==1))
 		
 	if ($sql)
 		{	
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		if (!$result)
 			{
-			$msg.= "Mysql error: ".mysql_error($db)."<br>";
+			$msg.= "Mysql error: ".$db_ctrl->error($db)."<br>";
 			}
 		else
 			{
@@ -32,12 +31,12 @@ if ($update=="update")
 	if (!$on_join)
 		{
 		
-		$on_join="N";
+		$on_join="0";
 		}
 	if (!$on_part)
 		{
 		
-		$on_part="N";
+		$on_part="0";
 		}	
 			
 			
@@ -47,10 +46,10 @@ if ($update=="update")
 	
 	if ($sql)
 		{	
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		if (!$result)
 			{
-			$msg.="Mysql error: ".mysql_error($db)."<br>";
+			$msg.="Mysql error: ".$db_ctrl->error($db)."<br>";
 			}
 		else
 			{
@@ -63,10 +62,10 @@ if (($delete=="delete") && $channels_id && ($manager==1))
 	{
 	
 	$sql="delete from channels where channels_id = $channels_id";
-	$result=mysql_query($sql,$db);
+	$result=$db_ctrl->query($sql,$db);
 	if (!$result)
 		{
-		$msg.= "Mysql error: ".mysql_error($db)."<br>";
+		$msg.= "Mysql error: ".$db_ctrl->error($db)."<br>";
 		}
 	else
 		{
@@ -114,7 +113,7 @@ echo " chan_name <br>
 
 
 
-	if ($manager==1)
+	if ($manager==1)
 	{
 	echo "<tr><td><input type=hidden name=login_id value=$login_id><input type=submit name=new value=create>
 	<input type=reset name=reset value=reset></td></tr>";
@@ -134,8 +133,8 @@ else
 	{
 	// update existing news.
 	$sql="select * from channels where channels_id=$channels_id ";
-	$result=@mysql_query($sql,$db);
-	$myrow=@mysql_fetch_array($result);
+	$result=@$db_ctrl->query($sql,$db);
+	$myrow=@$db_ctrl->fetch_array($result);
 $chan_name=$myrow["chan_name"]; 
 $topic=$myrow["topic"]; 
 $topic_set_by=$myrow["topic_set_by"]; 
@@ -161,7 +160,7 @@ echo " chan_name <br>
 			<input type=text name=topic_set_by value='$topic_set_by'><br> "; 
                          echo " topic_set_date <br> 
 			<input type=text name=topic_set_date value='$topic_set_date'><br> "; 
-         if ($active=="Y")
+         if ($active=="1")
          	{
          	
          	$yes=" checked ";
@@ -171,25 +170,25 @@ echo " chan_name <br>
          	$no="checked";
          	}	  	
                          	echo "Active <br>
-         <input type=radio name=active value=Y $yes>yes<br>
-         <input type=radio name=active value=N $no>    No   <br>         	
+         <input type=radio name=active value=1 $yes>yes<br>
+         <input type=radio name=active value=0 $no>    No   <br>         	
 	<input type=hidden name=channels_id value=$channels_id>
 	<input type=submit name=update value=update>
 	<input type=reset name=reset value=new onclick=\"javascript:document.location.href='channels.php?login_id=$login_id'\"></td></tr>";
 	
-if ($on_join=="Y")
+if ($on_join=="1")
 	{
 	$onjoin_yes=" checked ";
 	}	
 	
-echo "<tr><td><input type=checkbox name=on_join value='Y' $onjoin_yes> On Join active</td></tr> ";	
+echo "<tr><td><input type=checkbox name=on_join value='1' $onjoin_yes> On Join active</td></tr> ";	
 	
-if ($on_part=="Y")
+if ($on_part=="1")
 	{
 	$onpart_yes=" checked ";
 	}	
 	
-echo "<tr><td><input type=checkbox name=on_part value='Y' $onpart_yes> On Part active</td></tr> ";	
+echo "<tr><td><input type=checkbox name=on_part value='1' $onpart_yes> On Part active</td></tr> ";	
 		
 	
 	
@@ -224,12 +223,12 @@ if ($manager)
 else
 	{
 	
-	$sql="select c.chan_name as chan_name,channels_id from web_login wl, user_chan uc , channels c where wl.web_login_id=$user_id and wl.user=uc.user and uc.chan=c.chan_name  and (uc.m='Y' or uc.o='Y')" ;
+	$sql="select c.chan_name as chan_name,channels_id from web_login wl, user_chan uc , channels c where wl.web_login_id=$user_id and wl.user=uc.user and uc.chan=c.chan_name  and (uc.m='1' or uc.o='1')" ;
 
 	}
 //$sql="select * from channels order by channels_id desc";
-$result=@mysql_query($sql,$db);
-while ($myrow=mysql_fetch_array($result))
+$result=@$db_ctrl->query($sql,$db);
+while ($myrow=$db_ctrl->fetch_array($result))
 	{
 
 $chan_name=$myrow["chan_name"]; 

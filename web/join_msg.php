@@ -2,13 +2,13 @@
 <body bgcolor=ffffff>
 <?php
 include("menu.inc.php");
-include("database.inc.php");
+
 echo $channel_name;
 if ($channels_id)
 	{
 $sql="select * from channels where channels_id=$channels_id";
-$result=@mysql_query($sql,$db);
-$myrow=@mysql_fetch_array($result);
+$result=@$db_ctrl->query($sql,$db);
+$myrow=@$db_ctrl->fetch_array($result);
 $channel_name=$myrow["chan_name"];
 	}
 
@@ -22,10 +22,10 @@ if ($new=="create")
 		
 	if ($sql)
 		{	
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		if (!$result)
 			{
-			$msg.= "Mysql error: ".mysql_error($db)."<br>";
+			$msg.= "Mysql error: ".$db_ctrl->error($db)."<br>";
 			}
 		else
 			{
@@ -46,10 +46,10 @@ if ($update=="update")
 	
 	if ($sql)
 		{	
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		if (!$result)
 			{
-			$msg.="Mysql error: ".mysql_error($db)."<br>";
+			$msg.="Mysql error: ".$db_ctrl->error($db)."<br>";
 			}
 		else
 			{
@@ -62,10 +62,10 @@ if (($delete=="delete") && $join_msg_id)
 	{
 	
 	$sql="delete from join_msg where join_msg_id = $join_msg_id";
-	$result=mysql_query($sql,$db);
+	$result=$db_ctrl->query($sql,$db);
 	if (!$result)
 		{
-		$msg.= "Mysql error: ".mysql_error($db)."<br>";
+		$msg.= "Mysql error: ".$db_ctrl->error($db)."<br>";
 		}
 	else
 		{
@@ -128,8 +128,8 @@ else
 	{
 	// update existing news.
 	$sql="select * from join_msg where join_msg_id=$join_msg_id ";
-	$result=@mysql_query($sql,$db);
-	$myrow=@mysql_fetch_array($result);
+	$result=@$db_ctrl->query($sql,$db);
+	$myrow=@$db_ctrl->fetch_array($result);
 $chan_name=$myrow["chan_name"]; 
 $msg=$myrow["msg"]; 
 $join_msg_id=$myrow["join_msg_id"]; 
@@ -182,8 +182,8 @@ echo "<form acton=join_msg.php method=post>";
 echo "<table width=100%>";
 
 $sql="select * from join_msg where chan_name='$channel_name'order by join_msg_id ";
-$result=@mysql_query($sql,$db);
-while ($myrow=mysql_fetch_array($result))
+$result=@$db_ctrl->query($sql,$db);
+while ($myrow=$db_ctrl->fetch_array($result))
 	{
 
 $chan_name=$myrow["chan_name"]; 

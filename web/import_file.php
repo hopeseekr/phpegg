@@ -3,7 +3,7 @@
 <?php
 include("menu.inc.php");
 include("table.inc.php");
-include("database.inc.php");	
+
 if ($tclfile)
 	{
 	
@@ -24,8 +24,8 @@ echo "<tr><td>import file<br>
 	
 echo "<tr><td><input type=submit name=submit value=\"Import file\"><input type=hidden name=login_id value=$login_id>
 </td></tr>";		
-echo "<tr><td>WARNING IMPORTING A USER FILE WILL DELETE ALL OF THE USERS CURNTLY IN THE SYSTEM.</td></tr>";	
-echo "<tr><td>NOTE: we will be fixing this in the next version.</td></tr>";	
+/*echo "<tr><td>WARNING IMPORTING A USER FILE WILL DELETE ALL OF THE USERS CURNTLY IN THE SYSTEM.</td></tr>";	
+echo "<tr><td>NOTE: we will be fixing this in the next version.</td></tr>";	*/
 $str=create_table_bottom();
   	echo $str;
 	echo "</form>";

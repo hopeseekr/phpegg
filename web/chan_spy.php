@@ -1,24 +1,23 @@
 <html>
 <body bgcolor=FFFFFF>
 <?php
-include("database.inc.php");
 include("menu.inc.php");
 
 if ($manager)
 	{
-	$sql="select chan_name from channels where active='Y'";
+	$sql="select chan_name from channels where active='1'";
 	}
 else
 	{
 	
-	$sql="select c.chan_name as chan_name from web_login wl, user_chan uc , channels c where wl.web_login_id=$user_id and wl.user=uc.user and uc.chan=c.chan_name and c.active='Y' and (uc.m='Y' or uc.o='Y')" ;
+	$sql="select c.chan_name as chan_name from web_login wl, user_chan uc , channels c where wl.web_login_id=$user_id and wl.user=uc.user and uc.chan=c.chan_name and c.active='1' and (uc.m='1' or uc.o='1')" ;
 
 	}
 
-$result=@mysql_query($sql,$db);
+$result=@$db_ctrl->query($sql,$db);
 echo  "<form name=myform action=chan_spy.php method=post >";
 echo "Curent active channels <br><select name=chan onchange=document.myform.submit()><option value=0>select a chan</option>";
-while($myrow=@mysql_fetch_array($result))
+while($myrow=@$db_ctrl->fetch_array($result))
 	{
 	$new_chan=$myrow["chan_name"];
 	if ($new_chan==$chan)
@@ -54,9 +53,9 @@ if ($chan && !$submit)
 		<td>kick</td>
 		</tr>";
 	$sql="select * from chan_users where reason is null and upper(chan_name)= upper('$chan') order by mode,nick";
-	$result=@mysql_query($sql,$db);
+	$result=@$db_ctrl->query($sql,$db);
 	$i=0;
-	while($myrow=@mysql_fetch_array($result))
+	while($myrow=@$db_ctrl->fetch_array($result))
 		{
 		$nick=$myrow["nick"];
 		
@@ -112,7 +111,7 @@ if ($chan && !$submit)
 		</tr>";
 		$i++;
 		}
-		echo "<tr><td colspan=7>Curently ".mysql_num_rows($result)." users in $chan</td></tr>";
+		echo "<tr><td colspan=7>Curently ".$db_ctrl->num_rows($result)." users in $chan</td></tr>";
 echo "</table><input type=hidden name=login_id value=$login_id> <input type=hidden name=chan value=$chan><input type=submit name=submit></form>";
 	}
 else 
@@ -127,11 +126,11 @@ else
 			$action=" WHOIS $nick[$i] ";
 			$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 			
-			$result=@mysql_query($sql,$db);
+			$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 			
@@ -182,11 +181,11 @@ else
 				
 				$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 			
-			$result=@mysql_query($sql,$db);
+			$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 				
@@ -195,11 +194,11 @@ else
 				
 					$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 			
-			$result=@mysql_query($sql,$db);
+			$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 				
@@ -212,11 +211,11 @@ else
 			$action="KICK $chan $nick[$i]";
 			$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 			
-			$result=@mysql_query($sql,$db);
+			$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 			}	
@@ -235,11 +234,11 @@ else
 					$action = "MODE $chan -o $nick[$i]";
 						$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 					
-					$result=@mysql_query($sql,$db);
+					$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 					
@@ -251,11 +250,11 @@ else
 					$action = "MODE $chan +v $nick[$i]";
 								$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 					
-					$result=@mysql_query($sql,$db);
+					$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 					
@@ -269,11 +268,11 @@ else
 					$action= "MODE $chan +o $nick[$i]";
 								$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 					
-					$result=@mysql_query($sql,$db);
+					$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 					}
@@ -283,11 +282,11 @@ else
 					$action = "MODE $chan -v $nick[$i]";
 								$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 					
-					$result=@mysql_query($sql,$db);
+					$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 					}
@@ -296,11 +295,11 @@ else
 					$action=  "MODE $chan -v $nick[$i]";
 								$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 					
-					$result=@mysql_query($sql,$db);
+					$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 					
@@ -314,11 +313,11 @@ else
 					
 								$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 					
-					$result=@mysql_query($sql,$db);
+					$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 					}
@@ -327,11 +326,11 @@ else
 					$action= "MODE $chan +v $nick[$i]";
 							$sql="insert into mode_data (chan_name,action,date_inserted) values ('$chan','$action','$now')";
 					
-					$result=@mysql_query($sql,$db);
+					$result=@$db_ctrl->query($sql,$db);
 					if (!$result)
 						{
 						
-						echo mysql_error($db);
+						echo $db_ctrl->error($db);
 						
 						}
 					

@@ -27,53 +27,53 @@ if (!$login && !$password) {
 	
     $sql="select * from user where user='$login' and mysql_password=password('$password')";
     
-    $result=@mysql_query($sql,$db);
-    if (mysql_num_rows($result)==0) {
-	$user=$myrow["user"];
-	$pass=$myrow["mysql_password"];
+    $result=$db_ctrl->query($sql,$db);
+    if ($db_ctrl->num_rows($result)==0) {
 		
-	if (!$pass) {
-	    include_once("bf_lib.php");
-	    $pass=bf_encrypt_pass($password);
-	    		
-	    $sql="select * from user where user='$login' and password='$pass'";
+		$user=$myrow["user"];
+		$pass=$myrow["mysql_password"];
+		if (!$pass) {
+			include_once("bf_lib.php");
+			$pass=bf_encrypt_pass($password);
+			$sql="select * from user where user='$login' and password='$pass'";
 		
-	    $result=@mysql_query($sql,$db);	
-	    if (mysql_num_rows($result)!=0) {	
-		$sql_update="update user set mysql_password=password('$password') where user='$login'";
-		$result_update=@mysql_query($sql_update,$db);
+			$result=@$db_ctrl->query($sql,$db);	
+			if ($db_ctrl->num_rows($result)!=0) {	
+				$sql_update="update user set mysql_password=password('$password') where user='$login'";
+				$result_update=@$db_ctrl->query($sql_update,$db);
 				
+				$login_time=time();
+				include_once("common.inc.php");
+				
+				$result=@$db_ctrl->query($sql,$db);	
+				$sql="insert into web_login (user,login_time) values ('$login','$login_time')";
+				$result=@$db_ctrl->query($sql,$db);	
+				$result_login=@$db_ctrl->query($sql,$db);	
+				if ($result_login) {
+					$login_id=$db_ctrl->get_last_id($result,$db);
+					$login_id=crypt_login($db,$login_id,$login_time);
+					print "LOGIN=$login_id";
+				}
+				
+			}
+		}
+		include("menu.inc.php");
+    } else {
 		$login_time=time();
 		include_once("common.inc.php");
-				
-		$result=@mysql_query($sql,$db);	
-		$sql="insert into web_login (user,login_time) values ('$login','$login_time')";
-		$result=@mysql_query($sql,$db);	
-		$result_login=@mysql_query($sql,$db);	
-		if ($result_login) {
-		    $login_id=mysql_insert_id($db);
-		    $login_id=crypt_login($db,$login_id,$login_time);
-		    
-		    include("menu.inc.php");
-		}
-	    }
-	}
-    } else {
-	$login_time=time();
-	include_once("common.inc.php");
 	
-	$sql="delete from web_login where user='$login'";
-	$result=@mysql_query($sql,$db);
-	$sql="insert into web_login (user,login_time) values ('$login','$login_time')";
+		$sql="delete from web_login where user='$login'";
+		$result=@$db_ctrl->query($sql,$db);
+		$sql="insert into web_login (user,login_time) values ('$login','$login_time')";
+
+		$result_login=@$db_ctrl->query($sql,$db);	
+		if ($result_login) {
+			$login_id=$db_ctrl->get_last_id($result_login,$db);
 			
-	$result_login=@mysql_query($sql,$db);	
-	if ($result_login) {
-	    $login_id=mysql_insert_id($db);
-			
-	    $login_id=crypt_login($db,$login_id,$login_time);
-				
-	    include("menu.inc.php");
-	}
+			$login_id=crypt_login($db,$login_id,$login_time);
+
+			include("menu.inc.php");
+		}
     }
 }	
 

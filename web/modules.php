@@ -2,7 +2,6 @@
 <body bgcolor=ffffff>
 <?php
 include("menu.inc.php");
-include("database.inc.php");
 
 if ($new=="create")
 	{
@@ -14,10 +13,10 @@ if ($new=="create")
 		
 	if ($sql)
 		{	
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		if (!$result)
 			{
-			$msg.= "Mysql error: ".mysql_error($db)."<br>";
+			$msg.= "Mysql error: ".$db_ctrl->error($db)."<br>";
 			}
 		else
 			{
@@ -37,10 +36,10 @@ if ($update=="update")
 	
 	if ($sql)
 		{	
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		if (!$result)
 			{
-			$msg.="Mysql error: ".mysql_error($db)."<br>";
+			$msg.="Mysql error: ".$db_ctrl->error($db)."<br>";
 			}
 		else
 			{
@@ -53,10 +52,10 @@ if (($delete=="delete") && $modules_id)
 	{
 	
 	$sql="delete from modules where modules_id = $modules_id";
-	$result=mysql_query($sql,$db);
+	$result=$db_ctrl->query($sql,$db);
 	if (!$result)
 		{
-		$msg.= "Mysql error: ".mysql_error($db)."<br>";
+		$msg.= "Mysql error: ".$db_ctrl->error($db)."<br>";
 		}
 	else
 		{
@@ -94,9 +93,9 @@ if (!$modules_id)
 
 $select_module_binds_id="select * from module_binds";  
 
-			$result_select=@mysql_query($select_module_binds_id,$db);
+			$result_select=@$db_ctrl->query($select_module_binds_id,$db);
 			echo "<select name=module_binds_id >  ";
-			while ($myrow=mysql_fetch_array($result_select))
+			while ($myrow=$db_ctrl->fetch_array($result_select))
 				{
 				$module_binds_id=$myrow[0];
 				$temp=$myrow[1];
@@ -133,8 +132,8 @@ else
 	{
 	// update existing news.
 	$sql="select * from modules where modules_id=$modules_id ";
-	$result=@mysql_query($sql,$db);
-	$myrow=@mysql_fetch_array($result);
+	$result=@$db_ctrl->query($sql,$db);
+	$myrow=@$db_ctrl->fetch_array($result);
 $module_binds_id=$myrow["module_binds_id"]; 
 $module_name=$myrow["module_name"]; 
 $module_desc=$myrow["module_desc"]; 
@@ -151,9 +150,9 @@ $modules_id=$myrow["modules_id"];
 	
 $select_module_binds_id="select * from module_binds";  
 
-			$result_select=@mysql_query($select_module_binds_id,$db);
+			$result_select=@$db_ctrl->query($select_module_binds_id,$db);
 			echo "<select name=module_binds_id >  ";
-			while ($myrow2=mysql_fetch_array($result_select))
+			while ($myrow2=$db_ctrl->fetch_array($result_select))
 				{
 				$new_module_binds_id=$myrow2[0];
 				$temp=$myrow2[1];
@@ -213,8 +212,8 @@ echo "<form acton=modules.php method=post>";
 echo "<table width=100%>";
 
 $sql="select module_name, modules_id , bind  from modules m , module_binds b where m.module_binds_id=b.module_binds_id";
-$result=@mysql_query($sql,$db);
-while ($myrow=mysql_fetch_array($result))
+$result=@$db_ctrl->query($sql,$db);
+while ($myrow=$db_ctrl->fetch_array($result))
 	{
 
 $module_binds_id=$myrow["module_binds_id"]; 

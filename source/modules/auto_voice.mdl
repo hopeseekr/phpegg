@@ -8,12 +8,12 @@ $sender_host=$sender_info[2];
 
 $host_mask=$sender_ident."@".$sender_host;
 
-$sql="select user.user from user_host uh, user ,user_chan uc where '$host_mask' like replace(replace(mask,'*!',''),'*','%') and uh.user=user.user and uc.user=user.user and ((user.o='Y' or user.f='Y' or user.v='Y') or (uc.chan='$chan' and (uc.o='Y' or uc.v='Y' or uc.f='Y'))) limit 1";
+$sql="select user.user from user_host uh, user ,user_chan uc where '$host_mask' like replace(replace(mask,'*!',''),'*','%') and uh.user=user.user and uc.user=user.user and ((user.o='1' or user.f='1' or user.v='1') or (uc.chan='$chan' and (uc.o='1' or uc.v='1' or uc.f='1'))) limit 1";
 $result=@$db_ctrl->query($sql,$db);
 $chan=trim($chan);
 if ($db_ctrl->num_rows($result)!=0) {
     $myrow=@$db_ctrl->fetch_array($result);
-    $sql_auto_voice="select auto_voice from channels where chan_name='$chan' and auto_voice='Y'";
+    $sql_auto_voice="select auto_voice from channels where chan_name='$chan' and auto_voice='1'";
 		
     $result_voice=@$db_ctrl->query($sql_auto_voice,$db);
     if ($db_ctrl->num_rows($result_voice)!=0) {

@@ -81,7 +81,7 @@ if ($login_access) {
 			fputs($irc_connect, "PRIVMSG $sender_nick :Running on  php $phpversion and mysql $mysql_version \n\r");
 			fputs($irc_connect, "PRIVMSG $sender_nick :Admin: $my_nick <email: $admin_email > \n\r");
 			
-			$sql="select chan_name from channels where in_chan='Y'";
+			$sql="select chan_name from channels where in_chan='1'";
 			$result=@$db_ctrl->query($sql,$db);
 			while($myrow=@$db_ctrl->fetch_array($result)) {
 				$channels[]=$myrow["chan_name"];

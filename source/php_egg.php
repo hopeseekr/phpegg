@@ -26,6 +26,19 @@ if ($irc_identd=="") {
 }
 print("Configuration loaded...\n");
 
+include('db_ctrl.php');
+switch($database) {
+	case "MySQL":
+		$db_ctrl = new MySQLInterface;
+		$dbshort = "mysql";
+		break;
+	case "PostgreSQL":
+		$db_ctrl = new PostgreSQLInterface;
+		$dbshort = "pg";
+		break;
+}
+print ("Database Control loaded...\n");
+
 include_once("bf_lib.php");
 include("server_functions.inc");
 include("login_check.inc");
@@ -61,17 +74,20 @@ if (!eregi("^4.",phpversion())) {
     exit;
 }
 
-$sql="select version()";
-$result=$db_ctrl->query($sql,$db);
-$myrow=$db_ctrl->fetch_array($result);
-if (!eregi("^3.23.",$myrow[0])) {
-    print("\nSorry, you need mysql version 3.23 to run php-egg\n");
-    exit;
+if ($database == "MySQL") {
+	$sql="select version()";
+	$result=$db_ctrl->query($sql,$db);
+	$myrow=$db_ctrl->fetch_array($result);
+	if (!eregi("^3.23.",$myrow[0])) {
+	    print("\nSorry, you need mysql version 3.23 to run php-egg\n");
+	    exit;
+	}
 }
 
 $sql="select * from user";
-$result=@$db_ctrl->query($sql,$db);
 
+$result=$db_ctrl->query($sql,$db);
+print "Hey there!\n\n";
 if ($db_ctrl->num_rows($result)!=0) {
     if ($debug==1) {
 	echo "Unsetting magic word users deteched \n";
@@ -92,7 +108,7 @@ $sql="delete from dcc_connections";
 
 // fixes problem if bot crashes before database is updated
 
-$sql="update channels set in_chan='N'";
+$sql="update channels set in_chan='0'";
 $result=@$db_ctrl->query($sql,$db);
 
 
@@ -148,6 +164,7 @@ $mod_ctrl->load_all();
 
 
 global $db_ctrl,$dcc_connections,$uptime;
+exit;
 $dcc_connections="";
 $uptime=time();
 

@@ -7,20 +7,19 @@
 
 include("table.inc.php");
 include("menu.inc.php");
-include("database.inc.php");
 
 if ($delete)
 	{
 	$sql="delete from user where user='$user'";
 	
-	if (($result=@mysql_query($sql,$db))!=0)
+	if (($result=@$db_ctrl->query($sql,$db))!=0)
 		{
 		$sql="delete from user_bot where user='$user'";
-		$result=@mysql_query($sql,$db);
+		$result=@$db_ctrl->query($sql,$db);
 		$sql="delete from user_chan where user='$user'";
-		$result=@mysql_query($sql,$db);
+		$result=@$db_ctrl->query($sql,$db);
 		$sql="delete from user_host where user='$user'";
-		$result=@mysql_query($sql,$db);
+		$result=@$db_ctrl->query($sql,$db);
 		
 		echo "Deleted user $user <br>";
 		}
@@ -32,20 +31,20 @@ else if ($update)
 		{
 		
 		$sql_check="select * from user where user='$user'";
-		$result=@mysql_query($sql_check,$db);
-		if(mysql_num_rows($result)==0)
+		$result=@$db_ctrl->query($sql_check,$db);
+		if($db_ctrl->num_rows($result)==0)
 			{
 		// run a check to makes sure that this isnt a dup user name
 		// then update all the tables changing the user
 		
 		$sql="update user set user='$user' where user='$old_user'";
-		$result=@mysql_query($sql,$db);
+		$result=@$db_ctrl->query($sql,$db);
 		$sql="update user_bot set user='$user' where user='$old_user'";
-		$result=@mysql_query($sql,$db);
+		$result=@$db_ctrl->query($sql,$db);
 		$sql="update user_chan set user='$user' where user='$old_user'";
-		$result=@mysql_query($sql,$db);
+		$result=@$db_ctrl->query($sql,$db);
 		$sql="update user_host set user='$user' where user='$old_user'";
-		$result=@mysql_query($sql,$db);
+		$result=@$db_ctrl->query($sql,$db);
 		}
 	else
 		{
@@ -73,81 +72,81 @@ $sql="update user set ";
 if ($$x)
 	{
 	
-	$sql.=" x='Y'";
+	$sql.=" x='1'";
 	
 	
 	}
 else
 	{
 	
-	$sql.=" x='N'";
+	$sql.=" x='0'";
 	
 	
 	}	
 if ($$t)
 	{
 	
-	$sql.=", t='Y'";
+	$sql.=", t='1'";
 	
 	
 	}
 else
 	{
 	
-	$sql.=", t='N'";
+	$sql.=", t='0'";
 	
 	
 	}	
 if ($$j)
 	{
 	
-	$sql.=", j='Y'";
+	$sql.=", j='1'";
 	
 	
 	}
 else
 	{
 	
-	$sql.=", j='N'";
+	$sql.=", j='0'";
 	
 	
 	}	
 if ($$h)
 	{
 	
-	$sql.=", h='Y'";
+	$sql.=", h='1'";
 	
 	
 	}
 else
 	{
 	
-	$sql.=", h='N'";
+	$sql.=", h='0'";
 	
 	
 	}	
 if ($$b)
 	{
 	
-	$sql.=", b='Y'";
+	$sql.=", b='1'";
 	if ($change_pass)
 		{
 		$pass_change_sql="update user set password='$change_pass', mysql_pass='$change_pass' where user='$user'";
-		$result=@mysql_query($pass_change_sql,$db);
+		$result=@$db_ctrl->query($pass_change_sql,$db);
 		echo "$pass_change_sql <br>";
 		}
 	}
 else
 	{
 	
-	$sql.=", b='N'";
+	$sql.=", b='0'";
 	if ($change_pass)
 		{
 		include_once("bf_lib.php");
 		$pass=bf_encrypt_pass($change_pass);
 	
 		$pass_change_sql="update user set password='$pass' ,mysql_pass=password('$change_pass') where user='$user'";
-		$result=@mysql_query($pass_change_sql,$db);
+		$result=@$db_ctrl->query($pass_change_sql,$db);
 	
 		}
 	
@@ -155,7 +154,7 @@ else
 if ($$p)
 	{
 	
-	$sql.=", p='Y'";
+	$sql.=", p='1'";
 	
 		
 		
@@ -166,7 +165,7 @@ if ($$p)
 else
 	{
 	
-	$sql.=", p='N'";
+	$sql.=", p='0'";
 	
 	
 	
@@ -175,70 +174,70 @@ else
 if ($$f)
 	{
 	
-	$sql.=", f='Y'";
+	$sql.=", f='1'";
 	
 	
 	}
 else
 	{
 	
-	$sql.=", f='N'";
+	$sql.=", f='0'";
 	
 	
 	}	
 if ($$n)
 	{
 	
-	$sql.=", n='Y'";
+	$sql.=", n='1'";
 	
 	
 	}
 else
 	{
 	
-	$sql.=", n='N'";
+	$sql.=", n='0'";
 	
 	
 	}	
 if ($$m)
 	{
 	
-	$sql.=", m='Y'";
+	$sql.=", m='1'";
 	
 	
 	}
 else
 	{
 	
-	$sql.=", m='N'";
+	$sql.=", m='0'";
 	
 	
 	}	
 if ($$o)
 	{
 	
-	$sql.=", o='Y'";
+	$sql.=", o='1'";
 	
 	
 	}
 else
 	{
 	
-	$sql.=", o='N'";
+	$sql.=", o='0'";
 	
 	
 	}	
 if ($$v)
 	{
 	
-	$sql.=", v='Y'";
+	$sql.=", v='1'";
 	
 	
 	}
 else
 	{
 	
-	$sql.=", v='N'";
+	$sql.=", v='0'";
 	
 	
 	}	
@@ -246,7 +245,7 @@ else
 	
 $sql.=" where user='$user'";		
 echo "Global modes ".$sql."<br>";		
-$result=@mysql_query($sql,$db);	
+$result=@$db_ctrl->query($sql,$db);	
 	
 		
 	
@@ -259,7 +258,7 @@ $result=@mysql_query($sql,$db);
 			{
 			
 			$sql="delete from user_chan where user='$user' and chan='#".$clean_chan[$i]."'";	
-			$result=@mysql_query($sql,$db);	
+			$result=@$db_ctrl->query($sql,$db);	
 			echo "$sql <br>";
 			}
 		else
@@ -273,51 +272,51 @@ $result=@mysql_query($sql,$db);
 		if ($$v)
 			{
 			
-			$sql.=" v='Y' ";
+			$sql.=" v='1' ";
 			
 			}
 		else
 			{
 			
-			$sql.=" v='N' ";
+			$sql.=" v='0' ";
 			}
 				
 		if ($$o)
 			{
 			
-			$sql.=", o='Y' ";
+			$sql.=", o='1' ";
 			
 			}
 		else
 			{
 			
-			$sql.=", o='N' ";
+			$sql.=", o='0' ";
 			}
 		if ($$f)
 			{
 			
-			$sql.=", f='Y' ";
+			$sql.=", f='1' ";
 			
 			}
 		else
 			{
 			
-			$sql.=", f='N' ";
+			$sql.=", f='0' ";
 			}	
 		if ($$m)
 			{
 			echo $$m;
-			$sql.=", m='Y' ";
+			$sql.=", m='1' ";
 			
 			}
 		else
 			{
 			
-			$sql.=",m='N' ";
+			$sql.=",m='0' ";
 			}
 			
 		$sql.=" where user='$user' and chan='#".$clean_chan[$i]."'";	
-		$result=@mysql_query($sql,$db);	
+		$result=@$db_ctrl->query($sql,$db);	
 		echo "Channel modes ".$sql."<bR>";
 		
 		}
@@ -330,13 +329,13 @@ $result=@mysql_query($sql,$db);
 		if (trim($mask[$i])!="")
 			{
 		$sql="update user_host set mask='$mask[$i]' where host_id=$host_id[$i]";
-		$result=@mysql_query($sql,$db);	
+		$result=@$db_ctrl->query($sql,$db);	
 			}
 		else
 			{
 			
 			$sql="delete from user_host where host_id=$host_id[$i]";
-			$result=@mysql_query($sql,$db);	
+			$result=@$db_ctrl->query($sql,$db);	
 			}	
 		
 		
@@ -347,8 +346,8 @@ $result=@mysql_query($sql,$db);
 	if ($add_chan)
 		{
 		$sql_check="select * from user_chan where chan='$add_chan' and user='$user'";
-		$result=@mysql_query($sql_check,$db);
-		if (mysql_num_rows($result)==0)
+		$result=@$db_ctrl->query($sql_check,$db);
+		if ($db_ctrl->num_rows($result)==0)
 			{
 			$v="add_v";
 		$o="add_o";
@@ -357,51 +356,51 @@ $result=@mysql_query($sql,$db);
 		if ($$v)
 			{
 			
-			$v="Y";
+			$v="1";
 			
 			}
 		else
 			{
 			
-			$v="N";
+			$v="0";
 			}
 		if ($$f)
 			{
 			
-			$f="Y";
+			$f="1";
 			
 			}
 		else
 			{
 			
-			$f="N";
+			$f="0";
 			}	
 		if ($$o)
 			{
 			
-			$o="Y";
+			$o="1";
 			
 			}
 		else
 			{
 			
-			$o="N";
+			$o="0";
 			}
 		if ($$m)
 			{
-			$m="Y";
+			$m="1";
 			
 			}
 		else
 			{
 			
-			$m="N";
+			$m="0";
 			}
 			
 			
 			
 			$sql="insert user_chan (user,chan,v,f,o,m) values ('$user','$add_chan','$v','$f','$o','$m')";
-			$result=@mysql_query($sql,$db);	
+			$result=@$db_ctrl->query($sql,$db);	
 			echo $sql."<br>";
 		
 		
@@ -413,7 +412,7 @@ $result=@mysql_query($sql,$db);
 	if ($add_host)
 		{
 		$sql="insert into user_host (user,mask) values ('$user','$add_host')";
-		$result=@mysql_query($sql,$db);	
+		$result=@$db_ctrl->query($sql,$db);	
 		
 		}
 		
@@ -438,13 +437,13 @@ $sql="select distinct chan from user_chan";
 	}
 else
 	{
-	$sql="select c.chan_name as chan from web_login wl, user_chan uc , channels c where web_login_id=$user_id and wl.user=uc.user and uc.chan=c.chan_name and c.active='Y' and (uc.m='Y' or uc.o='Y')" ;
+	$sql="select c.chan_name as chan from web_login wl, user_chan uc , channels c where web_login_id=$user_id and wl.user=uc.user and uc.chan=c.chan_name and c.active='1' and (uc.m='1' or uc.o='1')" ;
 	
 	
 	}	
 
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result))
+$result=@$db_ctrl->query($sql,$db);
+while($myrow=@$db_ctrl->fetch_array($result))
 	{
 	$chan=$myrow["chan"];
 	
@@ -472,8 +471,8 @@ else
 $sql="select * from user ,user_chan uc where user.user=uc.user and uc.chan='$find_chan'";
 
 	}
-$result=@mysql_query($sql,$db);
-while($myrow=@mysql_fetch_array($result))
+$result=@$db_ctrl->query($sql,$db);
+while($myrow=@$db_ctrl->fetch_array($result))
 	{
 echo "<form user.php method=post>";	
 echo "<table><tr><td>";
@@ -507,7 +506,7 @@ echo "<tr>
 		
 		$name[$i]=mysql_field_name($result,$i);
 		
-		if ($myrow[$i]=="Y")
+		if ($myrow[$i]=="1")
 			{
 			
 			$modes.=$name[$i];
@@ -528,8 +527,8 @@ echo "<tr>
   </tr>";
   
   $sql_chans="select * from user_chan where user='$user'";
-  $result_chan=mysql_query($sql_chans,$db);
-  while ($myrow=mysql_fetch_array($result_chan))
+  $result_chan=$db_ctrl->query($sql_chans,$db);
+  while ($myrow=$db_ctrl->fetch_array($result_chan))
   	{
   	
   	$chan=$myrow["chan"];
@@ -539,7 +538,7 @@ echo "<tr>
 		
 		$name[$i]=mysql_field_name($result,$i);
 		
-		if ($myrow[$i]=="Y")
+		if ($myrow[$i]=="1")
 			{
 			
 			$modes.=$name[$i];
@@ -548,13 +547,13 @@ echo "<tr>
 		
 		
 		}
-	if ($myrow["m"]=="Y")
+	if ($myrow["m"]=="1")
 			{
 			
 			$modes.=$name[$i];
 			
 			}	
-	if ($myrow["f"]=="Y")
+	if ($myrow["f"]=="1")
 			{
 			
 			$modes.='f';
@@ -571,8 +570,8 @@ echo "<tr>
   	}
   
   $sql_hosts="select * from user_host where user='$user'";
-  $result_hosts=@mysql_query($sql_hosts,$db);
-  while ($myrow=mysql_fetch_array($result_hosts))
+  $result_hosts=@$db_ctrl->query($sql_hosts,$db);
+  while ($myrow=$db_ctrl->fetch_array($result_hosts))
   	{
   	
   	$all.=$myrow["mask"].", ";
@@ -603,8 +602,8 @@ else
 	
 	echo "<form action=users.php method=post>";
 	$sql="select * from user where user='$user'";
-	$result=@mysql_query($sql,$db);
-	$myrow=@mysql_fetch_array($result);
+	$result=@$db_ctrl->query($sql,$db);
+	$myrow=@$db_ctrl->fetch_array($result);
 	$user=$myrow["user"];
 	$password=$myrow["password"];
 	
@@ -659,7 +658,7 @@ else
 		
 		$name[$i]=mysql_field_name($result,$i);
 		
-		if ($myrow[$i]=="Y")
+		if ($myrow[$i]=="1")
 			{
 			$checked=" checked ";
 			
@@ -674,7 +673,7 @@ else
 			
 	echo "<td >
 	$name[$i]:<br>
-	<input type=checkbox name=global_$name[$i] value='Y' $checked>
+	<input type=checkbox name=global_$name[$i] value='1' $checked>
 	</td>";
 			
 			
@@ -686,9 +685,9 @@ else
 	echo "<tr><td colspan=12>Channels</td></tr>";
 	
 	 $sql_chans="select * from user_chan where user='$user'";
-  $result_chan=mysql_query($sql_chans,$db);
+  $result_chan=$db_ctrl->query($sql_chans,$db);
   $chans=0;
-  while ($myrow=mysql_fetch_array($result_chan))
+  while ($myrow=$db_ctrl->fetch_array($result_chan))
   	{
   	
   	$chan=$myrow["chan"];
@@ -696,7 +695,7 @@ else
   	unset($modes);
   	
   	echo "<tr><td colspan=1><input type=hidden name=clean_chan[$chans] value=$clean_chan>$chan</td>";
-	if ($myrow["f"]=="Y")
+	if ($myrow["f"]=="1")
 			{
 			$checked=" checked ";
 			
@@ -708,14 +707,14 @@ else
 			}				
 	echo "<td colspan=1>
 	f <br>
-	<input type=checkbox name=f_$clean_chan value='Y' $checked> 
+	<input type=checkbox name=f_$clean_chan value='1' $checked> 
 	</td>";
 	for($i=2;$i<4;$i++)
 		{
 		
 		$name[$i]=mysql_field_name($result,$i);
 		
-		if ($myrow[$i]=="Y")
+		if ($myrow[$i]=="1")
 			{
 			$checked=" checked ";
 			
@@ -727,12 +726,12 @@ else
 			}	
 	echo "<td >
 	$name[$i]:<br>
-	<input type=checkbox name=$name[$i]_$clean_chan value='Y' $checked>
+	<input type=checkbox name=$name[$i]_$clean_chan value='1' $checked>
 	</td>";
 		
 		
 		}
-	if ($myrow["m"]=="Y")
+	if ($myrow["m"]=="1")
 			{
 			$checked=" checked ";
 			
@@ -744,13 +743,13 @@ else
 			}
 	echo "<td colspan=1>
 	$name[$i]:<br>
-	<input type=checkbox name=m_$clean_chan value='Y' $checked> 
+	<input type=checkbox name=m_$clean_chan value='1' $checked> 
 	</td>";				
 	
 	echo "
 	<td colspan=7>
 	
-	<input type=checkbox name=remove_$clean_chan value='Y' >Remove $chan 
+	<input type=checkbox name=remove_$clean_chan value='1' >Remove $chan 
 	</td>
 	</tr>";	
 	
@@ -758,9 +757,9 @@ else
   	}
   echo "<tr><td colspan=12>Add a chan</td></tr>";	
   $sql="select * from channels order by chan_name";
-  $result=@mysql_query($sql,$db);
+  $result=@$db_ctrl->query($sql,$db);
   echo "<tr><td colspan=1><select name=add_chan ><option value=0>add chan </option>";	
-  while ($myrow=mysql_fetch_array($result))
+  while ($myrow=$db_ctrl->fetch_array($result))
   	{
   	$chan=$myrow["chan_name"];
   	echo "<option value=$chan>$chan</option>";
@@ -769,23 +768,23 @@ else
   	echo "</select></td>";
   	
   echo "<td>v <br>
-  <input type=checkbox name=add_v value=Y></td>
+  <input type=checkbox name=add_v value=1></td>
    ";	
     echo "<td>f <br>
-  <input type=checkbox name=add_f value=Y></td>
+  <input type=checkbox name=add_f value=1></td>
    ";	
     echo "<td>o <br>
-  <input type=checkbox name=add_o value=Y></td>
+  <input type=checkbox name=add_o value=1></td>
    ";	
     echo "<td colspan=8>m <br>
-  <input type=checkbox name=add_m value=Y></td>
+  <input type=checkbox name=add_m value=1></td>
    ";	
   echo "</tr>";		
   echo "<tr><td colspan=12>Host Masks</td></tr>";
   $sql_hosts="select * from user_host where user='$user'";
-  $result_hosts=@mysql_query($sql_hosts,$db);
+  $result_hosts=@$db_ctrl->query($sql_hosts,$db);
   $i=0;
-  while ($myrow=mysql_fetch_array($result_hosts))
+  while ($myrow=$db_ctrl->fetch_array($result_hosts))
   	{
   	$host_id=$myrow["host_id"];
   	$host=$myrow["mask"];

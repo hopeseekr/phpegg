@@ -1,7 +1,15 @@
 Todo:
   1) Multiple token support for modules
-  2) Update webadmin w/ changes to program structure
-  3) Finalize migration to mod_ctrl system.
+  2) Finalize migration to mod_ctrl system.
+
+version 2.0 September 3 rd, 2001
+1.	Created db_ctrl, which allows for dynamic database selection
+	With this, you could literally swap from using MySQL to PostgreSQL in the middle of the
+	program and not suffer any adverse effects IF BOTH DATABASES ARE IDENTICAL.  Regardless,
+	database support is now only a matter of editing db_ctrl.php!
+2.	Ported all MySQL to db_ctrl syntax.  Hey, that means virtually every file is updated =)
+3.	Added php_egg.pgsql
+4.	Added setup.sh, a script that seeks to automate PHP-Egg installation.
 
 version 1.5 September 1 st, 2001
 1.	php_egg.sql

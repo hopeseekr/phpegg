@@ -5,23 +5,23 @@ function auto_run($irc_connect) {
     // this is included once in connect.inc irc_idle function run every time the bot gets something.
     // checks for new channels if it finds any active channels that its not in it joins them
 
-    $sql="select chan_name from channels where active='Y' and in_chan='N' ";
+    $sql="select chan_name from channels where active='1' and in_chan='0' ";
     $result=@$db_ctrl->query($sql,$db);
     while($myrow=@$db_ctrl->fetch_array($result)) {
 	//echo "found new chan joining $myrow[0]\n";
 	fputs($irc_connect,"JOIN $myrow[0]\n");
 	$now=time();	
-	$sql="update channels set last_in='$now', in_chan='Y' where upper(chan_name)=upper('$myrow[0]')";
+	$sql="update channels set last_in='$now', in_chan='1' where upper(chan_name)=upper('$myrow[0]')";
 	$result=@$db_ctrl->query($sql,$db);				
     }
 
     // checks for deactivated channels if the bot is in a channel that is not active it leaves it.
-    $sql="select chan_name from channels where active='N' and in_chan='Y'";
+    $sql="select chan_name from channels where active='0' and in_chan='1'";
     $result=@$db_ctrl->query($sql,$db);
     while($myrow=@$db_ctrl->fetch_array($result)) {
 	//echo "found deactivated chan $myrow[0] leaving \n";
 	fputs($irc_connect,"PART $myrow[0]\n");
-	$sql="update channels set last_in='$now', in_chan='N' where upper(chan_name)=upper('$myrow[0]')";
+	$sql="update channels set last_in='$now', in_chan='0' where upper(chan_name)=upper('$myrow[0]')";
 	$result=@$db_ctrl->query($sql,$db);	
     }
 	

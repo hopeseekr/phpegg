@@ -2,7 +2,6 @@
 <body bgcolor=ffffff>
 <?php
 include("menu.inc.php");
-include("database.inc.php");
 
 if ($new=="create")
 	{
@@ -14,10 +13,10 @@ if ($new=="create")
 		
 	if ($sql)
 		{	
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		if (!$result)
 			{
-			$msg.= "Mysql error: ".mysql_error($db)."<br>";
+			$msg.= "Mysql error: ".$db_ctrl->error($db)."<br>";
 			}
 		else
 			{
@@ -38,10 +37,10 @@ if ($update=="update")
 	
 	if ($sql)
 		{	
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		if (!$result)
 			{
-			$msg.="Mysql error: ".mysql_error($db)."<br>";
+			$msg.="Mysql error: ".$db_ctrl->error($db)."<br>";
 			}
 		else
 			{
@@ -54,10 +53,10 @@ if (($delete=="delete") && $servers_id)
 	{
 	
 	$sql="delete from servers where servers_id = $servers_id";
-	$result=mysql_query($sql,$db);
+	$result=$db_ctrl->query($sql,$db);
 	if (!$result)
 		{
-		$msg.= "Mysql error: ".mysql_error($db)."<br>";
+		$msg.= "Mysql error: ".$db_ctrl->error($db)."<br>";
 		}
 	else
 		{
@@ -95,9 +94,9 @@ if (!$servers_id)
 
 $select_server_group_id="select * from server_groups";  
 
-			$result_select=@mysql_query($select_server_group_id,$db);
+			$result_select=@$db_ctrl->query($select_server_group_id,$db);
 			echo "<select name=server_group_id >  ";
-			while ($myrow=mysql_fetch_array($result_select))
+			while ($myrow=$db_ctrl->fetch_array($result_select))
 				{
 				$server_group_id=$myrow[0];
 				$temp=$myrow[1];
@@ -132,8 +131,8 @@ else
 	{
 	// update existing news.
 	$sql="select * from servers where servers_id=$servers_id ";
-	$result=@mysql_query($sql,$db);
-	$myrow=@mysql_fetch_array($result);
+	$result=@$db_ctrl->query($sql,$db);
+	$myrow=@$db_ctrl->fetch_array($result);
 $server_group_id=$myrow["server_group_id"]; 
 $server_name=$myrow["server_name"]; 
 $port=$myrow["port"]; 
@@ -149,9 +148,9 @@ $servers_id=$myrow["servers_id"];
 	
 $select_server_group_id="select * from server_groups";  
 
-			$result_select=@mysql_query($select_server_group_id,$db);
+			$result_select=@$db_ctrl->query($select_server_group_id,$db);
 			echo "<select name=server_group_id >  ";
-			while ($myrow2=mysql_fetch_array($result_select))
+			while ($myrow2=$db_ctrl->fetch_array($result_select))
 				{
 				$new_server_group_id=$myrow2[0];
 				$temp=$myrow2[1];
@@ -209,10 +208,10 @@ echo $str;
 $select_server_group_id="select * from server_groups";  
 
 			
-$result_select=@mysql_query($select_server_group_id,$db);
+$result_select=@$db_ctrl->query($select_server_group_id,$db);
 echo "<form name=myselect method=post>";
 echo "<select name=my_server_group_id onchange=document.myselect.submit()>  ";
-while ($myrow=mysql_fetch_array($result_select))
+while ($myrow=$db_ctrl->fetch_array($result_select))
 	{
 	$new_server_group_id=$myrow[0];
 	$temp=$myrow[1];
@@ -239,9 +238,9 @@ echo "<form acton=servers.php method=post>";
 echo "<table width=100%>";
 
 $sql="select * from servers s, server_groups sg where s.server_group_id=sg.server_groups_id and sg.server_groups_id=$my_server_group_id order by server_group, server_name desc ";
-$result=@mysql_query($sql,$db);
+$result=@$db_ctrl->query($sql,$db);
 
-while ($myrow=mysql_fetch_array($result))
+while ($myrow=$db_ctrl->fetch_array($result))
 	{
 
 $server_group_id=$myrow["server_group_id"]; 

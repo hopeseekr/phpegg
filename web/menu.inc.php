@@ -3,11 +3,10 @@
 include_once("common.inc.php");
 include_once("database.inc.php");
 $user_id=decrypt_login($db,$login_id);
-
 if ($user_id==0)
 	{
 	echo "<html>
-		<meta http-equiv=\"Refresh\" content=\"0; url=../index.php\"></head>
+		<meta http-equiv=\"Refresh\" content=\"2; url=index.php\"></head>
    
 		<body bgcolor=ffffff>";
 		echo "Access denied";
@@ -23,7 +22,7 @@ if ($user_id==0)
 	
 	$sql="Update web_login set login_time='$now' where web_login_id=$user_id";
 	
-	$result=@mysql_query($sql,$db);
+	$result=@$db_ctrl->query($sql,$db);
 	
 	
 	$login_id=crypt_login($db,$user_id,$now);

@@ -75,12 +75,12 @@ CREATE TABLE channels (
   topic varchar(100) NOT NULL default '',
   topic_set_by varchar(20) NOT NULL default '',
   topic_set_date int(20) NOT NULL default '0',
-  active set('Y','N') NOT NULL default 'Y',
+  active int(1) NOT NULL default '1',
   last_in int(20) default NULL,
-  in_chan set('Y','N') NOT NULL default 'N',
-  auto_voice set('Y','N') NOT NULL default 'Y',
-  on_join set('Y','N') NOT NULL default 'N',
-  on_part set('Y','N') NOT NULL default 'N',
+  in_chan int(1) NOT NULL default '0',
+  auto_voice int(1) NOT NULL default '1',
+  on_join int(1) NOT NULL default '0',
+  on_part int(1) NOT NULL default '0',
   PRIMARY KEY (channels_id)
 ) TYPE=MyISAM;
 
@@ -98,7 +98,7 @@ CREATE TABLE dcc_connections (
   nick text NOT NULL,
   time int(11) NOT NULL default '0',
   login varchar(50) default NULL,
-  password set('Y','N') NOT NULL default 'N',
+  password int(1) NOT NULL default '0',
   hostmask varchar(255) default NULL,
   PRIMARY KEY (id)
 ) TYPE=MyISAM;
@@ -5790,17 +5790,17 @@ INSERT INTO servers VALUES (2192,215,'irc.zurna.net',6667);
 CREATE TABLE user (
   user varchar(20) NOT NULL default '',
   pass varchar(50) default NULL,
-  v set('Y','N') NOT NULL default 'N',
-  o set('Y','N') NOT NULL default 'N',
-  m set('Y','N') NOT NULL default 'N',
-  n set('Y','N') NOT NULL default 'N',
-  f set('Y','N') NOT NULL default 'N',
-  p set('Y','N') NOT NULL default 'N',
-  b set('Y','N') NOT NULL default 'N',
-  h set('Y','N') NOT NULL default 'N',
-  j set('Y','N') NOT NULL default 'N',
-  t set('Y','N') NOT NULL default 'N',
-  x set('Y','N') NOT NULL default 'N',
+  v int(1) NOT NULL default '0',
+  o int(1) NOT NULL default '0',
+  m int(1) NOT NULL default '0',
+  n int(1) NOT NULL default '0',
+  f int(1) NOT NULL default '0',
+  p int(1) NOT NULL default '0',
+  b int(1) NOT NULL default '0',
+  h int(1) NOT NULL default '0',
+  j int(1) NOT NULL default '0',
+  t int(1) NOT NULL default '0',
+  x int(1) NOT NULL default '0',
   created varchar(15) NOT NULL default '',
   last_on varchar(15) default NULL,
   last_chan varchar(200) default NULL,
@@ -5812,7 +5812,6 @@ CREATE TABLE user (
 # Dumping data for table 'user'
 #
 
-
 #
 # Table structure for table 'user_bot'
 #
@@ -5823,7 +5822,7 @@ CREATE TABLE user_bot (
   botaddr varchar(100) NOT NULL default '',
   telnet varchar(10) NOT NULL default '',
   port2 varchar(10) NOT NULL default '',
-  h set('Y','N') NOT NULL default 'N',
+  h int(1) NOT NULL default '0',
   PRIMARY KEY (b_id)
 ) TYPE=MyISAM;
 
@@ -5841,12 +5840,12 @@ INSERT INTO user_bot VALUES (2,'mysql','212.242.74.5','9969','9969','Y');
 CREATE TABLE user_chan (
   uc_id int(255) NOT NULL auto_increment,
   chan varchar(100) NOT NULL default '',
-  v set('Y','N') NOT NULL default 'N',
-  o set('Y','N') NOT NULL default 'N',
-  f set('Y','N') NOT NULL default 'N',
-  p set('Y','N') NOT NULL default 'N',
+  v int(1) NOT NULL default '0',
+  o int(1) NOT NULL default '0',
+  f int(1) NOT NULL default '0',
+  p int(1) NOT NULL default '0',
   user varchar(20) NOT NULL default '',
-  m set('Y','N') NOT NULL default 'N',
+  m int(1) NOT NULL default '0',
   PRIMARY KEY (uc_id)
 ) TYPE=MyISAM;
 

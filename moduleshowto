@@ -5,7 +5,9 @@ How to create modules for PHP-Egg
 
 PHP-Egg loads all modules into memory when the bot first starts. 
 
-Each indivdual module may be bound to one or more module bind.  There are cuntly 17 difrent module binds in PHP-Egg we will be adding more as it grows.
+Each indivdual module may be bound to one or more module bind.  There are currently 18 difrent module binds in PHP-Egg. we will be adding more as it grows.  
+
+The module_name in the modules table is very important...it will be the name of the mod in the script and thus, it must contain NO spaces or special characters!
 
 MODE - occurs when a mode is changed example: --- Talia gives voice to php_Egg
 	mode changes happen on users of a channel or on the channel its self.
@@ -65,62 +67,12 @@ what ever the person sent comes in as $message rember to trim this becouse in mo
 
 Notes about nicks and mysql.  There is a problem with inserting and compairing nicks. You need to becareful about people with speical charaters in there nick such as \`'  these can fail in the insert into mysql and chan fail checks to mysql rember to addslashes if you have a problem.
 
-
-once your module is done and has been added to a module bind in the web admin section all you need to do is reload the modules in PHP-Egg
+INSTALL
+To install, add your module in either the web or GTK admin in both the module binds and modules page. once your module is done and has been added to a module bind in the web admin section all you need to do is reload the modules in PHP-Egg
 
 /msg <bot> !reload <yourpass>
 
 
 
 We will be putting up a site where you can post your modules soon.  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+For the time being, email them to one of the developers, specifically kill-9@kill-9.dk

@@ -12,11 +12,11 @@ function on_part_msg($irc_connect,$who,$chan) {
     $host_mask=$sender_ident."@".$sender_host;	
 	
     // prevents chan v and o users from receieving the on part msg 
-    $sql="select user.user from user_host uh, user ,user_chan uc where '$host_mask' like replace(replace(mask,'*!',''),'*','%') and uh.user=user.user and uc.user=user.user and ((user.o='Y' or user.f='Y' or user.v='Y') or (uc.chan='$chan' and (uc.o='Y' or uc.v='Y' or uc.f='Y'))) limit 1";
+    $sql="select user.user from user_host uh, user ,user_chan uc where '$host_mask' like replace(replace(mask,'*!',''),'*','%') and uh.user=user.user and uc.user=user.user and ((user.o='1' or user.f='1' or user.v='1') or (uc.chan='$chan' and (uc.o='1' or uc.v='1' or uc.f='1'))) limit 1";
 
     $result=@$db_ctrl->query($sql,$db);
     if ($db_ctrl->num_rows($result)==0) {
-	$sql="select msg from channels c, part_msg jm where upper(c.chan_name)=upper('$chan') and on_join='Y' and c.chan_name=jm.chan_name order by part_msg_id asc";
+	$sql="select msg from channels c, part_msg jm where upper(c.chan_name)=upper('$chan') and on_join='1' and c.chan_name=jm.chan_name order by part_msg_id asc";
 	$result=@$db_ctrl->query($sql,$db);
 	while($myrow=@$db_ctrl->fetch_array($result)) {
 	    $msg=$myrow["msg"];
@@ -43,11 +43,11 @@ function on_join_msg($irc_connect,$who,$chan) {
 	
     $host_mask=$sender_ident."@".$sender_host;	
     // prevents chan v and o users from receieving the on join msg 
-    $sql="select user.user from user_host uh, user ,user_chan uc where '$host_mask' like replace(replace(mask,'*!',''),'*','%') and uh.user=user.user and uc.user=user.user and ((user.o='Y' or user.f='Y' or user.v='Y') or (uc.chan='$chan' and (uc.o='Y' or uc.v='Y' or uc.f='Y'))) limit 1";
+    $sql="select user.user from user_host uh, user ,user_chan uc where '$host_mask' like replace(replace(mask,'*!',''),'*','%') and uh.user=user.user and uc.user=user.user and ((user.o='1' or user.f='1' or user.v='1') or (uc.chan='$chan' and (uc.o='1' or uc.v='1' or uc.f='1'))) limit 1";
  
     $result=@$db_ctrl->query($sql,$db);
     if ($db_ctrl->num_rows($result)==0) {	
-	$sql="select msg from channels c, join_msg jm where upper(c.chan_name)=upper('$chan') and on_join='Y' and c.chan_name=jm.chan_name order by join_msg_id asc";
+	$sql="select msg from channels c, join_msg jm where upper(c.chan_name)=upper('$chan') and on_join='1' and c.chan_name=jm.chan_name order by join_msg_id asc";
 	$result=@$db_ctrl->query($sql,$db);
 	while($myrow=@$db_ctrl->fetch_array($result)) {
 	    $msg=$myrow["msg"];

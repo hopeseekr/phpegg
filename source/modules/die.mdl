@@ -20,7 +20,7 @@ if (count($message_data)==2) {
                 $result=@$db_ctrl->query($sql,$db);
                 fputs($irc_connect, "QUIT :$quit_message\n");
                 
-                $sql="update channels set in_chan='N'";
+                $sql="update channels set in_chan='0'";
         	$result=@$db_ctrl->query($sql,$db);
                 fclose($irc_connect);	
                 $db_ctrl->close($db);

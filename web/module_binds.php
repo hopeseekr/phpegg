@@ -2,7 +2,6 @@
 <body bgcolor=ffffff>
 <?php
 include("menu.inc.php");
-include("database.inc.php");
 
 if ($new=="create")
 	{
@@ -14,10 +13,10 @@ if ($new=="create")
 		
 	if ($sql)
 		{	
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		if (!$result)
 			{
-			$msg.= "Mysql error: ".mysql_error($db)."<br>";
+			$msg.= "Mysql error: ".$db_ctrl->error($db)."<br>";
 			}
 		else
 			{
@@ -38,10 +37,10 @@ if ($update=="update")
 	
 	if ($sql)
 		{	
-		$result=mysql_query($sql,$db);
+		$result=$db_ctrl->query($sql,$db);
 		if (!$result)
 			{
-			$msg.="Mysql error: ".mysql_error($db)."<br>";
+			$msg.="Mysql error: ".$db_ctrl->error($db)."<br>";
 			}
 		else
 			{
@@ -54,10 +53,10 @@ if (($delete=="delete") && $module_binds_id)
 	{
 	
 	$sql="delete from module_binds where module_binds_id = $module_binds_id";
-	$result=mysql_query($sql,$db);
+	$result=$db_ctrl->query($sql,$db);
 	if (!$result)
 		{
-		$msg.= "Mysql error: ".mysql_error($db)."<br>";
+		$msg.= "Mysql error: ".$db_ctrl->error($db)."<br>";
 		}
 	else
 		{
@@ -118,8 +117,8 @@ else
 	{
 	// update existing news.
 	$sql="select * from module_binds where module_binds_id=$module_binds_id ";
-	$result=@mysql_query($sql,$db);
-	$myrow=@mysql_fetch_array($result);
+	$result=@$db_ctrl->query($sql,$db);
+	$myrow=@$db_ctrl->fetch_array($result);
 $bind=$myrow["bind"]; 
 $module_binds_id=$myrow["module_binds_id"]; 
 	echo "
@@ -167,8 +166,8 @@ echo "<form acton=module_binds.php method=post>";
 echo "<table width=100%>";
 
 $sql="select * from module_binds order by module_binds_id desc";
-$result=@mysql_query($sql,$db);
-while ($myrow=mysql_fetch_array($result))
+$result=@$db_ctrl->query($sql,$db);
+while ($myrow=$db_ctrl->fetch_array($result))
 	{
 
 $bind=$myrow["bind"]; 

@@ -3,7 +3,6 @@
 <?php
 include("menu.inc.php");
 include("table.inc.php");
-include("database.inc.php");	
 $user=rawurldecode($user);
 if ($add)
 	{
@@ -12,67 +11,67 @@ if ($add)
 	if ($x)
 		{
 	
-		$x="Y";
+		$x="1";
 	
 	
 		}
 		else
 		{
 	
-		$x="N";
+		$x="0";
 	
 	
 		}	
 	if ($t)
 	{
 	
-		$t="Y";
+		$t="1";
 	
 	
 		}
 		else
 		{
 	
-		$t="N";
+		$t="0";
 	
 	
 		}	
 if ($j)
 	{
 	
-		$j="Y";
+		$j="1";
 	
 	
 		}
 		else
 		{
 	
-		$j="N";
+		$j="0";
 	
 	
 		}	
 if ($h)
 	{
 	
-		$h="Y";
+		$h="1";
 	
 	
 		}
 		else
 		{
 	
-		$h="N";
+		$h="0";
 	
 	
 		}	
 if ($b)
 	{
 	
-	$b="Y";
+	$b="1";
 	
 	$sql_bot="insert into user_bot (user) values ('$user')";
 	
-	$result=@mysql_query($sql_bot,$db);	
+	$result=@$db_ctrl->query($sql_bot,$db);	
 	if ($password)
 		{
 		$tcl_password="'$password'";
@@ -92,7 +91,7 @@ if ($b)
 else
 	{
 	
-	$b="N";
+	$b="0";
 	if ($password)
 		{
 		include_once("bf_lib.php");
@@ -114,7 +113,7 @@ else
 if ($p)
 	{
 	
-	$p="Y";
+	$p="1";
 	
 		
 		
@@ -125,7 +124,7 @@ if ($p)
 else
 	{
 	
-	$p="N";
+	$p="0";
 	
 	
 	
@@ -134,76 +133,76 @@ else
 if ($f)
 	{
 	
-	$f="Y";
+	$f="1";
 	
 	
 	}
 else
 	{
 	
-	$f="N";
+	$f="0";
 	
 	
 	}	
 if ($n)
 	{
 	
-	$n="Y";
+	$n="1";
 	
 	
 	}
 else
 	{
 	
-	$n="N";
+	$n="0";
 	
 	
 	}	
 if ($m)
 	{
 	
-	$m="Y";
+	$m="1";
 	
 	
 	}
 else
 	{
 	
-	$m="N";
+	$m="0";
 	
 	
 	}	
 if ($o)
 	{
 	
-	$o="Y";
+	$o="1";
 	
 	
 	}
 else
 	{
 	
-	$o="N";
+	$o="0";
 	
 	
 	}	
 if ($v)
 	{
 	
-	$v="Y";
+	$v="1";
 	
 	}
 else
 	{
 	
-	$v="Y";
+	$v="1";
 	
 	
 	}	
 $now=time();	
 $sql="insert into user (user,v,o,m,n,f,p,b,h,j,t,x,created,password,mysql_password) values ( 	
 	'$user','$v','$o','$m','$n','$f','$p','$b','$h','$j','$t','$x',$now,$tcl_password,$mysql_password)";
-$result=@mysql_query($sql,$db);	
+$result=@$db_ctrl->query($sql,$db);	
 	
 	if ($add_chan)
 		{
@@ -215,45 +214,45 @@ $result=@mysql_query($sql,$db);
 		if ($$v)
 			{
 			
-			$v="Y";
+			$v="1";
 			
 			}
 		else
 			{
 			
-			$v="N";
+			$v="0";
 			}
 		if ($$f)
 			{
 			
-			$f="Y";
+			$f="1";
 			
 			}
 		else
 			{
 			
-			$f="N";
+			$f="0";
 			}	
 		if ($$o)
 			{
 			
-			$o="Y";
+			$o="1";
 			
 			}
 		else
 			{
 			
-			$o="N";
+			$o="0";
 			}
 		if ($$m)
 			{
-			$m="Y";
+			$m="1";
 			
 			}
 		else
 			{
 			
-			$m="N";
+			$m="0";
 			}
 			
 			
@@ -261,7 +260,7 @@ $result=@mysql_query($sql,$db);
 			$sql="insert user_chan (user,chan,v,f,o,m) values ('$user','$add_chan','$v','$f','$o','$m')";
 			
 		
-		$result=@mysql_query($sql,$db);	
+		$result=@$db_ctrl->query($sql,$db);	
 		
 		
 		
@@ -270,7 +269,7 @@ $result=@mysql_query($sql,$db);
 		{
 		$sql="insert into user_host (user,mask) values ('$user','$add_host')";
 		
-		$result=@mysql_query($sql,$db);	
+		$result=@$db_ctrl->query($sql,$db);	
 		}		
 			
 			
@@ -300,37 +299,37 @@ echo "<a href=import_file.php?login_id=$login_id>import tcl userfile </a>";
 	
 	echo "<td>Global Modes</td><td >
         v:<br>
-        <input type=checkbox name=v value='Y' >
+        <input type=checkbox name=v value='1' >
         </td><td >
         o:<br>
-        <input type=checkbox name=o value='Y' >
+        <input type=checkbox name=o value='1' >
         </td><td >
         m:<br>
-        <input type=checkbox name=m value='Y' >
+        <input type=checkbox name=m value='1' >
         </td><td >
         n:<br>
-        <input type=checkbox name=n value='Y' >
+        <input type=checkbox name=n value='1' >
         </td><td >
         f:<br>
-        <input type=checkbox name=f value='Y' >
+        <input type=checkbox name=f value='1' >
         </td><td >
         p:<br>
-        <input type=checkbox name=p value='Y' >
+        <input type=checkbox name=p value='1' >
         </td><td >
         b:<br>
-        <input type=checkbox name=b value='Y' >
+        <input type=checkbox name=b value='1' >
         </td><td >
         h:<br>
-        <input type=checkbox name=h value='Y' >
+        <input type=checkbox name=h value='1' >
         </td><td >
         j:<br>
-        <input type=checkbox name=j value='Y' >
+        <input type=checkbox name=j value='1' >
         </td><td >
         t:<br>
-        <input type=checkbox name=t value='Y' >
+        <input type=checkbox name=t value='1' >
         </td><td >
         x:<br>
-        <input type=checkbox name=x value='Y' >
+        <input type=checkbox name=x value='1' >
 </td></tr>";
 	
 			
@@ -345,9 +344,9 @@ echo "<a href=import_file.php?login_id=$login_id>import tcl userfile </a>";
 	
   echo "<tr><td colspan=12>Add a chan</td></tr>";	
   $sql="select * from channels order by chan_name";
-  $result=@mysql_query($sql,$db);
+  $result=@$db_ctrl->query($sql,$db);
   echo "<tr><td colspan=1><select name=add_chan ><option value=0>add chan </option>";	
-  while ($myrow=mysql_fetch_array($result))
+  while ($myrow=$db_ctrl->fetch_array($result))
   	{
   	$chan=$myrow["chan_name"];
   	
@@ -366,16 +365,16 @@ echo "<a href=import_file.php?login_id=$login_id>import tcl userfile </a>";
   	echo "</select></td>";
   	
   echo "<td>v <br>
-  <input type=checkbox name=add_v value=Y></td>
+  <input type=checkbox name=add_v value=1></td>
    ";	
     echo "<td>f <br>
-  <input type=checkbox name=add_f value=Y></td>
+  <input type=checkbox name=add_f value=1></td>
    ";	
     echo "<td>o <br>
-  <input type=checkbox name=add_o value=Y></td>
+  <input type=checkbox name=add_o value=1></td>
    ";	
     echo "<td colspan=8>m <br>
-  <input type=checkbox name=add_m value=Y></td>
+  <input type=checkbox name=add_m value=1></td>
    ";	
   echo "</tr>";		
   echo "<tr><td colspan=12>Host Masks</td></tr>";
