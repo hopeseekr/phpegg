@@ -131,7 +131,7 @@ if ($$b)
 	$sql.=", b='1'";
 	if ($change_pass)
 		{
-		$pass_change_sql="update user set password='$change_pass', mysql_pass='$change_pass' where user='$user'";
+		$pass_change_sql="update user set password=password('$change_pass'),mysql_password=password('$change_pass') where user='$user'";
 		$result=@$db_ctrl->query($pass_change_sql,$db);
 		echo "$pass_change_sql <br>";
 		}
@@ -143,9 +143,9 @@ else
 	if ($change_pass)
 		{
 		include_once("bf_lib.php");
-		$pass=bf_encrypt_pass($change_pass);
-	
-		$pass_change_sql="update user set password='$pass' ,mysql_pass=password('$change_pass') where user='$user'";
+		$pass_change_sql="update user set password=password('$change_pass'),mysql_password=password('$change_pass') where
+user='$user'";
+
 		$result=@$db_ctrl->query($pass_change_sql,$db);
 	
 		}
