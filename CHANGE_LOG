@@ -1,6 +1,39 @@
-change log:
+Todo:
+  1) Multiple token support for modules
+  2) Update webadmin w/ changes to program structure
+  3) Finalize migration to mod_ctrl system.
 
-version 1.2 pril 14 th, 2001
+version 1.5 September 1 st, 2001
+1.	php_egg.sql
+	a. Conformed later entries in the "module_name" column in modules to the pattern of the first
+		Ex: "msg help module" -> "msg_help"
+	   Under this system, a module's php code will be stored in it's $module_name variable,
+	   through the new, dynamic mod_ctrl.php architecture.
+	   The only modification that may be necessary is to MAKE SURE the modules' names (module_name) and $modulevars
+	   are syncronized! IE if function m is called functionm in connect.inc and "function m" in MySQL, function m
+	   will not work.
+	b. Added "token" field to modules...if your module deals w/ looking for tokens (Ex: ?help, !command, @find),
+	   insert it's token here and then mod_ctrl will take care of the rest =)
+	b. Deleted user entries that hampered me from setting up my initial user account
+
+2.	mod_ctrl.php
+	A redisgn of the entire module loading architecture.  Allows an admin to un/load all modules
+	set to autoload, un/load absolutely all modules (even non-autoload), un/load a specific module.
+
+3.	msgcommands.mdl
+	a.  Added the following functions:
+	join, nick, part, op2, v2, reload, unload, load
+	Ex:	/msg <botnick> nick <password> <desirednick>
+		/msg <botnick> [un|re]load <password> All
+		/msg <botnick> [un|re]load <password> <module name>
+	Note: I added the op2 and v2 because there seem to be other versions floating around..so this is just
+	to make sure i don't break code elsewhere =)	
+
+	b.  deliver_token() Tentative structural change...meant to dynamically load modules "on the fly" when ever they are needed...
+	Then they can be unloaded after 30min or so of non-usuage (To be added).  Should not conflict w/ "traditional"
+	eval'ing mods in connect.inc.  No longer must u add separate if statements in connect.inc to parse tokens!
+
+version 1.2 April 14 th, 2001
 
 add /msg <bot> help
 and all the help functions and difrent functions in it.
