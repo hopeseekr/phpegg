@@ -503,6 +503,7 @@ CREATE TABLE mode_data (
 
 CREATE TABLE module_binds (
   module_binds_id int(255) NOT NULL auto_increment,
+  token char(10),
   bind varchar(255) NOT NULL default '',
   PRIMARY KEY (module_binds_id)
 ) TYPE=MyISAM;
@@ -511,24 +512,24 @@ CREATE TABLE module_binds (
 # Dumping data for table 'module_binds'
 #
 
-INSERT INTO module_binds VALUES (1,'MODE');
-INSERT INTO module_binds VALUES (2,'TOPIC');
-INSERT INTO module_binds VALUES (3,'PRIVMSG');
-INSERT INTO module_binds VALUES (4,'CHANMSG');
-INSERT INTO module_binds VALUES (5,'BOTMSG');
-INSERT INTO module_binds VALUES (6,'NOTICE');
-INSERT INTO module_binds VALUES (7,'PART');
-INSERT INTO module_binds VALUES (8,'QUIT');
-INSERT INTO module_binds VALUES (9,'JOIN');
-INSERT INTO module_binds VALUES (10,'NICK');
-INSERT INTO module_binds VALUES (11,'BOT_JOIN_TOPIC_SETBY');
-INSERT INTO module_binds VALUES (12,'BOT_JOIN_TOPIC');
-INSERT INTO module_binds VALUES (13,'BOT_JOIN_NAMES');
-INSERT INTO module_binds VALUES (14,'!_COMMAND');
-INSERT INTO module_binds VALUES (15,'?_COMMAND');
-INSERT INTO module_binds VALUES (16,'SHOW');
-INSERT INTO module_binds VALUES (17,'ONKICK');
-INSERT INTO module_binds VALUES (18,'DCC');
+INSERT INTO module_binds VALUES (1,'','MODE');
+INSERT INTO module_binds VALUES (2,'','TOPIC');
+INSERT INTO module_binds VALUES (3,'','PRIVMSG');
+INSERT INTO module_binds VALUES (4,'','CHANMSG');
+INSERT INTO module_binds VALUES (5,'/msg','BOTMSG');
+INSERT INTO module_binds VALUES (6,'','NOTICE');
+INSERT INTO module_binds VALUES (7,'','PART');
+INSERT INTO module_binds VALUES (8,'','QUIT');
+INSERT INTO module_binds VALUES (9,'','JOIN');
+INSERT INTO module_binds VALUES (10,'','NICK');
+INSERT INTO module_binds VALUES (11,'','BOT_JOIN_TOPIC_SETBY');
+INSERT INTO module_binds VALUES (12,'','BOT_JOIN_TOPIC');
+INSERT INTO module_binds VALUES (13,'','BOT_JOIN_NAMES');
+INSERT INTO module_binds VALUES (14,'!','!_COMMAND');
+INSERT INTO module_binds VALUES (15,'?','?_COMMAND');
+INSERT INTO module_binds VALUES (16,'','SHOW');
+INSERT INTO module_binds VALUES (17,'','ONKICK');
+INSERT INTO module_binds VALUES (18,'','DCC');
 
 #
 # Table structure for table 'modules'
@@ -547,7 +548,7 @@ CREATE TABLE modules (
 # Dumping data for table 'modules'
 #
 
-INSERT INTO modules VALUES (1,14,'DIE','forces the bot to quit irc close db connection and exits the script','modules/die.mdl');
+INSERT INTO modules VALUES (1,14,'die','forces the bot to quit irc close db connection and exits the script','modules/die.mdl');
 INSERT INTO modules VALUES (2,5,'ctcp','controls all ctcp commands','modules/ctcp.mdl');
 INSERT INTO modules VALUES (3,1,'server_msgs','mode part quit and some others','modules/server_msgs.mdl');
 INSERT INTO modules VALUES (7,7,'server_msgs','mode part quit and some others','modules/server_msgs.mdl');
@@ -557,15 +558,15 @@ INSERT INTO modules VALUES (10,10,'server_msgs','mode part quit and some others'
 INSERT INTO modules VALUES (11,11,'server_msgs','mode part quit and some others','modules/server_msgs.mdl');
 INSERT INTO modules VALUES (12,12,'server_msgs','mode part quit and some others','modules/server_msgs.mdl');
 INSERT INTO modules VALUES (13,13,'server_msgs','mode part quit and some others','modules/server_msgs.mdl');
-INSERT INTO modules VALUES (14,15,'help module','?php ?mysql and ?perl','modules/help.mdl');
-INSERT INTO modules VALUES (15,9,'auto voice','auto voices people with v and f global or chan level in chans they join if the chan is set to auto voice','modules/auto_voice.mdl');
-INSERT INTO modules VALUES (16,18,'dot functions','all the functions that start with a .','modules/dot_functions.mdl');
+INSERT INTO modules VALUES (14,15,'help','?php ?mysql and ?perl','modules/help.mdl');
+INSERT INTO modules VALUES (15,9,'auto_voice','auto voices people with v and f global or chan level in chans they join if the chan is set to auto voice','modules/auto_voice.mdl');
+INSERT INTO modules VALUES (16,18,'dot_functions','all the functions that start with a .','modules/dot_functions.mdl');
 INSERT INTO modules VALUES (17,14,'chanel_commands','all the channel commands that start with a !','modules/channel_commands.mdl');
-INSERT INTO modules VALUES (18,9,'tclbot_onjoinop','ops bots set with bo global only matches nick against user and hostmask to be sure.','modules/tclbotautoop.mdl');
-INSERT INTO modules VALUES (19,16,'help show commands','converts all the show php show mysql and show perl to to user sending show command','modules/helpshow.mdl');
-INSERT INTO modules VALUES (20,17,'updates the chakick module','updates chan users when someone gets kicked','modules/onkick.mdl');
-INSERT INTO modules VALUES (21,5,'msg help module','sends nice little help on all the msg functions','modules/msghelp.mdl');
-INSERT INTO modules VALUES (22,5,'messages to the bot','goes with all the msgs in helpmsg','modules/msgcommands.mdl');
+INSERT INTO modules VALUES (18,9,'tclbotautoop','ops bots set with bo global only matches nick against user and hostmask to be sure.','modules/tclbotautoop.mdl');
+INSERT INTO modules VALUES (19,16,'help_show','converts all the show php show mysql and show perl to to user sending show command','modules/helpshow.mdl');
+INSERT INTO modules VALUES (20,17,'onkick','updates chan users when someone gets kicked','modules/onkick.mdl');
+INSERT INTO modules VALUES (21,5,'msg_help','sends nice little help on all the msg functions','modules/msghelp.mdl');
+INSERT INTO modules VALUES (22,5,'msgcommands','goes with all the msgs in helpmsg','modules/msgcommands.mdl');
 
 #
 # Table structure for table 'part_msg'
@@ -5811,8 +5812,6 @@ CREATE TABLE user (
 # Dumping data for table 'user'
 #
 
-INSERT INTO user VALUES ('kill-9_',NULL,'Y','Y','Y','Y','Y','Y','N','N','N','N','N','986974683','986974683',NULL,'+LE6zz1sGgqc1','482723b825edcd43');
-INSERT INTO user VALUES ('nic',NULL,'Y','N','N','N','N','N','N','N','N','N','N','987090945',NULL,NULL,'+SjuqK.wkWzt0','2c13cf93516fe0d8');
 
 #
 # Table structure for table 'user_bot'
@@ -5855,8 +5854,6 @@ CREATE TABLE user_chan (
 # Dumping data for table 'user_chan'
 #
 
-INSERT INTO user_chan VALUES (1,'#php_egg','Y','Y','Y','N','nic','N');
-
 #
 # Table structure for table 'user_host'
 #
@@ -5872,12 +5869,6 @@ CREATE TABLE user_host (
 # Dumping data for table 'user_host'
 #
 
-INSERT INTO user_host VALUES (1,'kill-9_','*!*oracle7@*.mercurmedia.com');
-INSERT INTO user_host VALUES (2,'kill-9_','*!*oracle7@zirtech.dk');
-INSERT INTO user_host VALUES (3,'nic','*!*nic@undiluted.org');
-INSERT INTO user_host VALUES (4,'kill-9_','*!*oracle7@*.zirtech.dk');
-INSERT INTO user_host VALUES (5,'kill-9_','*!*oracle7@localhost');
-
 #
 # Table structure for table 'web_login'
 #
@@ -5892,6 +5883,4 @@ CREATE TABLE web_login (
 #
 # Dumping data for table 'web_login'
 #
-
-INSERT INTO web_login VALUES (17,'kill-9_',987367829);
 
