@@ -8,6 +8,25 @@
 // PHP-EGG v1 by kill-9 
 // All others by Un-Thesis :o
 
+function make_ban($ident,$host_mask) {
+    if (ereg("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}",$host_mask)) {
+	$mask_array=explode(".",$host_mask);
+					
+	$ban="*!*$ident@".$mask_array[0].".".$mask_array[1].".".$mask_array[2].".*";
+    } else {
+	$mask_array=explode(".",$host_mask);
+					
+	if (count($mask_array)==2) {
+	    $ban="*!*$ident@".$host_mask;
+	} else {
+	    $last_mask=count($mask_array) - 1;
+	    $next_mask=count($mask_array) - 2;
+	    $ban="*!*$ident@*.".$mask_array[$next_mask].".".$mask_array[$last_mask];
+	}	
+    }	
+    return $ban;			
+}
+
 function get_connect() {
 	global $db_ctrl,$my_irc_server, $my_nick, $irc_servers, $irc_server_ports, $irc_host, $irc_real_name, $irc_nick, $irc_alt_nick, $debug,$irc_identd;
 
@@ -28,7 +47,7 @@ function get_connect() {
 		if ($debug==1) {	
 			echo "Connecting to: $irc_server\n";	
 		}
-		$irc_connect=fsockopen($irc_servers[$rand_key[0]],$irc_server_ports[$rand_key[0]],&$errno, &$errstr);
+		$irc_connect=fsockopen($irc_servers[$rand_key[0]],$irc_server_ports[$rand_key[0]], $errno, $errstr, 10);
 		$trys++;
 	}
 	

@@ -1,6 +1,6 @@
 <?php
 set_time_limit(9999);
-include_once("bf_lib.php");
+include_once("bf_lib.inc");
 
 
 function check_global_access($nick)

@@ -1,8 +1,10 @@
 #!/usr/local/bin/php -q
 <?php
 
+ob_end_flush();
+
 /* Take the first step :-) */
-$version = '3.0';
+$version = '3.1';
 print "Welcome to PHP-Egg v$version Easy Setup\n\n";
 
 // OS CHECK
@@ -18,14 +20,14 @@ if ($ok==0) {
 
 // PHP VERSION CHECK
 if (!eregi("^4.",phpversion())) {
-	print("\nSorry, you need php4 to run php-egg\n");
+	print("\nSorry, you need php v4 to run php-egg\n");
 	exit;
 } else {
 	print("PHP version... OK (".phpversion().")\n");
 }
 
 // OPEN /dev/stdin
-$fp=fopen("/dev/stdin","r");
+$fp=fopen("php://stdin","r");
 if ($fp=="") {
 	print("Error: could not open /dev/stdin\n");
 	exit;
@@ -168,8 +170,11 @@ if ($database == "MySQL") {
 	if ($yesno=="" || $yesno=="yes") {
 		// run sql dump
 		print("Inserting sql dump...");
-		$exec="$mysql_location -u $database_login -h $database_host -p$database_pass $database_name < ../php_egg.mysql";
-		exec($exec,$output);
+		if ($database_pass != "") {
+			$passphrase = " -p$database_pass";
+		}
+		$exec="$mysql_location -u $database_login -h $database_host$passphrase $database_name < ../php_egg.mysql";
+		exec($exec, $output);
 		for ($i=0;$i!=count($output);$i++) {
 			if (strstr($output[$i],"ERROR")) {
 				print(" ERROR\n");

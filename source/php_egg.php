@@ -11,8 +11,11 @@
 
 /* Take the first step :-) */
 $version = '3.0';
-print("\nStarting PHP-Egg version $version\n");
-print("web: http://sourceforge.net/projects/phpegg/\n");
+ob_end_flush();
+if ($debug >= 1) {
+	print("\nStarting PHP-Egg version $version\n");
+	print("web: http://sourceforge.net/projects/phpegg/\n");
+}
 
 /* Load configuration file */
 	require_once("config.inc");
@@ -30,9 +33,12 @@ print("web: http://sourceforge.net/projects/phpegg/\n");
 
 	if ($irc_identd == "") {
 	    print("\nError: You must set  \$irc_identd in config.inc!\n");
-	exit;
+		exit;
 	}
-	print("Configuration loaded...\n");
+
+	if ($debug >= 1) {
+		print("Configuration loaded...\n");
+	}
 
 /* Load and initialize my Common Database Interface */
 	switch($database) {
@@ -49,7 +55,9 @@ print("web: http://sourceforge.net/projects/phpegg/\n");
 			$db_ctrl = new PostgreSQLInterface;
 		break;
 	}
-	print ("Database Control loaded...\n");
+	if ($debug >= 1) {
+		print ("Database Control loaded...\n");
+	}
 
 /* Load essential libraries -- Needs to be re-implemented!! */
 	require_once("login_check.inc");
@@ -66,7 +74,10 @@ print("web: http://sourceforge.net/projects/phpegg/\n");
 	    print("\nError: $foo\n");
 	    exit;
 	}
-	print("$database connection established...\n");
+
+	if ($debug >= 1) {
+		print("$database connection established...\n");
+	}
 
 /*	
 	Seeing if the owner has registered w/ bot yet, 
@@ -76,12 +87,12 @@ print("web: http://sourceforge.net/projects/phpegg/\n");
 
 	$result=$db_ctrl->query($sql,$db);
 	if ($db_ctrl->num_rows($result) != 0) {
-		if ($debug == 1) {
+		if ($debug >= 2) {
 			echo "Unsetting magic word users deteched \n";
 		}
 	    unset($magic_word);
 	} else {
-	    if ($debug == 1) {
+	    if ($debug >= 2) {
 			echo "found no users leaving magic word \n";
 		}
 	}	
@@ -127,14 +138,14 @@ print("web: http://sourceforge.net/projects/phpegg/\n");
 			$irc_server_ports[]=$myrow["port"];
 	    }
 	}
-	if ($debug == 1) {
+	if ($debug >= 2) {
 	    echo "IRC Servers' Connection Info loaded: " . count($irc_servers) . "\n";
 	}
 
 /* Load and initialize my Module Control Interface */
 	include("mod_ctrl.inc");
 	$mod_ctrl = new module_control;
-	if ($debug == 1) {
+	if ($debug >= 2) {
 		$mod_ctrl->set_debug();
 	}
 	$mod_ctrl->load_all();
