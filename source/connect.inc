@@ -225,7 +225,7 @@ function irc_idle($irc_connect) {
 		    if ($debug==1) {
 			print "!PING?PONG \n";
 		    }
-		    // fputs($irc_connect, "PONG $reply[1]\n");	
+		    fputs($irc_connect, "PONG $reply[1]\n");	
 		    print("no pong\n");
 		}
 
