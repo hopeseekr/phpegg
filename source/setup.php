@@ -8,7 +8,8 @@ print("Welcome to php_egg version ".VERSION." - easy setup\n");
 
 // OS CHECK
 $ok=0;
-if (PHP_OS=="Linux") {
+
+if (PHP_OS!="WIN32") {
 	$ok=1;
 }
 if ($ok==0) {
