@@ -16,6 +16,24 @@ if ($login_access) {
 	case "NICK":
 	    //fputs($irc_connect, "NICK $msg_data[2] \n");
 	break;
+	case "UPTIME":
+	    global $uptime;
+	    $secs=(time()-$uptime);
+	    $mins="";
+	    while ($secs>59) {
+		$mins++;
+		$secs=$secs-60;
+	    }
+	    if ($secs<10) {
+		$secs="0$secs";
+	    }
+	    if ($mins!="") {
+		$foo="$mins:$secs mins";
+	    } else {
+		$foo="$secs secs";
+	    }
+	    fputs($irc_connect, "PRIVMSG $sender_nick :Uptime: $foo\n");
+	break;
 	case "MEMORY":
 	    if (!strpos($OS,"windows")) {
 		$system=@system("ps -aux | grep php_egg.php",$system);							
@@ -55,6 +73,6 @@ if ($login_access) {
 	    
 	    fputs($irc_connect, "PRIVMSG $sender_nick :Channels: $chans\n");	
 	
-	break;	
+	break;
     }
 }
