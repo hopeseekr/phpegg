@@ -374,14 +374,16 @@ function check_msg($irc_connect,$input_buffer) {
 	case "JOIN":
 		$who=$command_data[0];
 		$chan=$message;
-		print "CHANNEL = $chan\n";
 		user_join_chan($irc_connect,$who,$chan);
 		break;
 	case "QUIT":
+		$who=$command_data[0];
+		$reason=$message;
+		quit_chan($irc_connect,$who,$reason);
+		break;
 	case "PART":
 		$who=$command_data[0];
 		$chan=trim($command_data[2]);
-		print "CHANNEL = $chan\n";
 		user_part_chan($irc_connect,$who,$chan);
 		break;
 	case "NICK":
