@@ -371,9 +371,26 @@ function check_msg($irc_connect,$input_buffer) {
 			eval($topic_mdl[$i]);
 		}
 	break;
+	case "JOIN":
+		$who=$command_data[0];
+		$chan=$message;
+		print "CHANNEL = $chan\n";
+		user_join_chan($irc_connect,$who,$chan);
+		break;
+	case "QUIT":
+	case "PART":
+		$who=$command_data[0];
+		$chan=trim($command_data[2]);
+		print "CHANNEL = $chan\n";
+		user_part_chan($irc_connect,$who,$chan);
+		break;
+	case "NICK":
+		$who=$command_data[0];
+		$who_to=$message;
+		nick_change($irc_connect,$who,$who_to);
+		break;
 	case "PRIVMSG":
 		$who=$command_data[0];
-			
 		$sender_info=clean_nick($who);
 		$sender_nick=$sender_info[0];
 		$sender_ident=$sender_info[1];
@@ -715,17 +732,15 @@ function check_ctcp($irc_connect,$message,$sender_nick) {
 				}									
 	}		
 
-
 function clean_nick($full_nick) {
 	$start=0;
-	
 	$end=strpos($full_nick,"!");
 	$size=$end-$start;
 	$sender_info[0]=addslashes(substr($full_nick,$start,$size));
 	
 	$start=$end+1;
 	$end=strpos($full_nick,"@",$start);
-	$size=$end-$start;
+	$size=$end-$start-1;
 	
 	$sender_info[1]=substr($full_nick,$start,$size);
 	

@@ -64,20 +64,6 @@ function on_join_msg($irc_connect,$who,$chan) {
     }
 }
 
-function user_part_chan($irc_connect,$who,$chan) {
-    //  When a user leaves a chan update the chan_user data with the time they left
-    // the channel
-	
-    update_seen_data_part($irc_connect,$who,$chan);
-	
-    $sender_info=clean_nick($who);
-    $sender_nick=$sender_info[0];
-    $sender_ident=$sender_info[1];
-    $sender_host=$sender_info[2];
-	
-    //print "$sender_nick ($sender_ident@$sender_host) left $chan \n";
-}
-
 function  quit_chan($irc_connect,$who,$reason) {
     // user quits update all records for that user on the chan_user table stating his
     // reason for leaveing and when he left
@@ -101,9 +87,33 @@ function user_join_chan($irc_connect,$who,$chan) {
     $sender_nick=$sender_info[0];
     $sender_ident=$sender_info[1];
     $sender_host=$sender_info[2];
-    //print "$sender_nick ($sender_ident@$sender_host) Joined $chan \n";
+    print "$sender_nick ($sender_ident@$sender_host) Joined $chan \n";
 }				
+
+function user_part_chan($irc_connect,$who,$chan) {
+	global $db_ctrl,$db;
+    //  When a user leaves a chan update the chan_user data with the time they left
+    // the channel
 	
+//    update_seen_data_part($irc_connect,$who,$chan);
+	
+    $sender_info=clean_nick($who);
+    $sender_nick=$sender_info[0];
+    $sender_ident=$sender_info[1];
+    $sender_host=$sender_info[2];
+	
+    print "$sender_nick ($sender_ident@$sender_host) left $chan \n";
+
+	$sql_find = "select nick from chan_users where nick='$sender_nick' and chan_name='$chan'";
+	$find_q = $db_ctrl->query($sql_find);
+	if ($db_ctrl->num_rows($find_q) > 0) {
+		$sql_update="update chan_users set ident='$sender_ident',host_mask='$sender_host', reason='joined channel' where upper(nick)=upper('$sender_nick') and chan_name='$chan'";
+	} else {
+		$sql_update="insert into chan_users (chan_name,nick,mode,ident,host_mask) VALUES ('$chan','$sender_nick','u','$sender_ident','$sender_host')";
+	}
+    $result_update=$db_ctrl->query($sql_update,$db);	
+}
+
 function nick_change($irc_connect,$who,$who_to) {	
     // if its not been seen before then add it to the chan_user table
     // update the user stating the time and reason changing nick to new_nick
@@ -121,17 +131,17 @@ function nick_change($irc_connect,$who,$who_to) {
 
     $new_who=$who_to."!".$sender_ident."@".$sender_host;
 	
-    $sql="select * from chan_users  where upper(nick)=upper('$sender_nick') and reason is null";
+    $sql="select * from chan_users  where upper(nick)=upper('$sender_nick')";
 	
     $result=$db_ctrl->query($sql,$db);
     while($myrow=$db_ctrl->fetch_array($result)) {
-	$cu_id=$myrow["cu_id"];
-	$mode=$myrow["mode"];
-	$chan_name=$myrow["chan_name"];
+		$cu_id=$myrow["cu_id"];
+		$mode=$myrow["mode"];
+		$chan_name=$myrow["chan_name"];
 					
+	}
 	update_seen_data_join($irc_connect,$new_who,$chan_name,$mode);
-    }
-    $sql_update="update chan_users set ident='$sender_ident',host_mask='$sender_host', reason='changed nick to $who_to' where reason is null and upper(nick)=upper('$sender_nick')";
+    $sql_update="update chan_users set ident='$sender_ident',host_mask='$sender_host', reason='changed nick to $who_to' where upper(nick)=upper('$sender_nick')";
 
     $result_update=$db_ctrl->query($sql_update,$db);	
     if (!$sql_update) {
