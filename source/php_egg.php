@@ -11,32 +11,49 @@
 
 /* Take the first step :-) */
 $version = '3.0';
-ob_end_flush();
+
+ini_set("html_errors", "0");
+
 if ($debug >= 1) {
 	print("\nStarting PHP-Egg version $version\n");
 	print("web: http://sourceforge.net/projects/phpegg/\n");
 }
 
+$stderr = fopen("php://stderr", "w");
+
 /* Load configuration file */
+if (file_exists("config.inc")) {
 	require_once("config.inc");
+} else {
+	fputs($stderr, "Fatal: No config.inc. Run setup.php now!\n");
+	exit;
+}
+
+/* Check for prerequisites */
+	if (!eregi("^4.",phpversion())) {
+	    fputs($stderr, "Fatal: Sorry, you need php4 to run php-egg\n");
+		exit;
+	}
+
+/* Corrects -- IMHO buggy -- flush() behavior of PHP 4.2+ */
+	ob_end_flush();
 
 /* Check the current configuration */
 	if ($magic_word == "") {
-		print("\nError: You must set \$magic_word in config.inc!\n");
+		fputs($stderr, "Fatal: You must set \$magic_word in config.inc!\n");
 		exit;
 	}
 
 	if ($database_name == "") {
-		print("\nError: You must set the name of your php_egg database in config.inc!\n");
+		fputs($stderr, "Fatal: You must set the name of your PHP-Egg database in config.inc; rerun setup.php!\n");
 		exit;
 	}
 
 	if ($irc_identd == "") {
-	    print("\nError: You must set  \$irc_identd in config.inc!\n");
+	    fputs($stderr, "Fatal: You must set \$irc_identd in config.in; rerun setup.php!\n");
 		exit;
 	}
-
-	if ($debug >= 1) {
+	if ($debug >= 2) {
 		print("Configuration loaded...\n");
 	}
 
@@ -55,7 +72,7 @@ if ($debug >= 1) {
 			$db_ctrl = new PostgreSQLInterface;
 		break;
 	}
-	if ($debug >= 1) {
+	if ($debug >= 2) {
 		print ("Database Control loaded...\n");
 	}
 
@@ -66,15 +83,23 @@ if ($debug >= 1) {
 	$db = $db_ctrl->pconnect($database_host,$database_login,$database_pass,$database_name);
 
 	if ($db == "") {
-	    print("\nError: $database connection failed\n");
+	    fputs($stderr, "Fatal: $database connection failed! Make sure the database is running and accessible; rerun setup.php if necessary.\n");
 	    exit;
+	}
+
+	if ($database == "MySQL") {
+		$sql="select version()";
+		$result=$db_ctrl->query($sql);
+		$myrow=$db_ctrl->fetch_array($result);
+		//if (!eregi("^3.23.",$myrow[0])) {
+		//    fputs($stderr, "Fatal: MySQL must be version 3.23 or above to run php-egg!!\n");
+		//    exit;
+		//}
 	}
 
 	if (($foo = $db_ctrl->error()) != "") {
-	    print("\nError: $foo\n");
-	    exit;
+	    fputs($stderr, "Warning! Database Error occurred: $foo\n");
 	}
-
 	if ($debug >= 1) {
 		print("$database connection established...\n");
 	}
@@ -96,22 +121,6 @@ if ($debug >= 1) {
 			echo "found no users leaving magic word \n";
 		}
 	}	
-
-/* Check for prerequisites */
-	if (!eregi("^4.",phpversion())) {
-	    print("\nSorry, you need php4 to run php-egg\n");
-		exit;
-	}
-
-	if ($database == "MySQL") {
-		$sql="select version()";
-		$result=$db_ctrl->query($sql);
-		$myrow=$db_ctrl->fetch_array($result);
-		if (!eregi("^3.23.",$myrow[0])) {
-		    print("\nSorry, you need mysql version 3.23 to run php-egg\n");
-		    exit;
-		}
-	}
 
 /* Clean up the database
 /* Fixes problems if bot crashes before database is updated */
@@ -138,15 +147,15 @@ if ($debug >= 1) {
 			$irc_server_ports[]=$myrow["port"];
 	    }
 	}
-	if ($debug >= 2) {
+	if ($debug >= 1) {
 	    echo "IRC Servers' Connection Info loaded: " . count($irc_servers) . "\n";
 	}
 
 /* Load and initialize my Module Control Interface */
 	include("mod_ctrl.inc");
 	$mod_ctrl = new module_control;
-	if ($debug >= 2) {
-		$mod_ctrl->set_debug();
+	if ($debug >= 1) {
+		$mod_ctrl->set_debug($debug);
 	}
 	$mod_ctrl->load_all();
 

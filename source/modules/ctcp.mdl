@@ -2,7 +2,7 @@
 /*  This module checks for ctcp msg's  ping, version, finger, and time.  */
 
 $who=$command_data[0];
-$sender_info=clean_nick($who);
+$sender_info=clean_nick($who);
 $sender_nick=$sender_info[0];
 $sender_ident=$sender_info[1];
 $sender_host=$sender_info[2];
@@ -64,10 +64,10 @@ if (substr(trim($message),1,4)=="PING") {
 } else if (substr(trim($message),1,6)=="FINGER") {
     $ctcp_finger_quote=irc_ctcp_quote("FINGER and finger you to.");
     fputs($irc_connect,"NOTICE $sender_nick :$ctcp_finger_quote \n");
-} else if (substr(trim($message),1,6)=="SOURCE") {   
+} else if (substr(trim($message),1,6)=="SOURCE") {   
     $ctcp_source_quote=irc_ctcp_quote("SOURCE Yeah sure i would like to see whats inside you to.");
     fputs($irc_connect,"NOTICE $sender_nick :$ctcp_source_quote \n");
-} else if (substr(trim($message),1,8)=="USERINFO") {
+} else if (substr(trim($message),1,8)=="USERINFO") {
     $ctcp_userinfo_quote=irc_ctcp_quote("USERINFO I'm just a poor bot running PHP4 MySQL 3.23.30 as beta debug");
     fputs($irc_connect,"NOTICE $sender_nick :$ctcp_userinfo_quote \n");
 }

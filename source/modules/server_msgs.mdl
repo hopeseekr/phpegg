@@ -10,7 +10,7 @@ switch ($what) {
 	user_part_chan($irc_connect,$who,$chan);
     break;
     case "QUIT":
-	for($i=3;$i<count($command_data);$i++) {	    
+	for($i=3;$i<count($command_data);$i++) {	    
 	    $reason.=$command_data[$i]." ";
 	}
 	$reason=str_replace("'","\'",check_for_colon($reason));	
@@ -32,7 +32,7 @@ switch ($what) {
 	//echo $GLOBALS["my_nick"]."\n";
     break;     
     case 332:
-	for($i=5;$i<count($command_data);$i++) {	    
+	for($i=5;$i<count($command_data);$i++) {	    
 	    $topic.=$command_data[$i]." ";
 	}
 	$topic=check_for_colon($topic);
@@ -44,8 +44,8 @@ switch ($what) {
     case 333:
 	bot_join_topic_setby($irc_connect, $chan,$topic_set_by,$topic_set);
     break;   
-    case 353:	        
-	for($i=6;$i<count($command_data);$i++) {	    
+    case 353:	        
+	for($i=6;$i<count($command_data);$i++) {	    
 	    $names.=$command_data[$i]." ";
 	}
 	$names=check_for_colon($names);

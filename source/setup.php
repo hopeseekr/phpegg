@@ -1,35 +1,26 @@
 #!/usr/local/bin/php -q
 <?php
 
-ob_end_flush();
-
 /* Take the first step :-) */
-$version = '3.1';
+$version = '3.0';
 print "Welcome to PHP-Egg v$version Easy Setup\n\n";
-
+ob_end_flush();
 // OS CHECK
-$ok=0;
 
-if (PHP_OS!="WIN32") {
-	$ok=1;
-}
-if ($ok==0) {
-	print("Sorry, this is only tested on Linux...\n");
-	exit;
-}
 
 // PHP VERSION CHECK
 if (!eregi("^4.",phpversion())) {
-	print("\nSorry, you need php v4 to run php-egg\n");
+	print("\nSorry, you need php4 to run php-egg\n");
 	exit;
 } else {
 	print("PHP version... OK (".phpversion().")\n");
+	ob_end_flush();
 }
 
 // OPEN /dev/stdin
 $fp=fopen("php://stdin","r");
 if ($fp=="") {
-	print("Error: could not open /dev/stdin\n");
+	print("Error: could not open php://stdin\n");
 	exit;
 }
 
@@ -77,12 +68,12 @@ if ($database == "MySQL") {
 	$sql="select version()";
 	$result=mysql_query($sql,$db);
 	$myrow=mysql_fetch_array($result);
-	if (!eregi("^3.23.",$myrow[0])) {
+	/*if ((!eregi("^3.23.",$myrow[0])) || (!eregi()) {
 		print("\nSorry, you need mysql version 3.23 to run php-egg\n");
 		exit;
-	} else {
+	} else {*/
 		print("MySQL version... OK (".$myrow[0].")\n");
-	}
+	//}
 
 	@mysql_select_db($database_name,$db);
 
@@ -168,13 +159,13 @@ if ($database == "MySQL") {
 	fclose($sql_dump);
 
 	if ($yesno=="" || $yesno=="yes") {
-		// run sql dump
-		print("Inserting sql dump...");
 		if ($database_pass != "") {
 			$passphrase = " -p$database_pass";
 		}
+		// run sql dump
+		print("Inserting sql dump...");
 		$exec="$mysql_location -u $database_login -h $database_host$passphrase $database_name < ../php_egg.mysql";
-		exec($exec, $output);
+		exec($exec,$output);
 		for ($i=0;$i!=count($output);$i++) {
 			if (strstr($output[$i],"ERROR")) {
 				print(" ERROR\n");
@@ -184,7 +175,7 @@ if ($database == "MySQL") {
 		print(" OK\n");
 	}
 } elseif ($database == "PostgreSQL") {
-	print "Please note: Auto-setup support for PostgreSQL is extreme alpha right now.\nI'm merely hax0ring gryph's script here!\n\nSo, if this script doesn't do what it's supposed to, blame me; then manually\nedit your config.php in the source dir and file a bug report on sourceforge.
+	print "Please note: Auto-setup support for PostgreSQL is extreme alpha right now.\nI'm merely hax0ring gryph's script here!\n\nSo, if this script doesn't do what it's supposed to, blame me; then manually\nedit your config.inc in the source dir and file a bug report on sourceforge.
 
 You can consider yourself 'successful' if the screen fills with a bunch of stuff.
 If you merely get to error messages, then you'll have to edit the config.php
@@ -206,17 +197,22 @@ Do you want to *attempt* to auto-set up the database? (yes/no) ";
 	}
 }
 /* We should have enough info at this point to load db_ctrl! woohoo! */
-include ("db_ctrl.php");
-switch($database) {
-	case "MySQL":
-		$db_ctrl = new MySQLInterface;
-		$dbshort = "mysql";
+/* Load and initialize my Common Database Interface */
+	switch($database) {
+		case "MySQL":
+			require_once("cdi/mysql.inc");
+			$db_ctrl = new MySQLInterface;
 		break;
-	case "PostgreSQL":
-		$db_ctrl = new PostgreSQLInterface;
-		$dbshort = "pg";
+		case "PostgreSQL":
+			if (!eregi("^4.2",phpversion())) {
+				require_once("cdi/pgsql.inc");
+			} else {
+				require_once("cdi/pgsqlv2.inc");
+			}
+			$db_ctrl = new PostgreSQLInterface;
 		break;
-}
+	}
+	print ("Database Control loaded...\n");
 
 $db=$db_ctrl->connect($database_host,$database_login,$database_pass,$database_name);
 if ($db=="") {
@@ -350,13 +346,10 @@ while (strlen(trim($quit_message))==0) {
 }
 print("ADVANCED SETUP:\n");
 // debug
-print("Enable debug (no): ");
-$debug=trim(fgets($fp,1024));
-if (trim($debug)=="") {
-	$debug="0";
-}
-if (trim($debug)=="yes" || trim($debug)=="1") {
-	$debug=1;
+$debug = 4;
+while ($debug == 4) {
+	print("Debug Level (0/None - 3/Full): ");
+	$debug=trim(fgets($fp,1024));
 }
 fclose($fp);
 print("Setup done... writing config.inc\n");
@@ -366,7 +359,7 @@ if ($fp=="") {
 	print("Error: could not open config.inc\n");
 	exit;
 }
-fputs($fp,"<?\n");
+fputs($fp,"<?php\n");
 // bot
 fputs($fp,"\$magic_word=\"$magic_word\";\n");
 fputs($fp,"\$admin_email=\"$admin_email\";\n");

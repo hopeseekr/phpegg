@@ -8,22 +8,21 @@
 // PHP-EGG v1 by kill-9 
 // All others by Un-Thesis :o
 
-function make_ban($ident,$host_mask) {
+function gethostmask($ident,$host_mask) {
     if (ereg("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}",$host_mask)) {
-	$mask_array=explode(".",$host_mask);
-					
-	$ban="*!*$ident@".$mask_array[0].".".$mask_array[1].".".$mask_array[2].".*";
+		$mask_array=explode(".",$host_mask);
+		$ban="*!*$ident@".$mask_array[0].".".$mask_array[1].".".$mask_array[2].".*";
     } else {
-	$mask_array=explode(".",$host_mask);
+		$mask_array=explode(".",$host_mask);
 					
-	if (count($mask_array)==2) {
-	    $ban="*!*$ident@".$host_mask;
-	} else {
-	    $last_mask=count($mask_array) - 1;
-	    $next_mask=count($mask_array) - 2;
-	    $ban="*!*$ident@*.".$mask_array[$next_mask].".".$mask_array[$last_mask];
+		if (count($mask_array)==2) {
+		    $ban="*!*$ident@".$host_mask;
+		} else {
+		    $last_mask=count($mask_array) - 1;
+		    $next_mask=count($mask_array) - 2;
+		    $ban="*!*$ident@*.".$mask_array[$next_mask].".".$mask_array[$last_mask];
+		}	
 	}	
-    }	
     return $ban;			
 }
 
@@ -44,32 +43,26 @@ function get_connect() {
 		}	
 		flush();
 		$irc_server=$irc_servers[$rand_key[0]];
-		if ($debug==1) {	
-			echo "Connecting to: $irc_server\n";	
+		if ($debug >= 1) {	
+			print "Connecting to: $irc_server\n";	
 		}
-		$irc_connect=fsockopen($irc_servers[$rand_key[0]],$irc_server_ports[$rand_key[0]], $errno, $errstr, 10);
+		$irc_connect=fsockopen($irc_servers[$rand_key[0]],$irc_server_ports[$rand_key[0]],$errno, $errstr);
 		$trys++;
 	}
 	
 	$my_irc_server=$irc_servers[$rand_key[0]];
 	$my_nick=$irc_nick;
 
-	if ($debug==1) {
+	if ($debug >= 2) {
 		print("USER $irc_identd 0 * :$irc_real_name\n");
 	}
 	fputs($irc_connect, "USER $irc_identd 0 * :$irc_real_name\n");
 	
-	if ($debug==1) {
-		print "USER SENT\n";
-	}	 
 	 // now send NICK command, we might get backtalk on this one
-	if ($debug==1) {
+	if ($debug >= 2) {
 		print("NICK $irc_nick\n");
 	}
 	fputs($irc_connect, "NICK $irc_nick\n");
-	if ($debug==1) { 
-		print "NICK SENT\n";
-	}
 	return $irc_connect;
 }
 
@@ -77,31 +70,22 @@ function irc_connect() {
 	global $db_ctrl,$my_irc_server, $my_nick, $irc_servers,$irc_server_ports , $irc_host , $irc_real_name , $irc_nick , $irc_alt_nick,$db,$debug;
 	
 	$irc_connect=get_connect();
-	if ($debug==1) {
-		echo "connecting to irc...\n";
-	}
 
 	while (trim($reply[1])!="001") {
 		$old_input_buffer=$input_buffer;
 		$input_buffer = fgets($irc_connect, 1024);
 
 		if ($old_input_buffer!=$input_buffer) {
-			if ($debug==1) {
-				print "$input_buffer";
-			}
 			if (strpos($input_buffer,"throttled")) {
 				irc_connect();
 				break;
 			}
 			if (strpos($input_buffer," 433 ")) {
-				// if the nic is in use use alt nick.
+				// if the nick is in use use alt nick.
 				fputs($irc_connect, "NICK $irc_alt_nick\n");
 				$my_nick=$irc_alt_nick;
 			}
 			if (strpos($input_buffer,"No ident response")) {
-				if ($debug==1) {
-					print $input_buffer."\n";
-				}
 				if ($ident_trys) {
 					exit;
 				}
@@ -117,8 +101,8 @@ function irc_connect() {
 				set_time_limit(6000);
 				fclose($irc_connect);
 				$irc_connect=get_connect();
-				if ($debug==1) {
-					print "RECONNECTING \n";
+				if ($debug >= 1) {
+					print "Error, reconnecting \n";
 				}
 				sleep(5);
 				irc_connect();
@@ -127,7 +111,7 @@ function irc_connect() {
 			$input_buffer=str_replace(":","",$input_buffer);
 			$reply=explode(" ",$input_buffer);
 			if ($reply[0]=="PING") {
-				if ($debug==1) {
+				if ($debug >= 3) {
 					print("!PING?PONG\n");
 				}
 				fputs($irc_connect, "PONG $reply[1]\n");
@@ -135,25 +119,13 @@ function irc_connect() {
 			flush();
 		}
 	}
-	if ($debug==1) {	
+	if ($debug >= 1) {	
 		print "Connected to $my_irc_server as $my_nick \n";	
-	}
-
-	//print "connecting to  $my_nick  +i \n";	
-	//fputs($irc_connect, ":$irc_nick mode $irc_nick +i\n");
-	//print "connecting to  $my_nick  -s \n";	
-	//fputs($irc_connect, ":$irc_nick mode $irc_nick -s\n");
-	//$input_buffer=str_replace(":","",$input_buffer);	
-	//print "$input_buffer \n";
-	// $input_buffer=str_replace(":","",$input_buffer);
-	//print "$input_buffer \n";
-	//print "heading for idle \n";		
-	
+	}	
 	irc_idle($irc_connect);
 	
-	// if (!$irc_connect);
-	if ($debug==1) {
-		echo "Reconnecting...\n";
+	if ($debug >= 2) {
+		print "Reconnecting...\n";
 	}
 	irc_connect();
 }
@@ -179,7 +151,7 @@ function irc_idle($irc_connect) {
 	
 			if ($sock_info[eof]) {
 			// close and delete the dcc
-				if ($debug==1) {
+				if ($debug >= 2) {
 					print("dcc with $myrow[nick] closed...\n");
 				}
 				$sql="delete from dcc_connections where id=\"".$myrow[id]."\"";
@@ -193,7 +165,6 @@ function irc_idle($irc_connect) {
 	 		// running dcc modules now
 				if ($input_buffer!="") 
 				{  
-					echo "'".$input_buffer."'\n";
 					$message=trim($input_buffer);
 					if ($myrow["login"] && ($myrow["password"]=="Y"))
 					{
@@ -288,13 +259,15 @@ function irc_idle($irc_connect) {
 			$result=@$db_ctrl->query($sql,$db);
 		}
 		if ($input_buffer!="") {
-			print("ircd read: $input_buffer");
+			if ($debug >= 3) {
+//				print("ircd read: $input_buffer");
+			}
 			$read_something=1;
 
 			$sock_info=socket_get_status($irc_connect);
 			if($sock_info["eof"]) {
 				fclose($irc_connect);
-				if ($debug==1) {
+				if ($debug >= 2) {
 					echo "got disconnect, reconecting.....\n";
 				}
 				// cleaning the tables on a reconnect.
@@ -325,7 +298,7 @@ function irc_idle($irc_connect) {
 				$input_buffer=str_replace(":","",$input_buffer);
 				$reply=explode(" ",$input_buffer);
 				if ($reply[0]=="PING") {
-					if ($debug==1) {
+					if ($debug >= 3) {
 						print "!PING?PONG \n";
 					}
 					fputs($irc_connect, "PONG $reply[1]\n");	
@@ -333,7 +306,7 @@ function irc_idle($irc_connect) {
 				// running the auto run stuff
 			}
 //			auto_run($irc_connect); //needs to be re-implemented
-		} // end if ($input_buffer!="") {
+		}
 	}
 }
 		
@@ -342,8 +315,8 @@ function check_msg($irc_connect,$input_buffer) {
 
 	global $db_ctrl,$nick_mdl, $topic_mdl, $part_mdl, $quit_mdl, $bot_join_topic,$bot_join_topic_set_by, $bot_join_names,$join_mdl,$help_mdl,$login_module,$show_mdl,$kick_mdl;
 
-	if ($debug==1) {
-		echo "$input_buffer";
+	if ($debug >= 3) {
+		print "$input_buffer";
 	}
 	if (strpos($input_buffer,":")) {
 		$msg_array=explode(":",$input_buffer);
@@ -352,16 +325,7 @@ function check_msg($irc_connect,$input_buffer) {
 	} else {
 		$command_data=explode(" ",$input_buffer);
 	}		
-//	if ($debug==1) {
-//		print "Command_data[0] $command_data[0] \n";
-//		print "Command_data[1] $command_data[1] \n";
-//		print "Command_data[2] $command_data[2] \n";
-//		print "Command_data[3] $command_data[3] \n";
-//		print "Command_data[4] $command_data[4] \n";
-//		print "message $message \n";
-//		print "message[0]  $message[0]";
-//		print "$msg[0] \n";
-//	}
+
 	switch ($command_data[1]) {
 	case "PRIVMSG":
 		$who=$command_data[0];
@@ -415,7 +379,6 @@ function check_msg($irc_connect,$input_buffer) {
 				
 			if (trim($message)==$magic_word) {
 				$who=$command_data[0];
-				
 				$sender_info=clean_nick($who);
 				$sender_nick=$sender_info[0];
 				$sender_ident=$sender_info[1];
@@ -425,7 +388,7 @@ function check_msg($irc_connect,$input_buffer) {
 				$sql="insert into user (user,n,m,o,v,f,p,created,last_on) values ('$sender_nick','1','1','1','1','1','1','$now','$now')";
 				$result_user=@$db_ctrl->query($sql,$db);
 				if ($result_user) {
-					$mask=make_ban($sender_ident,$sender_host);
+					$mask=gethostmask($sender_ident,$sender_host);
 					$sql="insert into user_host (user,mask) values ('$sender_nick','$mask')";
 					$result_mask=@$db_ctrl->query($sql,$db);
 					if ($result_mask) {
@@ -437,7 +400,7 @@ function check_msg($irc_connect,$input_buffer) {
 			}
 			$hold=explode(" ",$message);	
 			
-			if (trim($hold[0])=="PASSWORD")	{
+			if (strtoupper($hold[0])=="PASSWORD")	{
 				$hold[1]=trim($hold[1]);
 					
 				$who=$command_data[0];
@@ -455,7 +418,7 @@ function check_msg($irc_connect,$input_buffer) {
 						$pass=bf_encrypt_pass($hold[1]);
 						$sql="update user set password='$pass' , mysql_password=password('$hold[1]') where user='$sender_nick'";
 						
-						$result=@$db_ctrl->query($sql,$db); 	
+						$result=$db_ctrl->query($sql,$db); 	
 						
 						if ($result) {
 							fputs($irc_connect, "PRIVMSG $sender_nick :New password set.\n");
@@ -487,7 +450,7 @@ function check_msg($irc_connect,$input_buffer) {
 					eval($ex_commands[$i]);
 				}
 			} else if (substr($message,0,1)=="?") {
-				if ($debug==1) {
+				if ($debug >= 3) {
 					echo "help command detected..........  \n";
 				}
 				for($i=0;$i<count($help_mdl);$i++) {
@@ -584,7 +547,7 @@ function check_msg($irc_connect,$input_buffer) {
 		$sql="insert into chan_users (chan_name,nick,mode,ident,host_mask) values ('$chan' ,'$nick' ,'$mode' ,'$ident' ,'$host_mask')";
 			
 		$result=@$db_ctrl->query($sql,$db); 
-		if ($debug==1) {
+		if ($debug >= 3) {
 		echo "adding $nick $chan \n";
 		 }
 	break;		

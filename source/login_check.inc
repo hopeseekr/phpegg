@@ -1,5 +1,5 @@
 <?php
-set_time_limit(9999);
+set_time_limit(999999);
 include_once("bf_lib.inc");
 
 

@@ -45,9 +45,9 @@ if ($manager==1)
 echo "Bot owner or manager detected <br>";	
 echo "<table width=100%>
 <tr>";	
-echo "<td><a href=server_groups.php?login_id=$login_id>PHPEgg-server_groups</a></td>";
-echo "<td><a href=servers.php?login_id=$login_id>PHPEgg-servers</a></td>";
-echo "<td><a href=module_binds.php?login_id=$login_id>PHPEgg-module_binds</a></td>";
+echo "<td><a href=server_groups.php?login_id=$login_id>PHPEgg-server_groups</a></td>";
+echo "<td><a href=servers.php?login_id=$login_id>PHPEgg-servers</a></td>";
+echo "<td><a href=module_binds.php?login_id=$login_id>PHPEgg-module_binds</a></td>";
 echo "<td><a href=modules.php?login_id=$login_id>PHPEgg-modules</a></td>";
 echo "<td><a href=channels.php?login_id=$login_id>PHPEgg-Channels</a></td>";
 echo "<td><a href=chan_spy.php?login_id=$login_id>PHPEgg-Channels spy</a></td>";

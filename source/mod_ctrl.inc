@@ -1,8 +1,8 @@
-<?
+<?php
 class module_control {
 	var $debug;
-	function set_debug() {
-		$this->$debug = 1;
+	function set_debug($level) {
+		$this->debug = $level;
 		return TRUE;
 	}
 
@@ -18,7 +18,7 @@ class module_control {
 		while($myrow=$db_ctrl->fetch_array($result)) {
 			eval('$GLOBALS["'.$myrow[module_name].'_mdl"] = fread(fopen("'.$myrow["module_file_name"].'","r"), filesize("'.$myrow["module_file_name"].'"));');
 			
-			if ($this->$debug == 1) {
+			if ($this->debug >= 2) {
 				print "$myrow[module_name] was loaded...\n";
 			}
 			unset($myrow);
@@ -35,7 +35,7 @@ class module_control {
 		$myrow=$db_ctrl->fetch_array($result);
 		print "Filesize = ".filesize($myrow[module_file_name])."\n";
 		eval('$GLOBALS["'.$myrow[module_name].'_mdl"] = fread(fopen("'.$myrow["module_file_name"].'","r"), filesize("'.$myrow["module_file_name"].'"));');
-		if ($this->$debug == 1) {
+		if ($this->debug >= 2) {
 			print "$myrow[module_name] was loaded...\n";
 		}
 		unset($myrow);
@@ -49,7 +49,7 @@ class module_control {
 		$result=$db_ctrl->query($sql);
 		while($myrow=$db_ctrl->fetch_array($result)) {
 			eval('unset($GLOBALS["'.$myrow[module_name].'_mdl"]);');
-			if ($this->$debug == 1) {
+			if ($this->debug >= 2) {
 				print "$myrow[module_name] was unloaded...\n";
 			}
 			unset($myrow);
@@ -61,7 +61,7 @@ class module_control {
 
 	function unload_specific($name) {
 		eval('$GLOBALS["'.$name.'_mdl"] = "";');
-		if ($this->$debug == 1) {
+		if ($this->debug >= 2) {
 			print "$name was unloaded...\n";
 		}
 		return TRUE;
@@ -86,12 +86,12 @@ class module_control {
 		$myrow=$db_ctrl->fetch_array($result);
 		$modname_q = $db_ctrl->query("select module_name from modules where module_binds_id='$myrow[module_binds_id]'");
 		while($modname = $db_ctrl->fetch_row($modname_q)) {
-			if ($this->$debug == 1) {
+			if ($this->debug >= 3) {
 				print "using $modname[0]...$myrow[bind] detected...";
 			}
 			eval('$mod = $GLOBALS["$modname[0]_mdl"];');
 		}
-		if ($this->$debug == 1) {
+		if ($this->debug >= 3) {
 			print "\n";
 		}
 		return $mod;

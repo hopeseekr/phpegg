@@ -22,8 +22,8 @@ if ($login_access) {
 			fputs($irc_connect,"PART $msg_data[2]\n");
 			break;
 		case "OP2":
-			print "MODE +o #$msg_data[2] $sender_nick\r\n";
-			fputs($irc_connect,"MODE #$msg_data[2] +o $sender_nick\r\n");
+			print "MODE +o $msg_data[2] $sender_nick\r\n";
+			fputs($irc_connect,"MODE $msg_data[2] +o $sender_nick\r\n");
 			break;
 		case "V2":
 			fputs($irc_connect,"MODE #$msg_data[2] +v $sender_nick\r\n");
@@ -91,5 +91,13 @@ if ($login_access) {
 							
 			fputs($irc_connect, "PRIVMSG $sender_nick :Channels: $chans \n\r");	
 			break;	
+		case "SAY":
+			$temp_msg = $msg_data[3];
+			for ($a=4; $a<count($msg_data); $a++) {
+				$temp_msg = "$temp_msg $msg_data[$a]";
+			}
+			fputs($irc_connect, "PRIVMSG $msg_data[2] :$temp_msg\n\r");
+			print "PRIVMSG $msg_data[2] :$temp_msg\n\r";
+			break;
 	}
 }

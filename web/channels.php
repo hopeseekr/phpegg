@@ -28,7 +28,7 @@ if (($new=="create") && ($manager==1))
 if ($update=="update")	
 	{
 
-	if (!$on_join)
+	if (!$on_join)
 		{
 		
 		$on_join="0";
@@ -117,7 +117,7 @@ echo " chan_name <br>
 	{
 	echo "<tr><td><input type=hidden name=login_id value=$login_id><input type=submit name=new value=create>
 	<input type=reset name=reset value=reset></td></tr>";
-	}
+	}
 	
 	
 	
@@ -194,7 +194,7 @@ echo "<tr><td><input type=checkbox name=on_part value='1' $onpart_yes> On Part a
 	
 	echo "<tr><td><input type=hidden name=login_id value=$login_id>
 	<a href=join_msg.php?channels_id=$channels_id&login_id=$login_id>ON join msgs</a>
-	<a href=part_msg.php?channels_id=$channels_id&login_id=$login_id>ON part msgs</a></td></tr>";
+	<a href=part_msg.php?channels_id=$channels_id&login_id=$login_id>ON part msgs</a></td></tr>";
 	echo "</table>";
 	echo "</form>";
 	$str=create_table_bottom();

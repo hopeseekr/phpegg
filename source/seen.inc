@@ -66,7 +66,7 @@ function update_seen_data($irc_connect,$chan_user,$chan,$mode)
 		$result_insert=$db_ctrl->query($sql_insert,$db);
 		if (!$result_insert)
 			{
-			print "update seen data error inserting $sql_insert \n";					print $db_ctrl->error($db);
+			print "update seen data error inserting $sql_insert \n";					print $db_ctrl->error($db);
 			
 			}
 	
@@ -241,7 +241,7 @@ function notice_seen($irc_connect,$sender_nick,$chan,$seen_nick)
 	
 function update_seen_data_quit($irc_connect,$who,$quit_message)
 	{
-	global $db_ctrl,$db;
+	global $db_ctrl,$db;
 	if (trim($quit_message)=="")
 		{
 		
@@ -269,7 +269,7 @@ function update_seen_data_quit($irc_connect,$who,$quit_message)
 	}
 function update_seen_data_part($irc_connect,$who,$chan)
 	{
-	global $db_ctrl,$db;
+	global $db_ctrl,$db;
 	$sender_info=clean_nick($who);
 	$sender_nick=$sender_info[0];
 	$sender_ident=$sender_info[1];

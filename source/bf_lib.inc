@@ -1,4 +1,4 @@
-<?
+<?php
 include ('bf_init.inc');
 
 function checkOverflow($a)
