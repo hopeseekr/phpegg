@@ -13,7 +13,6 @@ if ($login_access) {
 	$msg_data[0]=strtoupper($msg_data[0]);
 	switch ($msg_data[0]) {
 		case "JOIN":
-			print "O MY GOD";
 			fputs($irc_connect,"JOIN $msg_data[2]\n");
 			break;
 		case "NICK":
