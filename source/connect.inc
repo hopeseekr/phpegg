@@ -1,11 +1,12 @@
 <?php
 //  __   .__.__  .__			 ________ 
-// |  | _|__|  | |  |		   /   __   \
-// |  |/ /  |  | |  |	______ \____	/
-// |	<|  |  |_|  |__ /_____/	/	/ 
-// |__|_ \__|____/____/		   /____/  
+// |  | _|__|  | |  |		    /   __   \
+// |  |/ /  |  | |  |	 ______ \____	 /
+// |	<|  |  |_|  |__ /_____/    /    /
+// |__|_ \__|____/____/		      /____/  
 //	  \/								
-// PHP-EGG beta 1 by kill-9 
+// PHP-EGG v1 by kill-9 
+// All others by Un-Thesis :o
 
 function get_connect() {
 	global $db_ctrl,$my_irc_server, $my_nick, $irc_servers, $irc_server_ports, $irc_host, $irc_real_name, $irc_nick, $irc_alt_nick, $debug,$irc_identd;
@@ -312,7 +313,7 @@ function irc_idle($irc_connect) {
 				}
 				// running the auto run stuff
 			}
-			auto_run($irc_connect);
+//			auto_run($irc_connect); //needs to be re-implemented
 		} // end if ($input_buffer!="") {
 	}
 }
@@ -343,54 +344,6 @@ function check_msg($irc_connect,$input_buffer) {
 //		print "$msg[0] \n";
 //	}
 	switch ($command_data[1]) {
-	case "KICK":
-		$who=trim($command_data[0]);
-		$who=addslashes($who);
-		$chan=trim($command_data[2]);
-		$kicked_nick=trim($command_data[3]);
-		$kick_reason=trim($command_data[4]);
-			
-		for($i=0;$i<count($kick_mdl);$i++) {
-			eval($kick_mdl[$i]);
-		}
-	break;
-	case "MODE":
-		$who=$command_data[4];
-		$who=addslashes($who);
-		$chan=$command_data[2];
-		$mode=$command_data[3];
-		for($i=0;$i<count($mode_mdl);$i++) {
-			eval($mode_mdl[$i]);
-		}
-					
-	break;
-	case "TOPIC":
-		$chan=$command_data[2];
-		$topic=$message;
-		for($i=0;$i<count($topic_mdl);$i++) {
-			eval($topic_mdl[$i]);
-		}
-	break;
-	case "JOIN":
-		$who=$command_data[0];
-		$chan=$message;
-		user_join_chan($irc_connect,$who,$chan);
-		break;
-	case "QUIT":
-		$who=$command_data[0];
-		$reason=$message;
-		quit_chan($irc_connect,$who,$reason);
-		break;
-	case "PART":
-		$who=$command_data[0];
-		$chan=trim($command_data[2]);
-		user_part_chan($irc_connect,$who,$chan);
-		break;
-	case "NICK":
-		$who=$command_data[0];
-		$who_to=$message;
-		nick_change($irc_connect,$who,$who_to);
-		break;
 	case "PRIVMSG":
 		$who=$command_data[0];
 		$sender_info=clean_nick($who);
@@ -401,7 +354,7 @@ function check_msg($irc_connect,$input_buffer) {
 		if (substr($command_data[2],0,1)=="#") {
 			$chan=trim($command_data[2]);
 			// deals with the last spoke info 	function lives in seen.inc
-			lastspoke_log($sender_ident,$sender_nick,$sender_host,$chan);
+//			lastspoke_log($sender_ident,$sender_nick,$sender_host,$chan);
 			// done dealing with last spoke.
 
 			// who sent it what chan they sent it to what they sent
@@ -530,44 +483,6 @@ function check_msg($irc_connect,$input_buffer) {
 			}	
 		}
 	break;
-	case "NOTICE":
-		// who sent it and what they sent
-			
-		// same as msg sent to the bot.
-	break;
-	case "PART":
-		$chan=$command_data[2];
-		$who=$command_data[0];
-		$who=addslashes($who);
-		for($i=0;$i<count($part_mdl);$i++) {
-		eval($part_mdl[$i]);
-		}
-	break;
-	case "QUIT":
-		$reason=$message;
-		$who=$command_data[0];
-		$who=addslashes($who);
-		for($i=0;$i<count($quit_mdl);$i++) {
-		eval($quit_mdl[$i]);
-		}
-	break;
-	case "JOIN":
-		$chan=$message;
-		$who=$command_data[0];
-		$who=addslashes($who);
-		for($i=0;$i<count($join_mdl);$i++) {
-		eval($join_mdl[$i]);
-		}
-	break;
-	case "NICK":
-		$who=$command_data[0];
-		   
-		$who_to=$message;
-		$who_to=addslashes($who_to);
-		for($i=0;$i<count($nick_mdl);$i++) {
-		eval($nick_mdl[$i]);
-		}
-	break;  
 	case "311":
 		// i think this is a talk back on a whois
 		$nick_is=addslashes($command_data[3]);

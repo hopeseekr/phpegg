@@ -1,10 +1,9 @@
 #!/usr/local/bin/php -q
 <?php
-include("version.php");
 
-// todo: check if this works on bsd, sun, win?, irix etc. 
-
-print("Welcome to php_egg version ".VERSION." - easy setup\n");
+/* Take the first step :-) */
+$version = '3.0';
+print "Welcome to PHP-Egg v$version Easy Setup\n\n";
 
 // OS CHECK
 $ok=0;
@@ -35,22 +34,25 @@ if ($fp=="") {
 print("DATABASE SETUP:\n");
 
 while ((trim($database) != "MySQL") and (trim($database) != "PostgreSQL")) {
-	print "Database (MySQL or PostgreSQL): ";
+	print "Database (MySQL or PostgreSQL) [MySQL]: ";
 	$database = trim(fgets($fp,1024));
+	if ($database == "") {
+		$database = "MySQL";
+	}
 }
 
-print("Database host (localhost): ");
+print("Database host [localhost]: ");
 $database_host=trim(fgets($fp,1024));
 if ($database_host=="") {
 	$database_host="localhost";
 }
 
 while (strlen(trim($database_login))==0) {
-	print("Database login: ");
+	print("Database login username: ");
 	$database_login=trim(fgets($fp,1024));
 }
 while ((strlen(trim($database_pass))==0) and (trim($sure)!="yes")){
-	print("Database password: ");
+	print("Database login password: ");
 	$database_pass=trim(fgets($fp,1024));
 	if (strlen(trim($database_pass))==0) {
 		print "Not having a password is unsafe.\n  Are you sure you do not want a password? (yes/no) ";
@@ -352,11 +354,11 @@ if (trim($debug)=="yes" || trim($debug)=="1") {
 	$debug=1;
 }
 fclose($fp);
-print("Setup done... writing config.auto.php\n");
+print("Setup done... writing config.inc\n");
 
-$fp=fopen("config.auto.php","w");
+$fp=fopen("config.inc","w");
 if ($fp=="") {
-	print("Error: could not open config.auto.php\n");
+	print("Error: could not open config.inc\n");
 	exit;
 }
 fputs($fp,"<?\n");

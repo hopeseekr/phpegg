@@ -1,4 +1,4 @@
-<script language="php">
+<?
 $initbf_P=array(
   0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344,
   0xa4093822, 0x299f31d0, 0x082efa98, 0xec4e6c89,
@@ -282,4 +282,4 @@ $base64="./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 define ("ARCH_BIGENDIAN",0x0);
 define ("ARCH_LITTLENDIAN",0x1);
 define ("ARCH",ARCH_BIGENDIAN);
-</script>
+?>

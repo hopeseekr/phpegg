@@ -1,5 +1,5 @@
-<script language="php">
-include ('bf_init.php');
+<?
+include ('bf_init.inc');
 
 function checkOverflow($a)
 {
@@ -235,4 +235,4 @@ class aword
 		return($r);
 	}
 }
-</script>
+?>
