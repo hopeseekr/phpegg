@@ -303,9 +303,10 @@ print("Setup done... writing config.php\n");
 
 $fp=fopen("config.auto.php","w");
 if ($fp=="") {
-    print("Error: could not open config.php\n");
+    print("Error: could not open config.auto.php\n");
     exit;
 }
+fputs($fp,"<?\n");
 // bot
 fputs($fp,"\$magic_word=\"$magic_word\"\n");
 fputs($fp,"\$admin_email=\"$admin_email\"\n");
@@ -330,6 +331,7 @@ if ($server_group=="local") {
 }
 // debug
 fputs($fp,"\$debug=\"$debug\"\n");
+fputs($fp,"?>\n");
 fclose($fp);
 
 ?>
