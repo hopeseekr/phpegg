@@ -4,6 +4,15 @@
 #--------------------------------------------------------
 # Server version	3.22.32
 
+
+CREATE TABLE server_error (
+  server_error_id int(255) NOT NULL auto_increment,
+ time int(12) NOT NULL default '0',
+  error varchar(255) NOT NULL default '',
+  PRIMARY KEY (server_error_id)
+) ;
+
+
 #
 # Table structure for table 'bans'
 #

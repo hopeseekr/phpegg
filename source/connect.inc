@@ -89,6 +89,11 @@ function irc_connect() {
 	    }
 	    
 	    if (substr($input_buffer,0,5)=="ERROR"  ) {
+	    	// adding error login
+	 	$time=time();
+		$error=addslashes($input_buffer);
+		$sql="insert into server_error (time,error) values ($time,'$error')";
+		$result=@mysql_query($sql,$db);
 		set_time_limit(6000);
 		fclose($irc_connect);
 		$irc_connect=get_connect();
@@ -184,6 +189,14 @@ function irc_idle($irc_connect) {
 	// handles the irc connection
 	unset($input_buffer);
 	$input_buffer = fgets($irc_connect, 1024);
+	// adding error checking from the server.
+	if (substr($input_buffer,0,5)=="ERROR")
+		{
+		$time=time();
+		$error=addslashes($input_buffer);
+		$sql="insert into server_error (time,error) values ($time,'$error')";
+		$result=@mysql_query($sql,$db);
+		}
 	if ($input_buffer!="") {
 	     print("ircd read: $input_buffer");
 	    $read_something=1;

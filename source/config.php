@@ -10,7 +10,7 @@ $admin_email="user@localhost";
 $database_host="localhost";
 $database_login="root";
 $database_pass="";
-$database_name="phpegg";
+$database_name="egg_final";
 
 /* egg bot name */
 $irc_nick="php_bot";
