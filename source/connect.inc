@@ -25,7 +25,7 @@ function get_connect() {
 	flush();
 	$irc_server=$irc_servers[$rand_key[0]];
 	if ($debug==1) {	
-	    echo "Connecting to: $irc_server \n";	
+	    echo "Connecting to: $irc_server\n";	
 	}
 	$irc_connect=fsockopen($irc_servers[$rand_key[0]],$irc_server_ports[$rand_key[0]],&$errno, &$errstr);
 	$trys++;
@@ -67,7 +67,7 @@ function irc_connect() {
 
 	if ($old_input_buffer!=$input_buffer) {
 	    if ($debug==1) {
-		print "$input_buffer\n";
+		print "$input_buffer";
 	    }
 	    if (strpos($input_buffer,"throttled")) {
 		irc_connect();
@@ -239,7 +239,6 @@ function irc_idle($irc_connect) {
 			print "!PING?PONG \n";
 		    }
 		    fputs($irc_connect, "PONG $reply[1]\n");	
-		    print("no pong\n");
 		}
 
 		// running the auto run stuff
