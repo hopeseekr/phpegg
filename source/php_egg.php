@@ -1,10 +1,11 @@
 #!/usr/local/bin/php -q
 <?php
 
+include("version.php");
+
 // start up
-print("\nStarting PHP-Egg version 1.2b\n");
-print("by: kill-9@skod.dk\n");
-print("web: www.blah.com\n");
+print("\nStarting PHP-Egg version ".VERSION."\n");
+print("web: http://sourceforge.net/projects/phpegg/\n");
 
 if (file_exists("config.auto.php")) {
     include("config.auto.php");
