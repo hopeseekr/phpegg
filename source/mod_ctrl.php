@@ -81,12 +81,9 @@ class module_control {
 		$result=mysql_query($sql);
 		$myrow=mysql_fetch_array($result);
 		$modname_q = mysql_query("select module_name from modules where module_binds_id='$myrow[module_binds_id]'");
-		if ($this->$debug == 1) {
-			print "$myrow[bind] detected...";
-		}
 		while($modname = mysql_fetch_row($modname_q)) {
 			if ($this->$debug == 1) {
-				print "using $modname[0]...";
+				print "using $modname[0]...$myrow[bind] detected...";
 			}
 			eval('$mod = $GLOBALS["$modname[0]_mdl"];');
 		}

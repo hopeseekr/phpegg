@@ -412,12 +412,11 @@ function check_msg($irc_connect,$input_buffer) {
 			*/
 			global $mod_ctrl;
 			$token = substr($message,0,1);
-			print "\n\nToken = $token\n\n";
 			$message = trim($message);
 				
 			/* Don't waste CPU time by only sending a true message to $mod_ctrl */
 			/*i now, should we call the eval($modname_mdl) here, or in $mod_ctrl? */
-			if (strlen($message)!=1) {
+			if (strlen($message)>1) {
 				eval($mod_ctrl->deliver_token($token, $message));
 			}
 		} else {
