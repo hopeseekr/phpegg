@@ -1,0 +1,38 @@
+
+
+You MUST have PHP-GTK properly installed inorder to use PHPEgg-GTK-Admin.
+
+My own steps for installing PHP-GTK on Slackware Linux and Windows ME follow.  
+These steps are not official and you should believe PHP-GTK's website/READMEs 
+before believing any thing in this document.
+
+Using the following steps, I have successfully installed PHP-GTK on the following:
+	Windows 98
+	Windows ME
+	Windows 2000
+	Slackware 7.0
+	RedHat 7.0
+	FreeBSD 4.2
+
+My PHP-GTK instructions for Windows:
+  1) Download the PHP-GTK Windows binary
+     http://gtk.php.net/download.php
+  2) Unzip the file
+  3) Copy the files in the php4 directory to C:\Windows\Command (win9x/me) or C:\Winnt\command (winnt/2k)
+  4) Copy the files in the winnt/system32 directory to C:\Windows\System32 AND C:\Windows\System (if it exists)
+  5) Copy the winnt/php.ini file to C:\Windows for win9x/me or C:\Winnt for winnt/2k
+
+My PHP-GTK instructions for Unix-like OSes
+  1)  mkdir cvs; cd cvs
+  2)  cvs -d :pserver:cvsread@cvs.php.net:/repository login
+      Password = phpfi
+  3)  cvs -d :pserver:cvsread@cvs.php.net:/repository co php4 php-gtk
+  4)  cd php4
+  5)  cvs -d :pserver:cvsread@cvs.zend.com:/repository logon
+      Password = zend
+  6)  cvs -d :pserver:cvsread@cvs.zend.com:/repository co Zend TSRM
+  7)  ./buildconf
+  8)  ./configure && make && make install
+  9)  cd ../php-gtk
+  9)  ../php4/bin/phpize
+  10) ./configure && make && make install

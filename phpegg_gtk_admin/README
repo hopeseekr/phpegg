@@ -1,0 +1,23 @@
+/* 
+	Copyright Un-Thesis, kill-9 and the rest of the PHP-Egg Dev Team 2001 
+	http://sourceforge.net/projects/phpegg
+*/
+PHPEgg-GTK-Admin
+
+PHPEgg-GTK-Admin is meant for those users who just don't have a fancy
+webserver up and running.  IE the general user.
+
+Additionally, it helps break PHP out of its bondage to webpages/
+
+But most of all, it's just freakin' cool!
+
+To install PHPEgg-GTK-Admin:
+First, make sure you have followed the steps in INSTALL.phpgtk
+
+Unzip phpegg-gtk-admin.zip and edit the database.inc.php to suit your needs.
+Specifically make sure you change the database connection info
+to suit your needs.
+
+To run PHPEgg-GTK-Admin just cd to your PHP-Egg webpage directory and execute "php gtk_admin.php"
+
+Last modified 1 September 2001 at 1:15PM MST (-700 UTC)
